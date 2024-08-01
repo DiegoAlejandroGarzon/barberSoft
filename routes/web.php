@@ -38,3 +38,17 @@ Route::get('password/reset', [ForgotPasswordController::class, 'showLinkRequestF
 Route::post('password/email', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
 Route::get('password/reset/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
 Route::post('password/reset', [ResetPasswordController::class, 'reset']);
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/crear-evento', function () {
+    return view('crear_evento');
+})->name('crear_evento');
+Route::get('/lista-usuarios', function () {
+    return view('lista_usuarios');
+})->name('lista_usuarios');
+Route::get('/configuracion', function () {
+    return view('configuracion');
+})->name('configuracion');

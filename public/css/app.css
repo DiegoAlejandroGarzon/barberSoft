@@ -1,0 +1,68 @@
+p {
+    font-family: Arial, Helvetica, sans-serif !important;
+}
+body {
+    font-family: Arial, Helvetica, sans-serif !important;
+    margin-top: 150px;
+}
+
+.even {
+    background: #fbf8f0;
+}
+
+.odd {
+    background: #fefcf9;
+}
+
+.page {
+    page-break-after: always;
+    page-break-inside: avoid;
+}
+
+.ocultarcolumnas {
+    visibility: hidden;
+}
+
+#grettings table,
+#grettings td,
+#grettings th {
+    border: 1px solid #595959;
+    border-collapse: collapse;
+}
+
+td,
+th {
+    padding: 3px;
+    width: 30px;
+    height: 25px;
+}
+
+.start-space {
+    height: 40px !important;
+    border-left: 1px solid #fff !important;
+    border-right: 1px solid #fff !important;
+    border-bottom: 1px solid #fff !important;
+}
+
+.middle-space {
+    height: 70px !important;
+    border-left: 1px solid #fff !important;
+    border-right: 1px solid #fff !important;
+    border-bottom: 1px solid #fff !important;
+}
+
+th {
+    background: #f0e6cc;
+}
+
+.even {
+    background: #fbf8f0;
+}
+
+.odd {
+    background: #fefcf9;
+}
+
+p {
+    font-size: 12px;
+}
