@@ -10,6 +10,29 @@ class SideMenu
     public static function menu(): array
     {
         return [
+            'usuarios' => [
+                'icon' => 'users',
+                'title' => 'Users',
+                'sub_menu' => [
+                    'users-layout-1' => [
+                        'icon' => 'activity',
+                        'route_name' => 'users-layout-1',
+                        'title' => 'Mi perfil'
+                    ],
+                    'users-layout-2' => [
+                        'icon' => 'activity',
+                        'route_name' => 'users-layout-2',
+                        'title' => 'Crear usuarios'
+                    ],
+                    'users-layout-3' => [
+                        'icon' => 'activity',
+                        'route_name' => 'users-layout-3',
+                        'title' => 'Lista de Usuarios'
+                    ]
+                ]
+            ],
+            'divider',
+            'divider',
             'dashboard' => [
                 'icon' => 'home',
                 'title' => 'Dashboard',
@@ -496,7 +519,12 @@ class SideMenu
                         'title' => 'Image Zoom'
                     ]
                 ]
-            ]
+                    ],
+            // 'logout' => [
+            //     'icon' => 'activity',
+            //     'route_name' => 'logout',
+            //     'title' => 'Logout'
+            // ],
         ];
     }
 }

@@ -219,11 +219,21 @@
             </x-base.menu.item>
             <x-base.menu.divider class="bg-white/[0.08]" />
             <x-base.menu.item class="hover:bg-white/5">
-                <x-base.lucide
-                    class="mr-2 h-4 w-4"
-                    icon="ToggleRight"
-                /> Logout
+                <a href="{{ route('logout') }}"
+                   onclick="event.preventDefault();
+                             document.getElementById('logout-form').submit();"
+                   class="flex items-center">
+                    <x-base.lucide
+                        class="mr-2 h-4 w-4"
+                        icon="ToggleRight"
+                    />
+                    Logout prueba 3
+                </a>
+                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                    @csrf
+                </form>
             </x-base.menu.item>
+
         </x-base.menu.items>
     </x-base.menu>
     <!-- END: Account Menu -->

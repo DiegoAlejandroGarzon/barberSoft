@@ -222,7 +222,7 @@
                 <x-base.lucide
                     class="mr-2 h-4 w-4"
                     icon="ToggleRight"
-                /> Logout
+                /> Logout prueba 4
             </x-base.menu.item>
         </x-base.menu.items>
     </x-base.menu>

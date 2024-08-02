@@ -10,6 +10,29 @@ class SimpleMenu
     public static function menu(): array
     {
         return [
+            'usuarios' => [
+                'icon' => 'users',
+                'title' => 'Users',
+                'sub_menu' => [
+                    'users-layout-1' => [
+                        'icon' => 'activity',
+                        'route_name' => 'users-layout-1',
+                        'title' => 'Layout 1'
+                    ],
+                    'users-layout-2' => [
+                        'icon' => 'activity',
+                        'route_name' => 'users-layout-2',
+                        'title' => 'Layout 2'
+                    ],
+                    'users-layout-3' => [
+                        'icon' => 'activity',
+                        'route_name' => 'users-layout-3',
+                        'title' => 'Layout 3'
+                    ]
+                ]
+            ],
+            'divider',
+            'divider',
             'dashboard' => [
                 'icon' => 'home',
                 'title' => 'Dashboard',
@@ -496,7 +519,12 @@ class SimpleMenu
                         'title' => 'Image Zoom'
                     ]
                 ]
-            ]
+            ],
+            'logout' => [
+                'icon' => 'activity',
+                'route_name' => 'logout',
+                'title' => 'Logout'
+            ],
         ];
     }
 }

@@ -267,8 +267,17 @@
                     <x-base.lucide
                         class="mr-2 h-4 w-4"
                         icon="ToggleRight"
-                    /> Logout
+                    />
+                    <a href="{{ route('logout') }}"
+                       onclick="event.preventDefault();
+                                 document.getElementById('logout-form').submit();">
+                        Logout prueba 1
+                    </a>
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                        @csrf
+                    </form>
                 </x-base.menu.item>
+
             </x-base.menu.items>
         </x-base.menu>
         <!-- END: Account Menu -->
