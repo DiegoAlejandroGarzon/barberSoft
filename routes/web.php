@@ -34,9 +34,10 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
     Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-    Route::get('/users-list', [UserController::class, 'index'])->name('users-list');
+    Route::get('/users', [UserController::class, 'index'])->name('users.index');
     Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
     Route::post('/users/create', [UserController::class, 'store'])->name('users.store');
+    Route::get('/users/update/{id}', [UserController::class, 'update'])->name('users.edit');
 
 
     Route::controller(PageController::class)->group(function () {

@@ -5,7 +5,11 @@
 @endsection
 
 @section('subcontent')
-
+    @if(session('success'))
+        <div class="text-success">
+            {{ session('success') }}
+        </div>
+    @endif
     <h2 class="intro-y mt-10 text-lg font-medium">Lista de usuarios</h2>
     <div class="mt-5 grid grid-cols-12 gap-6">
         <div class="intro-y col-span-12 mt-2 flex flex-wrap items-center sm:flex-nowrap">
@@ -165,10 +169,7 @@
                                 'before:absolute before:inset-y-0 before:left-0 before:my-auto before:block before:h-8 before:w-px before:bg-slate-200 before:dark:bg-darkmode-400',
                             ])>
                                 <div class="flex items-center justify-center">
-                                    <a
-                                        class="mr-3 flex items-center"
-                                        href="#"
-                                    >
+                                    <a class="mr-3 flex items-center" href="{{ route('users.edit', ['id' => $usuario->id]) }}">
                                         <x-base.lucide
                                             class="mr-1 h-4 w-4"
                                             icon="CheckSquare"
