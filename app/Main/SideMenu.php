@@ -24,9 +24,9 @@ class SideMenu
                         'route_name' => 'users-layout-2',
                         'title' => 'Crear usuarios'
                     ],
-                    'users-layout-3' => [
+                    'users-list' => [
                         'icon' => 'activity',
-                        'route_name' => 'users-layout-3',
+                        'route_name' => 'users-list',
                         'title' => 'Lista de Usuarios'
                     ]
                 ]
