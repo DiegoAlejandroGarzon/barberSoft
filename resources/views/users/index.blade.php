@@ -9,12 +9,14 @@
     <h2 class="intro-y mt-10 text-lg font-medium">Lista de usuarios</h2>
     <div class="mt-5 grid grid-cols-12 gap-6">
         <div class="intro-y col-span-12 mt-2 flex flex-wrap items-center sm:flex-nowrap">
-            <x-base.button
-                class="mr-2 shadow-md"
-                variant="primary"
-            >
-                Crear nuevo Usuario
-            </x-base.button>
+            <a href="{{ route('users.create') }}">
+                <x-base.button
+                    class="mr-2 shadow-md"
+                    variant="primary"
+                >
+                    Crear nuevo Usuario
+                </x-base.button>
+            </a>
             <x-base.menu>
                 <x-base.menu.button
                     class="!box px-2"

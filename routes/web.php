@@ -35,6 +35,9 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
     Route::get('/users-list', [UserController::class, 'index'])->name('users-list');
+    Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
+    Route::post('/users/create', [UserController::class, 'store'])->name('users.store');
+
 
     Route::controller(PageController::class)->group(function () {
         Route::get('/dashboard', 'dashboardOverview1')->name('dashboard-overview-1');

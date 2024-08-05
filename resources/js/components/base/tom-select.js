@@ -27,10 +27,10 @@
                 onDelete: function (values) {
                     return confirm(
                         values.length > 1
-                            ? "Are you sure you want to remove these " +
+                            ? "¿Estás segura de que quieres eliminar estas? " +
                                   values.length +
                                   " items?"
-                            : 'Are you sure you want to remove "' +
+                            : '¿Estás seguro de que desea eliminar? "' +
                                   values[0] +
                                   '"?'
                     );
