@@ -19,7 +19,7 @@ class AdminUserSeeder extends Seeder
         $admin = User::create([
             'name' => 'Admin',
             'email' => 'admin@example.com',
-            'password' => Hash::make('password123'), // Cambia esto por la contraseña que desees
+            'password' => Hash::make('12345678'), // Cambia esto por la contraseña que desees
         ]);
 
         // Crear el rol de admin si no existe
