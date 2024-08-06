@@ -37,7 +37,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
     Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
     Route::post('/users/create', [UserController::class, 'store'])->name('users.store');
-    Route::get('/users/update/{id}', [UserController::class, 'update'])->name('users.edit');
+    Route::get('/users/update/{id}', [UserController::class, 'edit'])->name('users.edit');
+    Route::post('/users/update', [UserController::class, 'update'])->name('users.update');
 
 
     Route::controller(PageController::class)->group(function () {

@@ -18,7 +18,7 @@
 
                     <div class="grid-cols-2 gap-2 sm:grid">
                         <x-base.form-input
-                            class="w-full @error('name') border-red-500 @enderror"
+                            class="w-full {{ $errors->has('name') ? 'border-red-500' : '' }}"
                             id="name"
                             name="name"
                             type="text"
@@ -30,14 +30,14 @@
                         @enderror
 
                         <x-base.form-input
-                            class="w-full @error('last_name') border-red-500 @enderror"
-                            id="last_name"
-                            name="last_name"
+                            class="w-full {{ $errors->has('lastname') ? 'border-red-500' : '' }}"
+                            id="lastname"
+                            name="lastname"
                             type="text"
                             placeholder="Apellidos"
-                            value="{{ old('last_name') }}"
+                            value="{{ old('lastname') }}"
                         />
-                        @error('last_name')
+                        @error('lastname')
                             <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
                         @enderror
                     </div>
@@ -46,7 +46,7 @@
                     <x-base.form-label for="email">Correo Electrónico</x-base.form-label>
 
                     <x-base.form-input
-                        class="w-full @error('email') border-red-500 @enderror"
+                        class="w-full {{ $errors->has('email') ? 'border-red-500' : '' }}"
                         id="email"
                         name="email"
                         type="email"
@@ -63,7 +63,7 @@
 
                     <div class="grid-cols-2 gap-2 sm:grid">
                         <x-base.form-input
-                            class="w-full @error('password') border-red-500 @enderror"
+                            class="w-full {{ $errors->has('password') ? 'border-red-500' : '' }}"
                             id="password"
                             name="password"
                             type="password"
@@ -74,7 +74,7 @@
                         @enderror
 
                         <x-base.form-input
-                            class="w-full @error('password_confirmation') border-red-500 @enderror"
+                            class="w-full {{ $errors->has('password_confirmation') ? 'border-red-500' : '' }}"
                             id="password_confirmation"
                             name="password_confirmation"
                             type="password"
@@ -88,7 +88,7 @@
                 <div class="mt-3">
                     <x-base.form-label for="role_id">Role</x-base.form-label>
                     <x-base.tom-select
-                        class="w-full"
+                        class="w-full {{ $errors->has('role_id') ? 'border-red-500' : '' }}"
                         id="role_id"
                         name="role_id"
                     >
