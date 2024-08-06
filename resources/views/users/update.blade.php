@@ -11,7 +11,11 @@
     <div class="mt-5 grid grid-cols-12 gap-6">
         <div class="intro-y col-span-12 lg:col-span-12">
             <div class="intro-y box p-5">
+            @if(isset($profileUpdate))
+            <form method="POST" action="{{ route('profile.update', ['id' => $user->id]) }}">
+            @else
             <form method="POST" action="{{ route('users.update', ['id' => $user->id]) }}">
+            @endif
                 @csrf
                 <div class="intro-y col-span-12 lg:col-span-6">
                     <x-base.form-label for="name">Nombre Completo</x-base.form-label>
@@ -74,6 +78,7 @@
                         <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
                     @enderror
                 </div>
+                @if(!isset($dissabledStatus))
                 <div class="mt-3">
                     <label>Status</label>
                     <x-base.form-switch class="mt-2">
@@ -81,6 +86,7 @@
                         <input type="hidden" name="status" id="status-hidden" value="0">
                     </x-base.form-switch>
                 </div>
+                @endif
 
                 </div>
                 <div class="mt-5 text-right">

@@ -33,12 +33,15 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
     Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-
+    //CRUD USUARIOS
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
     Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
     Route::post('/users/create', [UserController::class, 'store'])->name('users.store');
     Route::get('/users/update/{id}', [UserController::class, 'edit'])->name('users.edit');
     Route::post('/users/update', [UserController::class, 'update'])->name('users.update');
+    //EDITAR PERFIL
+    Route::get('/profile/update/{id}', [UserController::class, 'profileEdit'])->name('profile.edit');
+    Route::post('/profile/update', [UserController::class, 'profileUpdate'])->name('profile.update');
 
 
     Route::controller(PageController::class)->group(function () {

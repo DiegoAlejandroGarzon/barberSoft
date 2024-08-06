@@ -2,7 +2,7 @@
 <div class="relative z-[51] flex h-[67px] items-center border-b border-slate-200">
     <!-- BEGIN: Breadcrumb -->
     <x-base.breadcrumb class="-intro-x mr-auto hidden sm:flex">
-        <x-base.breadcrumb.link :index="0">Application</x-base.breadcrumb.link>
+        <x-base.breadcrumb.link :index="0">Aplicacion</x-base.breadcrumb.link>
         <x-base.breadcrumb.link
             :index="1"
             :active="true"
@@ -12,7 +12,7 @@
     </x-base.breadcrumb>
     <!-- END: Breadcrumb -->
     <!-- BEGIN: Search -->
-    <div class="search intro-x relative mr-3 sm:mr-6">
+    {{-- <div class="search intro-x relative mr-3 sm:mr-6">
         <div class="relative hidden sm:block">
             <x-base.form-input
                 class="w-56 rounded-full border-transparent bg-slate-300/50 pr-8 shadow-none transition-[width] duration-300 ease-in-out focus:w-72 focus:border-transparent dark:bg-darkmode-400/70"
@@ -127,10 +127,10 @@
                 @endforeach
             </div>
         </x-base.transition>
-    </div>
+    </div> --}}
     <!-- END: Search  -->
     <!-- BEGIN: Notifications -->
-    <x-base.popover class="intro-x mr-auto sm:mr-6">
+    {{-- <x-base.popover class="intro-x mr-auto sm:mr-6">
         <x-base.popover.button
             class="relative block text-slate-600 outline-none before:absolute before:right-0 before:top-[-2px] before:h-[8px] before:w-[8px] before:rounded-full before:bg-danger before:content-['']"
         >
@@ -175,48 +175,53 @@
                 </div>
             @endforeach
         </x-base.popover.panel>
-    </x-base.popover>
+    </x-base.popover> --}}
     <!-- END: Notifications  -->
     <!-- BEGIN: Account Menu -->
     <x-base.menu>
         <x-base.menu.button class="image-fit zoom-in intro-x block h-8 w-8 overflow-hidden rounded-full shadow-lg">
-            <img
+            {{-- <img
                 src="{{ Vite::asset($faker['photos'][0]) }}"
                 alt="Midone - Tailwind Admin Dashboard Template"
-            />
+            /> --}}
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-500" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+            </svg>
         </x-base.menu.button>
         <x-base.menu.items class="mt-px w-56 bg-theme-1 text-white">
             <x-base.menu.header class="font-normal">
-                <div class="font-medium">{{ $fakers[0]['users'][0]['name'] }}</div>
+                <div class="font-medium">{{ Auth::user()->name }} {{ Auth::user()->lastname }}</div>
                 <div class="mt-0.5 text-xs text-white/70 dark:text-slate-500">
-                    {{ $fakers[0]['jobs'][0] }}
+                    {{ Auth::user()->roles[0]->name }}
                 </div>
             </x-base.menu.header>
             <x-base.menu.divider class="bg-white/[0.08]" />
-            <x-base.menu.item class="hover:bg-white/5">
-                <x-base.lucide
-                    class="mr-2 h-4 w-4"
-                    icon="User"
-                /> Profile
-            </x-base.menu.item>
-            <x-base.menu.item class="hover:bg-white/5">
+                <x-base.menu.item class="hover:bg-white/5">
+                    <a class="mr-3 flex items-center" href="{{ route('profile.edit', ['id' => Auth::user()->id]) }}">
+                    <x-base.lucide
+                        class="mr-2 h-4 w-4"
+                        icon="User"
+                    /> Perfil
+                </a>
+                </x-base.menu.item>
+            {{-- <x-base.menu.item class="hover:bg-white/5">
                 <x-base.lucide
                     class="mr-2 h-4 w-4"
                     icon="Edit"
-                /> Add Account
-            </x-base.menu.item>
+                /> Añadir cuenta
+            </x-base.menu.item> --}}
             <x-base.menu.item class="hover:bg-white/5">
                 <x-base.lucide
                     class="mr-2 h-4 w-4"
                     icon="Lock"
-                /> Reset Password
+                /> Restablecer la contraseña
             </x-base.menu.item>
-            <x-base.menu.item class="hover:bg-white/5">
+            {{-- <x-base.menu.item class="hover:bg-white/5">
                 <x-base.lucide
                     class="mr-2 h-4 w-4"
                     icon="HelpCircle"
-                /> Help
-            </x-base.menu.item>
+                /> Ayuda
+            </x-base.menu.item> --}}
             <x-base.menu.divider class="bg-white/[0.08]" />
             <x-base.menu.item class="hover:bg-white/5">
                 <a href="{{ route('logout') }}"
@@ -227,7 +232,7 @@
                         class="mr-2 h-4 w-4"
                         icon="ToggleRight"
                     />
-                    Logout prueba 3
+                    Cerrar sesión
                 </a>
                 <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                     @csrf
@@ -237,7 +242,14 @@
         </x-base.menu.items>
     </x-base.menu>
     <!-- END: Account Menu -->
+
 </div>
+<br>
+@if(session('success'))
+    <div class="text-success">
+        {{ session('success') }}
+    </div>
+@endif
 <!-- END: Top Bar -->
 
 @pushOnce('scripts')

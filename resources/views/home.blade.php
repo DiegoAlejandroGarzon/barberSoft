@@ -1,7 +1,7 @@
 @extends('../themes/' . $activeTheme . '/' . $activeLayout)
 
 @section('subhead')
-    <title>Dashboard</title>
+    <title>INICIO</title>
 @endsection
 
 @section('subcontent')

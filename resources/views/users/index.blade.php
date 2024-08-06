@@ -5,11 +5,6 @@
 @endsection
 
 @section('subcontent')
-    @if(session('success'))
-        <div class="text-success">
-            {{ session('success') }}
-        </div>
-    @endif
     <h2 class="intro-y mt-10 text-lg font-medium">Lista de usuarios</h2>
     <div class="mt-5 grid grid-cols-12 gap-6">
         <div class="intro-y col-span-12 mt-2 flex flex-wrap items-center sm:flex-nowrap">
