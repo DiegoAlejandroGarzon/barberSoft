@@ -1,19 +1,19 @@
 @extends('../themes/' . $activeTheme . '/' . $activeLayout)
 
 @section('subhead')
-    <title>Usuarios</title>
+    <title>Eventos</title>
 @endsection
 
 @section('subcontent')
-    <h2 class="intro-y mt-10 text-lg font-medium">Lista de usuarios</h2>
+    <h2 class="intro-y mt-10 text-lg font-medium">Lista de Eventos</h2>
     <div class="mt-5 grid grid-cols-12 gap-6">
         <div class="intro-y col-span-12 mt-2 flex flex-wrap items-center sm:flex-nowrap">
-            <a href="{{ route('users.create') }}">
+            <a href="{{ route('event.create') }}">
                 <x-base.button
                     class="mr-2 shadow-md"
                     variant="primary"
                 >
-                    Crear nuevo Usuario
+                    Crear nuevo Evento
                 </x-base.button>
             </a>
             <x-base.menu>
@@ -73,17 +73,14 @@
             <x-base.table class="-mt-2 border-separate border-spacing-y-[10px]">
                 <x-base.table.thead>
                     <x-base.table.tr>
-                        {{-- <x-base.table.th class="whitespace-nowrap border-b-0">
-                            Perfil
-                        </x-base.table.th> --}}
+                        <x-base.table.th class="whitespace-nowrap border-b-0">
+                            Imagen
+                        </x-base.table.th>
                         <x-base.table.th class="whitespace-nowrap border-b-0">
                             Nombre
                         </x-base.table.th>
                         <x-base.table.th class="whitespace-nowrap border-b-0 text-center">
-                            Role
-                        </x-base.table.th>
-                        <x-base.table.th class="whitespace-nowrap border-b-0 text-center">
-                            Estado
+                            Descripcion
                         </x-base.table.th>
                         <x-base.table.th class="whitespace-nowrap border-b-0 text-center">
                             Acciones
@@ -91,50 +88,42 @@
                     </x-base.table.tr>
                 </x-base.table.thead>
                 <x-base.table.tbody>
-                    @foreach ($usuarios as $usuario)
+                    @foreach ($eventos as $evento)
                         <x-base.table.tr class="intro-x">
-                            {{-- <x-base.table.td
+                            <x-base.table.td
                                 class="box w-40 rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
                             >
                                 <div class="flex">
                                     <div class="image-fit zoom-in h-10 w-10">
-                                        <x-base.tippy
-                                            class="rounded-full shadow-[0px_0px_0px_2px_#fff,_1px_1px_5px_rgba(0,0,0,0.32)] dark:shadow-[0px_0px_0px_2px_#3f4865,_1px_1px_5px_rgba(0,0,0,0.32)]"
-                                            src="{{ Vite::asset($faker['images'][0]) }}"
-                                            alt="Midone - Tailwind Admin Dashboard Template"
-                                            as="img"
-                                            content="{{ 'Uploaded at' . $faker['dates'][0] }}"
-                                        />
-                                    </div>
-                                    <div class="image-fit zoom-in -ml-5 h-10 w-10">
-                                        <x-base.tippy
-                                            class="rounded-full shadow-[0px_0px_0px_2px_#fff,_1px_1px_5px_rgba(0,0,0,0.32)] dark:shadow-[0px_0px_0px_2px_#3f4865,_1px_1px_5px_rgba(0,0,0,0.32)]"
-                                            src="{{ Vite::asset($faker['images'][1]) }}"
-                                            alt="Midone - Tailwind Admin Dashboard Template"
-                                            as="img"
-                                            content="{{ 'Uploaded at' . $faker['dates'][1] }}"
-                                        />
-                                    </div>
-                                    <div class="image-fit zoom-in -ml-5 h-10 w-10">
-                                        <x-base.tippy
-                                            class="rounded-full shadow-[0px_0px_0px_2px_#fff,_1px_1px_5px_rgba(0,0,0,0.32)] dark:shadow-[0px_0px_0px_2px_#3f4865,_1px_1px_5px_rgba(0,0,0,0.32)]"
-                                            src="{{ Vite::asset($faker['images'][2]) }}"
-                                            alt="Midone - Tailwind Admin Dashboard Template"
-                                            as="img"
-                                            content="{{ 'Uploaded at' . $faker['dates'][2] }}"
-                                        />
-                                    </div>
+                                        @if($evento->header_image_path)
+                                            <div class="image-fit zoom-in h-10 w-10">
+                                                <x-base.tippy
+                                                    class="rounded-full shadow-[0px_0px_0px_2px_#fff,_1px_1px_5px_rgba(0,0,0,0.32)] dark:shadow-[0px_0px_0px_2px_#3f4865,_1px_1px_5px_rgba(0,0,0,0.32)]"
+                                                    src="{{ asset('storage/' . $evento->header_image_path) }}"
+                                                    alt="{{ $evento->name }}"
+                                                    as="img"
+                                                    content="Subido el {{ $evento->created_at }}"
+                                                />
+                                            </div>
+                                        @else
+                                            <!-- Opcional: Mostrar una imagen predeterminada si no hay imagen en la base de datos -->
+                                            <div class="image-fit zoom-in h-10 w-10">
+                                                <x-base.tippy
+                                                    class="rounded-full shadow-[0px_0px_0px_2px_#fff,_1px_1px_5px_rgba(0,0,0,0.32)] dark:shadow-[0px_0px_0px_2px_#3f4865,_1px_1px_5px_rgba(0,0,0,0.32)]"
+                                                    src="{{ asset('path/to/default/image.jpg') }}"
+                                                    src="{{ asset('storage/app/public/' . $evento->header_image_path) }}"
+                                                    alt="Default Image"
+                                                    as="img"
+                                                    content="No image available"
+                                                />
+                                            </div>
+                                        @endif
                                 </div>
-                            </x-base.table.td> --}}
+                            </x-base.table.td>
                             <x-base.table.td
                                 class="box rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
                             >
-                                <a
-                                    class="whitespace-nowrap font-medium"
-                                    href=""
-                                >
-                                    {{ $usuario->name }} {{ $usuario->lastname }}
-                                </a>
+                                    {{ $evento->name }}
                                 {{-- <div class="mt-0.5 whitespace-nowrap text-xs text-slate-500">
                                     {{ $faker['products'][0]['category'] }}
                                 </div> --}}
@@ -142,29 +131,14 @@
                             <x-base.table.td
                                 class="box rounded-l-none rounded-r-none border-x-0 text-center shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
                             >
-                                {{ $usuario->roles[0]->name }}
-                            </x-base.table.td>
-                            <x-base.table.td
-                                class="box w-40 rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
-                            >
-                                <div @class([
-                                    'flex items-center justify-center',
-                                    'text-success' => $usuario->status,
-                                    'text-danger' => !$usuario->status,
-                                ])>
-                                    <x-base.lucide
-                                        class="mr-2 h-4 w-4"
-                                        icon="CheckSquare"
-                                    />
-                                    {{ $usuario->status ? 'Activo' : 'Inactivo' }}
-                                </div>
+                                {{ $evento->description }}
                             </x-base.table.td>
                             <x-base.table.td @class([
                                 'box w-56 rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600',
                                 'before:absolute before:inset-y-0 before:left-0 before:my-auto before:block before:h-8 before:w-px before:bg-slate-200 before:dark:bg-darkmode-400',
                             ])>
                                 <div class="flex items-center justify-center">
-                                    <a class="mr-3 flex items-center" href="{{ route('users.edit', ['id' => $usuario->id]) }}">
+                                    <a class="mr-3 flex items-center" href="{{ route('event.edit', ['id' => $evento->id]) }}">
                                         <x-base.lucide
                                             class="mr-1 h-4 w-4"
                                             icon="CheckSquare"

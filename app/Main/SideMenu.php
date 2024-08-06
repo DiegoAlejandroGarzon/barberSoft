@@ -14,20 +14,31 @@ class SideMenu
                 'icon' => 'users',
                 'title' => 'Users',
                 'sub_menu' => [
-                    'users-layout-1' => [
+                    'users.create' => [
                         'icon' => 'activity',
-                        'route_name' => 'users-layout-1',
-                        'title' => 'Mi perfil'
-                    ],
-                    'users-layout-2' => [
-                        'icon' => 'activity',
-                        'route_name' => 'users-layout-2',
+                        'route_name' => 'users.create',
                         'title' => 'Crear usuarios'
                     ],
                     'users.index' => [
                         'icon' => 'activity',
                         'route_name' => 'users.index',
                         'title' => 'Lista de Usuarios'
+                    ]
+                ]
+            ],
+            'Eventos' => [
+                'icon' => 'file-text',
+                'title' => 'Eventos',
+                'sub_menu' => [
+                    'event.create' => [
+                        'icon' => 'file-text',
+                        'route_name' => 'event.create',
+                        'title' => 'Crear evento'
+                    ],
+                    'event.index' => [
+                        'icon' => 'file-text',
+                        'route_name' => 'event.index',
+                        'title' => 'Lista de Eventos'
                     ]
                 ]
             ],

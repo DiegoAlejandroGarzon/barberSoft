@@ -20,6 +20,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\EventController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
 
@@ -42,6 +43,12 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     //EDITAR PERFIL
     Route::get('/profile/update/{id}', [UserController::class, 'profileEdit'])->name('profile.edit');
     Route::post('/profile/update', [UserController::class, 'profileUpdate'])->name('profile.update');
+    //CRUD EVENTOS
+    Route::get('/event', [EventController::class, 'index'])->name('event.index');
+    Route::get('/event/create', [EventController::class, 'create'])->name('event.create');
+    Route::post('/event/create', [EventController::class, 'store'])->name('event.store');
+    Route::get('/event/update/{id}', [EventController::class, 'edit'])->name('event.edit');
+    Route::post('/event/update', [EventController::class, 'update'])->name('event.update');
 
 
     Route::controller(PageController::class)->group(function () {
