@@ -14,12 +14,10 @@
             <div class="block grid-cols-2 gap-4 xl:grid">
                 <!-- BEGIN: Login Info -->
                 <div class="hidden min-h-screen flex-col xl:flex">
-                    <a class="-intro-x flex items-center pt-5" href="">
-                        <img class="w-6" src="{{ Vite::asset('resources/images/logo.svg') }}" alt="Midone - Tailwind Admin Dashboard Template" />
+                        <img class="w-6" src="{{ Vite::asset('resources/images/logo.svg') }}" alt="" />
                         <span class="ml-3 text-lg text-white"> SSISET </span>
-                    </a>
                     <div class="my-auto">
-                        <img class="-intro-x -mt-16 w-1/2" src="{{ Vite::asset('resources/images/illustration.svg') }}" alt="Midone - Tailwind Admin Dashboard Template" />
+                        <img class="-intro-x -mt-16 w-1/2" src="{{ Vite::asset('resources/images/illustration.svg') }}" alt="" />
                         <div class="-intro-x mt-10 text-4xl font-medium leading-tight text-white">
                             PROYECTO EVENTOS
                         </div>
@@ -54,6 +52,8 @@
                                         <strong>{{ $message }}</strong>
                                     </span>
                                 @enderror
+                                <br>
+                                <a href="{{ route('users.register') }}">¿No tienes usaurio? Crea uno dando click aquí</a>
                                 <div class="intro-x mt-5 text-center xl:mt-8 xl:text-left">
                                     <x-base.button class="w-full px-4 py-3 align-top xl:mr-3 xl:w-32" type="submit" variant="primary">
                                         Iniciar Sesión

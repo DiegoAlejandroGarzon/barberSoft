@@ -116,4 +116,32 @@ class UserController extends Controller
         // Redirigir con mensaje de éxito
         return redirect()->route('home')->with('success', 'Usuario actualizado con éxito.');
     }
+
+    public function RegisterUsers(){
+        $roles = Role::all();
+        return view('users.register', compact(['roles']));
+    }
+
+    public function RegisterUsersStore(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'lastname' => 'required|string|max:255',
+            'email' => 'required|email|max:255|unique:users,email',
+            'password' => 'required|string|min:8|confirmed',
+        ]);
+
+        $user = new User();
+        $user->name = $request->name;
+        $user->lastname = $request->lastname;
+        $user->email = $request->email;
+        $user->password = bcrypt($request->password);
+        $user->status = 0; // Default status
+        $user->save();
+
+        // Assign default role
+        $user->assignRole('user');
+
+        return redirect()->route('users.register')->with('success', 'Usuario Registrado satisfactoriamente');
+    }
 }
