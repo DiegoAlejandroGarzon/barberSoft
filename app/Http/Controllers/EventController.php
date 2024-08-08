@@ -10,7 +10,7 @@ class EventController extends Controller
 
     public function index(){
         $eventos = Event::get();
-        return view('users.index', compact(['eventos']));
+        return view('event.index', compact(['eventos']));
     }
 
     public function create (){
