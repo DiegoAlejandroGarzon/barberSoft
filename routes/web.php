@@ -45,6 +45,9 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     //EDITAR PERFIL
     Route::get('/profile/update/{id}', [UserController::class, 'profileEdit'])->name('profile.edit');
     Route::post('/profile/update', [UserController::class, 'profileUpdate'])->name('profile.update');
+    //REESTABLECER CONTRASEÑA
+    Route::get('/profile/changePassword', [UserController::class, 'changePassword'])->name('profile.changePassword');
+    Route::patch('/profile/changePassword', [UserController::class, 'changePasswordUpdate'])->name('profile.changePasswordUpdate');
     //CRUD EVENTOS
     Route::get('/event', [EventController::class, 'index'])->name('event.index');
     Route::get('/event/create', [EventController::class, 'create'])->name('event.create');

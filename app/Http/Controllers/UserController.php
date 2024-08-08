@@ -6,6 +6,9 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 
 class UserController extends Controller
 {
@@ -144,4 +147,33 @@ class UserController extends Controller
 
         return redirect()->route('users.register')->with('success', 'Usuario Registrado satisfactoriamente');
     }
+
+    public function changePassword(){
+        return view('users.changePassword');
+    }
+
+    public function changePasswordUpdate(Request $request)
+    {
+        // Validación de las entradas
+        $request->validate([
+            'old_password' => 'required',
+            'new_password' => 'required|min:8|confirmed',
+        ]);
+
+        // Verificar si la contraseña actual es correcta
+        if (!Hash::check($request->old_password, Auth::user()->password)) {
+            throw ValidationException::withMessages([
+                'old_password' => 'La contraseña actual no es correcta.',
+            ]);
+        }
+
+        // Cambiar la contraseña del usuario
+        $user = Auth::user();
+        $user->password = Hash::make($request->new_password);
+        $user->save();
+
+        // Redireccionar con un mensaje de éxito
+        return redirect()->route('profile.changePassword')->with('success', 'Contraseña actualizada correctamente.');
+    }
+
 }

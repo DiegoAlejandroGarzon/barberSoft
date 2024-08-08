@@ -211,10 +211,13 @@
                 /> Añadir cuenta
             </x-base.menu.item> --}}
             <x-base.menu.item class="hover:bg-white/5">
+
+                <a class="mr-3 flex items-center" href="{{ route('profile.changePassword') }}">
                 <x-base.lucide
                     class="mr-2 h-4 w-4"
                     icon="Lock"
-                /> Restablecer la contraseña
+                /> Cambiar Contraseña
+                </a>
             </x-base.menu.item>
             {{-- <x-base.menu.item class="hover:bg-white/5">
                 <x-base.lucide
