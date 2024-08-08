@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Event;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class EventController extends Controller
 {
@@ -23,6 +24,8 @@ class EventController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'required|string',
             'header_image_path' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Max 2MB
+            'additionalFields.*.label' => 'required_with:additionalFields|string|max:255',
+            'additionalFields.*.value' => 'required_with:additionalFields|string|max:255',
         ]);
 
         // Manejar la carga de la imagen
@@ -36,6 +39,9 @@ class EventController extends Controller
         $event->name = $request->input('name');
         $event->description = $request->input('description');
         $event->header_image_path = $imagePath; // Almacenar la ruta de la imagen
+        $event->description = $request->input('description');
+        $event->additionalFields = json_encode($request->input('additionalFields'));
+        $event->created_by = Auth::user()->id;
         $event->save();
 
         // Redirigir con un mensaje de éxito

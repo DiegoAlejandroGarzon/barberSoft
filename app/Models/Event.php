@@ -14,5 +14,6 @@ class Event extends Model
         'description',
         'header_image_path',
         'created_by',
+        'additionalFields',
     ];
 }

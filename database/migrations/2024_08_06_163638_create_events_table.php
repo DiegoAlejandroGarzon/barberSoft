@@ -17,6 +17,7 @@ return new class extends Migration
             $table->text('description');
             $table->string('header_image_path')->nullable();
             $table->unsignedBigInteger('created_by')->nullable();
+            $table->json('additionalFields')->nullable();
             $table->timestamps();
         });
     }
