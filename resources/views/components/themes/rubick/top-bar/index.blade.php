@@ -180,13 +180,16 @@
     <!-- BEGIN: Account Menu -->
     <x-base.menu>
         <x-base.menu.button class="image-fit zoom-in intro-x block h-8 w-8 overflow-hidden rounded-full shadow-lg">
-            {{-- <img
-                src="{{ Vite::asset($faker['photos'][0]) }}"
-                alt="Midone - Tailwind Admin Dashboard Template"
-            /> --}}
+            @if(Auth::user()->profile_photo_path)
+            <img
+                src="{{ asset('storage/' . Auth::user()->profile_photo_path) }}"
+                alt="Foto de Perfil Actual"
+            />
+            @else
             <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-500" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
             </svg>
+            @endif
         </x-base.menu.button>
         <x-base.menu.items class="mt-px w-56 bg-theme-1 text-white">
             <x-base.menu.header class="font-normal">
@@ -217,6 +220,15 @@
                     class="mr-2 h-4 w-4"
                     icon="Lock"
                 /> Cambiar Contraseña
+                </a>
+            </x-base.menu.item>
+            <x-base.menu.item class="hover:bg-white/5">
+
+                <a class="mr-3 flex items-center" href="{{ route('profile.changeProfilePhoto') }}">
+                <x-base.lucide
+                    class="mr-2 h-4 w-4"
+                    icon="User"
+                /> Cambiar Foto Perfil
                 </a>
             </x-base.menu.item>
             {{-- <x-base.menu.item class="hover:bg-white/5">

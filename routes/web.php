@@ -55,6 +55,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     //EDITAR PERFIL
     Route::get('/profile/update/{id}', [UserController::class, 'profileEdit'])->name('profile.edit');
     Route::post('/profile/update', [UserController::class, 'profileUpdate'])->name('profile.update');
+    Route::get('/profile/changeProfilePhoto', [UserController::class, 'changeProfilePhoto'])->name('profile.changeProfilePhoto');
+    Route::post('/profile/changeProfilePhoto', [UserController::class, 'changeProfilePhotoUpdate'])->name('profile.changeProfilePhotoUpdate');
     //REESTABLECER CONTRASEÑA
     Route::get('/profile/changePassword', [UserController::class, 'changePassword'])->name('profile.changePassword');
     Route::patch('/profile/changePassword', [UserController::class, 'changePasswordUpdate'])->name('profile.changePasswordUpdate');

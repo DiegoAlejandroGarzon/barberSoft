@@ -9,6 +9,7 @@ use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 
 class UserController extends Controller
@@ -181,7 +182,6 @@ class UserController extends Controller
         return view('users.resetPassword');
     }
 
-
     public function resetPassword(Request $request)
     {
         // Validate the email address
@@ -202,4 +202,35 @@ class UserController extends Controller
         // Handle the case where the email could not be sent
         return back()->withErrors(['email' => __($status)]);
     }
+
+    public function changeProfilePhoto(){
+        return view('users.changeProfilePhoto');
+    }
+
+    public function changeProfilePhotoUpdate(Request $request)
+    {
+        // Validar que el archivo subido sea una imagen y que no exceda 2MB
+        $request->validate([
+            'profile_photo' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        // Obtener el usuario autenticado
+        $user = Auth::user();
+
+        // Eliminar la foto de perfil anterior si existe
+        if ($user->profile_photo_path) {
+            Storage::delete($user->profile_photo_path);
+        }
+
+        // Almacenar la nueva foto de perfil
+        $path = $request->file('profile_photo')->store('profile_photos', 'public');
+
+        // Actualizar la ruta de la foto de perfil en la base de datos
+        $user->profile_photo_path = $path;
+        $user->save();
+
+        // Redirigir al usuario de vuelta con un mensaje de éxito
+        return redirect()->back()->with('success', 'Foto de perfil actualizada exitosamente.');
+    }
+
 }
