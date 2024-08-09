@@ -85,6 +85,58 @@
                         @enderror
                     </div>
                 </div>
+
+                <!-- Department -->
+                <div class="mt-3">
+                    <x-base.form-label for="department_id">Departamento</x-base.form-label>
+                    <x-base.tom-select
+                        class="w-full {{ $errors->has('department_id') ? 'border-red-500' : '' }}"
+                        id="department_id"
+                        name="department_id"
+                        onchange="filterCities()"
+                    >
+                        <option></option>
+                        @foreach ($departments as $department)
+                            <option value="{{$department->id}}" {{ old('department_id') == $department->id ? 'selected' : '' }}>{{ $department->name }}</option>
+                        @endforeach
+                    </x-base.tom-select>
+                    @error('department_id')
+                        <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <!-- City -->
+                <div class="mt-3">
+                    <x-base.form-label for="city_id">Ciudad</x-base.form-label>
+                    <x-base.tom-select
+                        class="w-full {{ $errors->has('city_id') ? 'border-red-500' : '' }}"
+                        id="city_id"
+                        name="city_id"
+                    >
+                        <option></option>
+                        <!-- Aquí se llenarán las ciudades filtradas -->
+                    </x-base.tom-select>
+                    @error('city_id')
+                        <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <!-- Birth Date -->
+                <div class="mt-3">
+                    <x-base.form-label for="birth_date">Fecha Cumpleaños</x-base.form-label>
+                    <x-base.form-input
+                        class="w-full {{ $errors->has('birth_date') ? 'border-red-500' : '' }}"
+                        id="birth_date"
+                        name="birth_date"
+                        type="date"
+                        value="{{ old('birth_date') }}"
+                    />
+                    @error('birth_date')
+                        <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <!-- Role -->
                 <div class="mt-3">
                     <x-base.form-label for="role_id">Role</x-base.form-label>
                     <x-base.tom-select
@@ -92,15 +144,17 @@
                         id="role_id"
                         name="role_id"
                     >
-                    <option></option>
-                    @foreach ($roles as $rol)
-                        <option value="{{$rol->id}}" {{ old('role_id') == $rol->id ? 'selected' : '' }}>{{ $rol->name }}</option>
-                    @endforeach
+                        <option></option>
+                        @foreach ($roles as $rol)
+                            <option value="{{$rol->id}}" {{ old('role_id') == $rol->id ? 'selected' : '' }}>{{ $rol->name }}</option>
+                        @endforeach
                     </x-base.tom-select>
                     @error('role_id')
                         <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
                     @enderror
                 </div>
+
+                <!-- Status -->
                 <div class="mt-3">
                     <label>Status</label>
                     <x-base.form-switch class="mt-2">
@@ -108,6 +162,8 @@
                         <input type="hidden" name="status" id="status-hidden" value="0">
                     </x-base.form-switch>
                 </div>
+
+                <!-- Submit -->
                 <div class="mt-5 text-right">
                     <x-base.button
                         class="mr-1 w-24"
@@ -134,5 +190,48 @@
         document.getElementById('status-toggle').addEventListener('change', function() {
             document.getElementById('status-hidden').value = this.checked ? '1' : '0';
         });
+        function updateCityOptions(cities) {
+            var citySelect = document.querySelector('#city_id').tomselect;
+
+            // Verifica si 'cities' es un array
+            if (!Array.isArray(cities)) {
+                console.error('Expected an array of cities but got:', cities);
+                return;
+            }
+
+            // Limpia todas las opciones actuales
+            citySelect.clearOptions();
+
+            // Agrega nuevas opciones dinámicamente
+            cities.forEach(city => {
+                citySelect.addOption({value: city.id, text: city.name});
+            });
+
+            // Refresca la lista de opciones para que se muestren correctamente en la interfaz
+            citySelect.refreshOptions(false);
+        }
+
+        function filterCities() {
+            var departmentId = document.getElementById('department_id').value;
+            var citySelect = document.getElementById('city_id');
+
+            // Limpia el select de ciudades
+            citySelect.innerHTML = '<option></option>';
+
+            if (departmentId) {
+                fetch('/cities/' + departmentId)
+                    .then(response => response.json())
+                    .then(data => {
+                        // Verifica si 'data.cities' existe y es un array
+                        if (Array.isArray(data.cities)) {
+                            updateCityOptions(data.cities);
+                        } else {
+                            console.error('Invalid data format:', data);
+                        }
+                    })
+                    .catch(error => console.error('Error fetching cities:', error));
+            }
+        }
+
     </script>
 @endsection

@@ -27,7 +27,7 @@
                             name="name"
                             type="text"
                             placeholder="Nombres"
-                            value="{{$user->name}}"
+                            value="{{ old('name', $user->name) }}"
                         />
                         @error('name')
                             <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
@@ -39,7 +39,7 @@
                             name="lastname"
                             type="text"
                             placeholder="Apellidos"
-                            value="{{$user->lastname}}"
+                            value="{{ old('lastname', $user->lastname) }}"
                         />
                         @error('lastname')
                             <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
@@ -55,9 +55,62 @@
                         name="email"
                         type="email"
                         placeholder="Email"
-                        value="{{$user->email}}"
+                        value="{{ old('email', $user->email) }}"
                     />
                     @error('email')
+                        <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <!-- Department -->
+                <div class="mt-3">
+                    <x-base.form-label for="department_id">Departamento</x-base.form-label>
+                    <x-base.tom-select
+                        class="w-full {{ $errors->has('department_id') ? 'border-red-500' : '' }}"
+                        id="department_id"
+                        name="department_id"
+                        onchange="filterCities()"
+                    >
+                        <option></option>
+                        @foreach ($departments as $department)
+                            <option value="{{$department->id}}" {{ old('department_id', $user->city->department->id) == $department->id ? 'selected' : '' }}>{{ $department->name }}</option>
+                        @endforeach
+                    </x-base.tom-select>
+                    @error('department_id')
+                        <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <!-- City -->
+                <div class="mt-3">
+                    <x-base.form-label for="city_id">Ciudad</x-base.form-label>
+                    <x-base.tom-select
+                        class="w-full {{ $errors->has('city_id') ? 'border-red-500' : '' }}"
+                        id="city_id"
+                        name="city_id"
+                    >
+                        @if($user->city)
+                        <option value="{{$user->city->id}}">{{$user->city->name}}</option>
+                        @else
+                        <option></option>
+                        @endif
+                        <!-- Aquí se llenarán las ciudades filtradas -->
+                    </x-base.tom-select>
+                    @error('city_id')
+                        <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="mt-3">
+                    <x-base.form-label for="birth_date">Fecha Nacimiento</x-base.form-label>
+                    <x-base.form-input
+                        class="w-full {{ $errors->has('birth_date') ? 'border-red-500' : '' }}"
+                        id="birth_date"
+                        name="birth_date"
+                        type="date"
+                        value="{{ old('birth_date', $user->birth_date) }}"
+                    />
+                    @error('birth_date')
                         <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
                     @enderror
                 </div>
@@ -71,7 +124,7 @@
                     >
                     <option></option>
                     @foreach ($roles as $rol)
-                        <option value="{{$rol->id}}" {{ $user->roles[0]->id == $rol->id ? 'selected' : '' }}>{{ $rol->name }}</option>
+                        <option value="{{$rol->id}}" {{ old('role_id', $user->roles[0]->id) == $rol->id ? 'selected' : '' }}>{{ $rol->name }}</option>
                     @endforeach
                     </x-base.tom-select>
                     @error('role_id')
@@ -88,7 +141,6 @@
                 </div>
                 @endif
 
-                </div>
                 <div class="mt-5 text-right">
                     <x-base.button
                         class="mr-1 w-24"
@@ -115,20 +167,89 @@
         document.getElementById('status-toggle').addEventListener('change', function() {
             document.getElementById('status-hidden').value = this.checked ? '1' : '0';
         });
+
         document.addEventListener('DOMContentLoaded', function() {
-        // Obtén el valor del estado desde un atributo de datos o directamente desde una variable de JavaScript
-        var statusValue = @json($user->status); // Se convierte el valor a una cadena de JavaScript
+            // Obtén el valor del estado desde un atributo de datos o directamente desde una variable de JavaScript
+            var statusValue = @json($user->status); // Se convierte el valor a una cadena de JavaScript
 
-        var checkbox = document.getElementById('status-toggle');
-        var hiddenInput = document.getElementById('status-hidden');
+            var checkbox = document.getElementById('status-toggle');
+            var hiddenInput = document.getElementById('status-hidden');
 
-        // Establece el estado del checkbox
-        checkbox.checked = statusValue == '1';
+            // Establece el estado del checkbox
+            checkbox.checked = statusValue == '1';
 
-        // Actualiza el valor del input oculto
-        checkbox.addEventListener('change', function() {
-            hiddenInput.value = this.checked ? '1' : '0';
+            // Actualiza el valor del input oculto
+            checkbox.addEventListener('change', function() {
+                hiddenInput.value = this.checked ? '1' : '0';
+            });
+
+            // Establece el valor del departamento y filtra ciudades
+            var departmentId = @json($user->department_id);
+            var cityId = @json($user->city_id);
+
+            if (departmentId) {
+                // Filtra las ciudades basadas en el departamento del usuario
+                filterCities(departmentId, cityId);
+            }
         });
-    });
+
+        function updateCityOptions(cities, selectedCityId) {
+            var citySelect = document.querySelector('#city_id').tomselect;
+
+            // Verifica si 'cities' es un array
+            if (!Array.isArray(cities)) {
+                console.error('Expected an array of cities but got:', cities);
+                return;
+            }
+
+            // Limpia todas las opciones actuales
+            citySelect.clearOptions();
+
+            // Agrega nuevas opciones dinámicamente
+            cities.forEach(city => {
+                citySelect.addOption({value: city.id, text: city.name});
+            });
+
+            // Establece la ciudad seleccionada
+            if (selectedCityId) {
+                citySelect.setValue(selectedCityId);
+            }
+
+            // Refresca la lista de opciones para que se muestren correctamente en la interfaz
+            citySelect.refreshOptions(false);
+        }
+
+        function filterCities(departmentId, selectedCityId = null) {
+            var citySelect = document.getElementById('city_id');
+
+            // Limpia el select de ciudades
+            citySelect.innerHTML = '<option></option>';
+
+            // Verifica si departmentId está definido
+            if (departmentId) {
+                fetch(`/cities/${departmentId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        updateCityOptions(data.cities, selectedCityId);
+                    });
+            }
+        }
+
+        // Establece el valor del campo 'city_id' en el formulario
+        document.addEventListener('DOMContentLoaded', function() {
+            var selectedCityId = @json($user->city_id);
+            var departmentId = document.getElementById('department_id').value;
+
+            // Filtra ciudades si ya hay un departamento seleccionado
+            if (departmentId) {
+                filterCities(departmentId, selectedCityId);
+            }
+
+            // Actualiza el select de ciudades si se cambia el departamento
+            document.getElementById('department_id').addEventListener('change', function() {
+                var selectedDepartmentId = this.value;
+                filterCities(selectedDepartmentId);
+            });
+        });
     </script>
 @endsection

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Departament;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -21,7 +22,9 @@ class UserController extends Controller
 
     public function create(){
         $roles = Role::all();
-        return view('users.create', compact(['roles']));
+        $departments = Departament::all(); // Obtener los departamentos
+
+        return view('users.create', compact(['roles', 'departments']));
     }
 
     public function store(Request $request){
@@ -29,9 +32,12 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'lastname' => 'required|string|max:255',
             'email' => 'required|email|max:255|unique:users,email',
-            'password' => 'required|string|confirmed|min:8', // Confirmación de la contraseña
+            'password' => 'required|string|confirmed|min:8',
             'role_id' => 'required|exists:roles,id',
             'status' => 'nullable|boolean',
+            'department_id' => 'required|exists:departments,id',
+            'city_id' => 'required|exists:cities,id',
+            'birth_date' => 'nullable|date',
         ]);
 
         $user = new User();
@@ -40,6 +46,8 @@ class UserController extends Controller
         $user->email = $request->email;
         $user->password = bcrypt($request->password);
         $user->status = $request->status;
+        $user->city_id = $request->city_id;
+        $user->birth_date = $request->birth_date;
         $user->save();
 
         // Asignar el rol
@@ -53,7 +61,8 @@ class UserController extends Controller
     public function edit($id){
         $user = User::find($id);
         $roles = Role::all();
-        return view('users.update', compact(['user', 'roles']));
+        $departments = Departament::all();
+        return view('users.update', compact(['user', 'roles', 'departments']));
     }
 
     public function update(Request $request){
@@ -69,6 +78,9 @@ class UserController extends Controller
             ],
             'role_id' => 'required|exists:roles,id',
             'status' => 'nullable|boolean',
+            'department_id' => 'required|exists:departments,id',
+            'city_id' => 'required|exists:cities,id',
+            'birth_date' => 'nullable|date',
         ]);
 
         $user = User::findOrFail($userId);
@@ -76,6 +88,8 @@ class UserController extends Controller
         $user->lastname = $request->lastname;
         $user->email = $request->email;
         $user->status = $request->status;
+        $user->city_id = $request->city_id;
+        $user->birth_date = $request->birth_date;
         $user->save();
 
         // Asignar el rol

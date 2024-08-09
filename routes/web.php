@@ -20,6 +20,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\CityController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
@@ -67,7 +68,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/event/update/{id}', [EventController::class, 'edit'])->name('event.edit');
     Route::post('/event/update', [EventController::class, 'update'])->name('event.update');
 
-
+    //SELECTS
+    Route::get('/cities/{department}', [CityController::class, 'getCitiesByDepartment']);
 });
 
 
