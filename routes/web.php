@@ -31,6 +31,16 @@ Route::get('login', [PageController::class, 'login'])->name('login');
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 Route::get('/RegisterUsers', [UserController::class, 'RegisterUsers'])->name('users.register');
 Route::post('/RegisterUsers/create', [UserController::class, 'RegisterUsersStore'])->name('users.registerStore');
+Route::get('/resetPassword', [UserController::class, 'resetPasswordIndex'])->name('users.resetPasswordIndex');
+Route::post('/resetPassword', [UserController::class, 'resetPassword'])->name('users.resetPassword');
+// Mostrar formulario para solicitar enlace de restablecimiento de contraseña
+Route::get('password/reset', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
+// Enviar enlace de restablecimiento de contraseña
+Route::post('password/email', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
+// Mostrar formulario de restablecimiento de contraseña
+Route::get('password/reset/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
+// Procesar el restablecimiento de contraseña
+Route::post('password/reset', [ResetPasswordController::class, 'reset'])->name('password.update');
 
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 

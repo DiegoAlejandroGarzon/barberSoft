@@ -8,6 +8,7 @@ use Illuminate\Validation\Rule;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Validation\ValidationException;
 
 class UserController extends Controller
@@ -176,4 +177,29 @@ class UserController extends Controller
         return redirect()->route('profile.changePassword')->with('success', 'Contraseña actualizada correctamente.');
     }
 
+    public function resetPasswordIndex(){
+        return view('users.resetPassword');
+    }
+
+
+    public function resetPassword(Request $request)
+    {
+        // Validate the email address
+        $request->validate([
+            'email' => 'required|email|exists:users,email',
+        ]);
+        // Send the password reset link
+        $status = Password::sendResetLink(
+            $request->only('email')
+        );
+        return "prubea";
+
+        // Check if the email was successfully sent
+        if ($status === Password::RESET_LINK_SENT) {
+            return back()->with('status', __($status));
+        }
+
+        // Handle the case where the email could not be sent
+        return back()->withErrors(['email' => __($status)]);
+    }
 }
