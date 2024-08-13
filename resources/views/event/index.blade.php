@@ -51,9 +51,9 @@
                     </x-base.menu.item>
                 </x-base.menu.items>
             </x-base.menu>
-            <div class="mx-auto hidden text-slate-500 md:block">
+            {{-- <div class="mx-auto hidden text-slate-500 md:block">
                 Showing {1} to {10} of {150} entries
-            </div>
+            </div> --}}
             <div class="mt-3 w-full sm:ml-auto sm:mt-0 sm:w-auto md:ml-0">
                 <div class="relative w-56 text-slate-500">
                     <x-base.form-input
@@ -173,7 +173,7 @@
         </div>
         <!-- END: Data List -->
         <!-- BEGIN: Pagination -->
-        <div class="intro-y col-span-12 flex flex-wrap items-center sm:flex-row sm:flex-nowrap">
+        {{-- <div class="intro-y col-span-12 flex flex-wrap items-center sm:flex-row sm:flex-nowrap">
             <x-base.pagination class="w-full sm:mr-auto sm:w-auto">
                 <x-base.pagination.link>
                     <x-base.lucide
@@ -211,7 +211,7 @@
                 <option>35</option>
                 <option>50</option>
             </x-base.form-select>
-        </div>
+        </div> --}}
         <!-- END: Pagination -->
     </div>
     <!-- BEGIN: Delete Confirmation Modal -->
