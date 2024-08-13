@@ -38,6 +38,9 @@ class UserController extends Controller
             'department_id' => 'required|exists:departments,id',
             'city_id' => 'required|exists:cities,id',
             'birth_date' => 'nullable|date',
+            'phone' => 'required|string|max:15', // Validación para phone
+            'type_document' => 'required|string|max:3', // Validación para type_document
+            'document_number' => 'required|string|max:20|unique:users,document_number', // Validación para document_number
         ]);
 
         $user = new User();
@@ -48,6 +51,9 @@ class UserController extends Controller
         $user->status = $request->status;
         $user->city_id = $request->city_id;
         $user->birth_date = $request->birth_date;
+        $user->phone = $request->phone; // Asignación del campo phone
+        $user->type_document = $request->type_document; // Asignación del campo type_document
+        $user->document_number = $request->document_number; // Asignación del campo document_number
         $user->save();
 
         // Asignar el rol
@@ -76,6 +82,14 @@ class UserController extends Controller
                 'max:255',
                 Rule::unique('users', 'email')->ignore($userId),
             ],
+            'phone' => 'nullable|string|max:15', // Validación para el teléfono
+            'type_document' => 'required|string|max:50', // Validación para el tipo de documento
+            'document_number' => [
+                'required',
+                'string',
+                'max:20',
+                Rule::unique('users', 'document_number')->ignore($userId),
+            ],
             'role_id' => 'required|exists:roles,id',
             'status' => 'nullable|boolean',
             'department_id' => 'required|exists:departments,id',
@@ -87,6 +101,9 @@ class UserController extends Controller
         $user->name = $request->name;
         $user->lastname = $request->lastname;
         $user->email = $request->email;
+        $user->phone = $request->phone; // Asignar el teléfono
+        $user->type_document = $request->type_document; // Asignar el tipo de documento
+        $user->document_number = $request->document_number; // Asignar el número de documento
         $user->status = $request->status;
         $user->city_id = $request->city_id;
         $user->birth_date = $request->birth_date;
@@ -103,9 +120,11 @@ class UserController extends Controller
     public function profileEdit($id){
         $user = User::find($id);
         $roles = Role::all();
+        $departments = Departament::all(); // Obtener los departamentos
         $dissabledStatus = true;
+        $dissabledRole = true;
         $profileUpdate = true;
-        return view('users.update', compact(['user', 'roles', 'dissabledStatus', 'profileUpdate']));
+        return view('users.update', compact(['user', 'roles', 'dissabledStatus', 'profileUpdate', 'departments', 'dissabledRole']));
     }
 
     public function profileUpdate(Request $request){

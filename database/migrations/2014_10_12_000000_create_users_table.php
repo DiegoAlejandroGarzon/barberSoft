@@ -19,7 +19,10 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->boolean('status')->default(false);
+            $table->string('phone')->nullable();
             $table->string('profile_photo_path')->nullable();
+            $table->string('type_document')->nullable();
+            $table->string('document_number')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

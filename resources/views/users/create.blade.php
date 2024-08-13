@@ -13,9 +13,10 @@
             <div class="intro-y box p-5">
             <form method="POST" action="{{ route('users.store') }}">
                 @csrf
+
+                <!-- Nombre Completo -->
                 <div class="intro-y col-span-12 lg:col-span-6">
                     <x-base.form-label for="name">Nombre Completo</x-base.form-label>
-
                     <div class="grid-cols-2 gap-2 sm:grid">
                         <x-base.form-input
                             class="w-full {{ $errors->has('name') ? 'border-red-500' : '' }}"
@@ -42,9 +43,10 @@
                         @enderror
                     </div>
                 </div>
+
+                <!-- Correo Electrónico -->
                 <div class="mt-3">
                     <x-base.form-label for="email">Correo Electrónico</x-base.form-label>
-
                     <x-base.form-input
                         class="w-full {{ $errors->has('email') ? 'border-red-500' : '' }}"
                         id="email"
@@ -58,9 +60,9 @@
                     @enderror
                 </div>
 
+                <!-- Contraseña -->
                 <div class="intro-y col-span-12 lg:col-span-6 mt-3">
                     <x-base.form-label for="password">Contraseña</x-base.form-label>
-
                     <div class="grid-cols-2 gap-2 sm:grid">
                         <x-base.form-input
                             class="w-full {{ $errors->has('password') ? 'border-red-500' : '' }}"
@@ -86,7 +88,58 @@
                     </div>
                 </div>
 
-                <!-- Department -->
+                <!-- Phone -->
+                <div class="mt-3">
+                    <x-base.form-label for="phone">Teléfono</x-base.form-label>
+                    <x-base.form-input
+                        class="w-full {{ $errors->has('phone') ? 'border-red-500' : '' }}"
+                        id="phone"
+                        name="phone"
+                        type="text"
+                        placeholder="Teléfono"
+                        value="{{ old('phone') }}"
+                    />
+                    @error('phone')
+                        <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <!-- Type Document -->
+                <div class="mt-3">
+                    <x-base.form-label for="type_document">Tipo de Documento</x-base.form-label>
+                    <x-base.tom-select
+                        class="w-full {{ $errors->has('type_document') ? 'border-red-500' : '' }}"
+                        id="type_document"
+                        name="type_document"
+                    >
+                        <option value=""></option>
+                        <option value="CC" {{ old('type_document') == 'CC' ? 'selected' : '' }}>Cédula de Ciudadanía</option>
+                        <option value="TI" {{ old('type_document') == 'TI' ? 'selected' : '' }}>Tarjeta de Identidad</option>
+                        <option value="CE" {{ old('type_document') == 'CE' ? 'selected' : '' }}>Cédula de Extranjería</option>
+                        <option value="PAS" {{ old('type_document') == 'PAS' ? 'selected' : '' }}>Pasaporte</option>
+                    </x-base.tom-select>
+                    @error('type_document')
+                        <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <!-- Document Number -->
+                <div class="mt-3">
+                    <x-base.form-label for="document_number">Número de Documento</x-base.form-label>
+                    <x-base.form-input
+                        class="w-full {{ $errors->has('document_number') ? 'border-red-500' : '' }}"
+                        id="document_number"
+                        name="document_number"
+                        type="text"
+                        placeholder="Número de Documento"
+                        value="{{ old('document_number') }}"
+                    />
+                    @error('document_number')
+                        <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <!-- Departamento -->
                 <div class="mt-3">
                     <x-base.form-label for="department_id">Departamento</x-base.form-label>
                     <x-base.tom-select
@@ -105,7 +158,7 @@
                     @enderror
                 </div>
 
-                <!-- City -->
+                <!-- Ciudad -->
                 <div class="mt-3">
                     <x-base.form-label for="city_id">Ciudad</x-base.form-label>
                     <x-base.tom-select
@@ -114,14 +167,13 @@
                         name="city_id"
                     >
                         <option></option>
-                        <!-- Aquí se llenarán las ciudades filtradas -->
                     </x-base.tom-select>
                     @error('city_id')
                         <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
                     @enderror
                 </div>
 
-                <!-- Birth Date -->
+                <!-- Fecha Cumpleaños -->
                 <div class="mt-3">
                     <x-base.form-label for="birth_date">Fecha Cumpleaños</x-base.form-label>
                     <x-base.form-input
@@ -161,9 +213,12 @@
                         <x-base.form-switch.input type="checkbox" name="status_toggle" id="status-toggle" value="1" />
                         <input type="hidden" name="status" id="status-hidden" value="0">
                     </x-base.form-switch>
+                    @error('status')
+                        <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                    @enderror
                 </div>
 
-                <!-- Submit -->
+                <!-- Botón para crear -->
                 <div class="mt-5 text-right">
                     <x-base.button
                         class="mr-1 w-24"

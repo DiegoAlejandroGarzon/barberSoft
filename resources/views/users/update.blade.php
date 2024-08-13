@@ -61,6 +61,52 @@
                         <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
                     @enderror
                 </div>
+                <div class="mt-3">
+                    <x-base.form-label for="phone">Número de Teléfono</x-base.form-label>
+                    <x-base.form-input
+                        class="w-full {{ $errors->has('phone') ? 'border-red-500' : '' }}"
+                        id="phone"
+                        name="phone"
+                        type="text"
+                        placeholder="Número de Teléfono"
+                        value="{{ old('phone', $user->phone) }}"
+                    />
+                    @error('phone')
+                        <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="mt-3">
+                    <x-base.form-label for="type_document">Tipo de Documento</x-base.form-label>
+                    <x-base.tom-select
+                        class="w-full {{ $errors->has('type_document') ? 'border-red-500' : '' }}"
+                        id="type_document"
+                        name="type_document"
+                    >
+                        <option value="CC" {{ old('type_document', $user->type_document) == 'CC' ? 'selected' : '' }}>Cédula de Ciudadanía</option>
+                        <option value="TI" {{ old('type_document', $user->type_document) == 'TI' ? 'selected' : '' }}>Tarjeta de Identidad</option>
+                        <option value="CE" {{ old('type_document', $user->type_document) == 'CE' ? 'selected' : '' }}>Cédula de Extranjería</option>
+                        <!-- Agrega más opciones según sea necesario -->
+                    </x-base.tom-select>
+                    @error('type_document')
+                        <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="mt-3">
+                    <x-base.form-label for="document_number">Número de Documento</x-base.form-label>
+                    <x-base.form-input
+                        class="w-full {{ $errors->has('document_number') ? 'border-red-500' : '' }}"
+                        id="document_number"
+                        name="document_number"
+                        type="text"
+                        placeholder="Número de Documento"
+                        value="{{ old('document_number', $user->document_number) }}"
+                    />
+                    @error('document_number')
+                        <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                    @enderror
+                </div>
 
                 <!-- Department -->
                 <div class="mt-3">
@@ -73,7 +119,10 @@
                     >
                         <option></option>
                         @foreach ($departments as $department)
-                            <option value="{{$department->id}}" {{ old('department_id', $user->city->department->id) == $department->id ? 'selected' : '' }}>{{ $department->name }}</option>
+                            <option value="{{ $department->id }}"
+                                {{ old('department_id', optional($user->city)->department ? $user->city->department->id : null) == $department->id ? 'selected' : '' }}>
+                                {{ $department->name }}
+                            </option>
                         @endforeach
                     </x-base.tom-select>
                     @error('department_id')
@@ -90,9 +139,9 @@
                         name="city_id"
                     >
                         @if($user->city)
-                        <option value="{{$user->city->id}}">{{$user->city->name}}</option>
+                            <option value="{{ $user->city->id }}">{{ $user->city->name }}</option>
                         @else
-                        <option></option>
+                            <option></option>
                         @endif
                         <!-- Aquí se llenarán las ciudades filtradas -->
                     </x-base.tom-select>
@@ -115,6 +164,7 @@
                     @enderror
                 </div>
 
+                @if(!isset($dissabledRole))
                 <div class="mt-3">
                     <x-base.form-label for="role_id">Role</x-base.form-label>
                     <x-base.tom-select
@@ -131,6 +181,7 @@
                         <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
                     @enderror
                 </div>
+                @endif
                 @if(!isset($dissabledStatus))
                 <div class="mt-3">
                     <label>Status</label>

@@ -80,6 +80,9 @@
                             Nombre
                         </x-base.table.th>
                         <x-base.table.th class="whitespace-nowrap border-b-0 text-center">
+                            Telefono
+                        </x-base.table.th>
+                        <x-base.table.th class="whitespace-nowrap border-b-0 text-center">
                             Role
                         </x-base.table.th>
                         <x-base.table.th class="whitespace-nowrap border-b-0 text-center">
@@ -129,15 +132,14 @@
                             <x-base.table.td
                                 class="box rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
                             >
-                                <a
-                                    class="whitespace-nowrap font-medium"
-                                    href=""
-                                >
+                                <div class="whitespace-nowrap font-medium" href="">
                                     {{ $usuario->name }} {{ $usuario->lastname }}
-                                </a>
-                                {{-- <div class="mt-0.5 whitespace-nowrap text-xs text-slate-500">
-                                    {{ $faker['products'][0]['category'] }}
-                                </div> --}}
+                                </div>
+                            </x-base.table.td>
+                            <x-base.table.td
+                                class="box rounded-l-none rounded-r-none border-x-0 text-center shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
+                            >
+                                {{ $usuario->phone }}
                             </x-base.table.td>
                             <x-base.table.td
                                 class="box rounded-l-none rounded-r-none border-x-0 text-center shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
