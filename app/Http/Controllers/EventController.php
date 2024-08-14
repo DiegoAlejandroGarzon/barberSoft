@@ -18,6 +18,7 @@ class EventController extends Controller
     public function create (){
         return view('event.create');
     }
+
     public function store(Request $request)
     {
         // Validar los datos de entrada
@@ -46,15 +47,19 @@ class EventController extends Controller
         $event->capacity = $request->capacity;
         $event->header_image_path = $imagePath;
         // Convertir los campos adicionales a JSON
-        $event->additionalFields = json_encode($request->input('additionalFields', []));
+        if($request->input('additionalFields')){
+            $event->additionalFields = json_encode($request->input('additionalFields', []));
+        }
 
         // Guardar el ID del usuario que creó el evento
         $event->created_by = Auth::user()->id;
         $event->save();
 
         // Crear los tipos de entradas
-        foreach ($request->ticketTypes as $ticketType) {
-            $event->ticketTypes()->create($ticketType);
+        if($request->ticketTypes){
+            foreach ($request->ticketTypes as $ticketType) {
+                $event->ticketTypes()->create($ticketType);
+            }
         }
 
         return redirect()->route('event.index')->with('success', 'Evento creado exitosamente.');
@@ -96,8 +101,10 @@ class EventController extends Controller
 
         // Actualizar los tipos de entradas
         $event->ticketTypes()->delete();
-        foreach ($request->ticketTypes as $ticketType) {
-            $event->ticketTypes()->create($ticketType);
+        if($request->ticketTypes){
+            foreach ($request->ticketTypes as $ticketType) {
+                $event->ticketTypes()->create($ticketType);
+            }
         }
 
         return redirect()->route('event.index')->with('success', 'Evento actualizado exitosamente.');
