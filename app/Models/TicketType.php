@@ -5,21 +5,20 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Event extends Model
+class TicketType extends Model
 {
     use HasFactory;
-
     protected $fillable = [
+        'event_id',
         'name',
-        'description',
-        'header_image_path',
-        'created_by',
-        'additionalFields',
+        'price',
+        'features',
+        'capacity'
     ];
 
-
-    public function ticketTypes()
+    // Relación con el evento
+    public function event()
     {
-        return $this->hasMany(TicketType::class);
+        return $this->belongsTo(Event::class);
     }
 }

@@ -30,6 +30,44 @@
                         @enderror
                     </div>
 
+                    <!-- Capacidad total -->
+                    <div class="mt-3">
+                        <x-base.form-label for="capacity">Capacidad Total</x-base.form-label>
+                        <x-base.form-input
+                            class="w-full {{ $errors->has('capacity') ? 'border-red-500' : '' }}"
+                            id="capacity"
+                            name="capacity"
+                            type="number"
+                            placeholder="Capacidad total del evento"
+                            value="{{ old('capacity') }}"
+                        />
+                        @error('capacity')
+                            <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <!-- Tipos de entradas -->
+                    <div class="mt-3">
+                        <x-base.form-label>Tipos de Entradas</x-base.form-label>
+                        <div id="ticket-types-container"></div>
+                        <x-base.button
+                            class="mt-3"
+                            type="button"
+                            variant="outline-secondary"
+                            onclick="addTicketType()"
+                        >
+                            Añadir Tipo de Entrada
+                        </x-base.button>
+
+                        @foreach ($errors->get('ticketTypes.*') as $index => $errorMessages)
+                            @foreach ($errorMessages as $errorMessage)
+                                <div class="text-red-500 text-sm mt-1">
+                                    {{ "Tipo de entrada " . ($index + 1) . ": " . $errorMessage }}
+                                </div>
+                            @endforeach
+                        @endforeach
+                    </div>
+
                     <!-- Descripción del Evento -->
                     <div class="mt-3">
                         <x-base.form-label for="description">Descripción del Evento</x-base.form-label>
@@ -59,6 +97,8 @@
                             <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
                         @enderror
                     </div>
+
+                    <!-- Campos Adicionales -->
                     <div class="mt-3">
                         <x-base.form-label>Campos Adicionales</x-base.form-label>
                         <div id="dynamic-fields-container"></div>
@@ -141,6 +181,55 @@
 
         function removeDynamicField(fieldId) {
             document.getElementById(`${fieldId}_wrapper`).remove();
+        }
+
+        let ticketTypeIndex = 0;
+
+        function addTicketType() {
+            const container = document.getElementById('ticket-types-container');
+            const ticketTypeId = `ticket_type_${ticketTypeIndex}`;
+            const fieldHtml = `
+                <div class="flex items-center mt-2" id="${ticketTypeId}_wrapper">
+                    <input
+                        type="text"
+                        name="ticketTypes[${ticketTypeIndex}][name]"
+                        placeholder="Nombre del tipo de entrada"
+                        class="form-control w-1/4 mr-2"
+                    />
+                    <input
+                        type="number"
+                        name="ticketTypes[${ticketTypeIndex}][capacity]"
+                        placeholder="Capacidad"
+                        class="form-control w-1/4 mr-2"
+                    />
+                    <input
+                        type="number"
+                        step="0.01"
+                        name="ticketTypes[${ticketTypeIndex}][price]"
+                        placeholder="Precio"
+                        class="form-control w-1/4 mr-2"
+                    />
+                    <input
+                        type="text"
+                        name="ticketTypes[${ticketTypeIndex}][features]"
+                        placeholder="Características"
+                        class="form-control w-1/4 mr-2"
+                    />
+                    <x-base.button
+                        type="button"
+                        variant="outline-danger"
+                        onclick="removeTicketType('${ticketTypeId}')"
+                    >
+                        Eliminar
+                    </x-base.button>
+                </div>
+            `;
+            container.insertAdjacentHTML('beforeend', fieldHtml);
+            ticketTypeIndex++;
+        }
+
+        function removeTicketType(ticketTypeId) {
+            document.getElementById(`${ticketTypeId}_wrapper`).remove();
         }
     </script>
 @endsection

@@ -24,28 +24,39 @@ class EventController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'required|string',
-            'header_image_path' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Max 2MB
-            'additionalFields.*.label' => 'required_with:additionalFields|string|max:255',
-            'additionalFields.*.value' => 'required_with:additionalFields|string|max:255',
+            'capacity' => 'required|integer|min:1',
+            'header_image_path' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'ticketTypes.*.name' => 'required|string|max:255',
+            'ticketTypes.*.capacity' => 'required|integer|min:1',
+            'additionalFields.*.label' => 'required|string|max:255',
+            'additionalFields.*.value' => 'required|string|max:255',
         ]);
 
         // Manejar la carga de la imagen
+        $imagePath = null;
         if ($request->hasFile('header_image_path')) {
             $image = $request->file('header_image_path');
-            $imagePath = $image->store('event_images', 'public'); // Almacena la imagen en storage/app/public/event_images
+            $imagePath = $image->store('event_images', 'public');
         }
 
         // Crear el evento
         $event = new Event();
-        $event->name = $request->input('name');
-        $event->description = $request->input('description');
-        $event->header_image_path = $imagePath; // Almacenar la ruta de la imagen
-        $event->description = $request->input('description');
-        $event->additionalFields = json_encode($request->input('additionalFields'));
+        $event->name = $request->name;
+        $event->description = $request->description;
+        $event->capacity = $request->capacity;
+        $event->header_image_path = $imagePath;
+        // Convertir los campos adicionales a JSON
+        $event->additionalFields = json_encode($request->input('additionalFields', []));
+
+        // Guardar el ID del usuario que creó el evento
         $event->created_by = Auth::user()->id;
         $event->save();
 
-        // Redirigir con un mensaje de éxito
+        // Crear los tipos de entradas
+        foreach ($request->ticketTypes as $ticketType) {
+            $event->ticketTypes()->create($ticketType);
+        }
+
         return redirect()->route('event.index')->with('success', 'Evento creado exitosamente.');
     }
 
@@ -56,36 +67,39 @@ class EventController extends Controller
 
     public function update(Request $request){
         $id = $request->id;
+        $event = Event::findOrFail($id);
         // Validar los datos de entrada
         $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'required|string',
-            'header_image_path' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Max 2MB
-            'additionalFields.*.label' => 'required_with:additionalFields|string|max:255',
-            'additionalFields.*.value' => 'required_with:additionalFields|string|max:255',
+            'capacity' => 'required|integer|min:1',
+            'header_image_path' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'ticketTypes.*.name' => 'required|string|max:255',
+            'ticketTypes.*.capacity' => 'required|integer|min:1',
         ]);
 
-        // Buscar el evento por ID
-        $event = Event::findOrFail($id);
-
-        // Manejar la carga de la imagen
+        // Manejar la carga de la nueva imagen si se sube una
         if ($request->hasFile('header_image_path')) {
-            // Eliminar la imagen anterior si existe
             if ($event->header_image_path) {
                 Storage::disk('public')->delete($event->header_image_path);
             }
             $image = $request->file('header_image_path');
-            $imagePath = $image->store('event_images', 'public'); // Almacena la nueva imagen en storage/app/public/event_images
-            $event->header_image_path = $imagePath;
+            $event->header_image_path = $image->store('event_images', 'public');
         }
 
         // Actualizar el evento
-        $event->name = $request->input('name');
-        $event->description = $request->input('description');
+        $event->name = $request->name;
+        $event->description = $request->description;
+        $event->capacity = $request->capacity;
         $event->additionalFields = json_encode($request->input('additionalFields'));
         $event->save();
 
-        // Redirigir con un mensaje de éxito
+        // Actualizar los tipos de entradas
+        $event->ticketTypes()->delete();
+        foreach ($request->ticketTypes as $ticketType) {
+            $event->ticketTypes()->create($ticketType);
+        }
+
         return redirect()->route('event.index')->with('success', 'Evento actualizado exitosamente.');
     }
 
