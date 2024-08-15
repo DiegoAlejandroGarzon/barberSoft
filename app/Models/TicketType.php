@@ -12,7 +12,6 @@ class TicketType extends Model
         'event_id',
         'name',
         'price',
-        'features',
         'capacity'
     ];
 
@@ -20,5 +19,10 @@ class TicketType extends Model
     public function event()
     {
         return $this->belongsTo(Event::class);
+    }
+
+    public function features()
+    {
+        return $this->belongsToMany(TicketFeatures::class, 'ticket_type_feature', 'ticket_type_id', 'ticket_feature_id');
     }
 }

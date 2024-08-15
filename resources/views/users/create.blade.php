@@ -150,7 +150,7 @@
                     >
                         <option></option>
                         @foreach ($departments as $department)
-                            <option value="{{$department->id}}" {{ old('department_id') == $department->id ? 'selected' : '' }}>{{ $department->name }}</option>
+                            <option value="{{$department->id}}" {{ old('department_id') == $department->id ? 'selected' : '' }}>{{ $department->code_dane }} - {{ $department->name }}</option>
                         @endforeach
                     </x-base.tom-select>
                     @error('department_id')
@@ -175,7 +175,7 @@
 
                 <!-- Fecha Cumpleaños -->
                 <div class="mt-3">
-                    <x-base.form-label for="birth_date">Fecha Cumpleaños</x-base.form-label>
+                    <x-base.form-label for="birth_date">Fecha Nacimiento</x-base.form-label>
                     <x-base.form-input
                         class="w-full {{ $errors->has('birth_date') ? 'border-red-500' : '' }}"
                         id="birth_date"

@@ -46,40 +46,135 @@
                         @enderror
                     </div>
 
+
+                    <!-- Departamento -->
+                    <div class="mt-3">
+                        <x-base.form-label for="department_id">Departamento</x-base.form-label>
+                        <x-base.tom-select
+                            class="w-full {{ $errors->has('department_id') ? 'border-red-500' : '' }}"
+                            id="department_id"
+                            name="department_id"
+                            onchange="filterCities()"
+                        >
+                            <option></option>
+                            @foreach ($departments as $department)
+                                <option value="{{$department->id}}"
+                                    {{ old('department_id', optional($event->city)->department ? $event->city->department->id : null) == $department->id ? 'selected' : '' }}>
+                                    {{ $department->code_dane }} - {{ $department->name }}</option>
+
+                            @endforeach
+                        </x-base.tom-select>
+                        @error('department_id')
+                            <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <!-- Ciudad -->
+                    <div class="mt-3">
+                        <x-base.form-label for="city_id">Ciudad</x-base.form-label>
+                        <x-base.tom-select
+                            class="w-full {{ $errors->has('city_id') ? 'border-red-500' : '' }}"
+                            id="city_id"
+                            name="city_id"
+                        >
+                        @if($event->city)
+                            <option value="{{ $event->city->id }}">{{ $event->city->name }}</option>
+                        @else
+                            <option></option>
+                        @endif
+                        </x-base.tom-select>
+                        @error('city_id')
+                            <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <!-- Fecha del Evento -->
+                    <div class="mt-3">
+                        <x-base.form-label for="event_date">Fecha del Evento</x-base.form-label>
+                        <x-base.form-input
+                            class="w-full {{ $errors->has('event_date') ? 'border-red-500' : '' }}"
+                            id="event_date"
+                            name="event_date"
+                            type="date"
+                            value="{{ old('event_date', $event->event_date) }}"
+                        />
+                        @error('event_date')
+                            <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <!-- Hora de Inicio -->
+                    <div class="mt-3">
+                        <x-base.form-label for="start_time">Hora de Inicio</x-base.form-label>
+                        <x-base.form-input
+                            class="w-full {{ $errors->has('start_time') ? 'border-red-500' : '' }}"
+                            id="start_time"
+                            name="start_time"
+                            type="time"
+                            value="{{ old('start_time', $event->start_time) }}"
+                        />
+                        @error('start_time')
+                            <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <!-- Hora de Fin -->
+                    <div class="mt-3">
+                        <x-base.form-label for="end_time">Hora de Fin</x-base.form-label>
+                        <x-base.form-input
+                            class="w-full {{ $errors->has('end_time') ? 'border-red-500' : '' }}"
+                            id="end_time"
+                            name="end_time"
+                            type="time"
+                            value="{{ old('end_time', $event->end_time) }}"
+                        />
+                        @error('end_time')
+                            <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                        @enderror
+                    </div>
                     <!-- Tipos de Entradas -->
                     <div class="mt-3">
                         <x-base.form-label>Tipos de Entradas</x-base.form-label>
                         <div id="ticket-types-container">
                             @foreach($event->ticketTypes as $index => $ticket)
                                 <div class="flex items-center mt-2" id="ticket_type_{{ $index }}_wrapper">
-                                    <input
+                                    <x-base.form-input
                                         type="text"
                                         name="ticketTypes[{{ $index }}][name]"
                                         placeholder="Tipo de Entrada"
                                         class="form-control w-1/3 mr-2"
                                         value="{{ old('ticketTypes.' . $index . '.type', $ticket->name) }}"
                                     />
-                                    <input
+                                    <x-base.form-input
                                         type="number"
                                         name="ticketTypes[{{ $index }}][capacity]"
                                         placeholder="Capacidad"
                                         class="form-control w-1/3 mr-2"
                                         value="{{ old('ticketTypes.' . $index . '.capacity', $ticket->capacity) }}"
                                     />
-                                    <input
+                                    <x-base.form-input
                                         type="number"
                                         name="ticketTypes[{{ $index }}][price]"
                                         placeholder="Precio"
                                         class="form-control w-1/3 mr-2"
                                         value="{{ old('ticketTypes.' . $index . '.price', $ticket->price) }}"
                                     />
-                                    <input
-                                        type="text"
-                                        name="ticketTypes[{{ $index }}][features]"
-                                        placeholder="Características"
-                                        class="form-control w-1/3 mr-2"
-                                        value="{{ old('ticketTypes.' . $index . '.features', $ticket->features) }}"
-                                    />
+                                    <x-base.tom-select
+                                    type="text"
+                                    name="ticketTypes[{{ $index }}][features]"
+                                    placeholder="Características"
+                                    class="form-control w-1/3 mr-2"
+                                    value="{{ old('ticketTypes.' . $index . '.features', $ticket->features) }}"
+                                        multiple
+                                    >
+
+                                        @foreach($features as $key => $feature)
+                                        <option value="{{ $feature['id'] }}" {{ in_array($feature['id'], old('features', $event->ticketTypes[$index]->features->pluck('id')->toArray())) ? 'selected' : '' }} >
+                                            {{ $feature['name'] }}
+                                        </option>
+                                        @endforeach
+                                    </x-base.tom-select>
+
                                     <x-base.button
                                         type="button"
                                         variant="outline-danger"
@@ -231,44 +326,59 @@
 
         function addTicketType() {
             const container = document.getElementById('ticket-types-container');
-            const ticketId = `ticket_type_${ticketIndex}`;
-            const ticketHtml = `
-                <div class="flex items-center mt-2" id="${ticketId}_wrapper">
-                    <input
-                        type="text"
+            const ticketTypeId = `ticket_type_${ticketIndex}`;
+            const fieldHtml = `
+                <div class="flex items-center mt-2" id="${ticketTypeId}_wrapper">
+                    <x-base.form-input
+                        class="w-full"
+                        id="${ticketTypeId}_name"
                         name="ticketTypes[${ticketIndex}][name]"
-                        placeholder="Tipo de Entrada"
-                        class="form-control w-1/3 mr-2"
+                        type="text"
+                        placeholder="Nombre del Tipo de Entrada"
                     />
-                    <input
+                    <x-base.form-input
+                        id="${ticketTypeId}_capacity"
                         type="number"
                         name="ticketTypes[${ticketIndex}][capacity]"
                         placeholder="Capacidad"
-                        class="form-control w-1/3 mr-2"
+                        class="form-control w-full"
                     />
-                    <input
+                    <x-base.form-input
+                        id="${ticketTypeId}_price"
                         type="number"
                         step="0.01"
                         name="ticketTypes[${ticketIndex}][price]"
                         placeholder="Precio"
-                        class="form-control w-1/4 mr-2"
+                        class="form-control w-full"
                     />
-                    <input
-                        type="text"
-                        name="ticketTypes[${ticketIndex}][features]"
-                        placeholder="Características"
-                        class="form-control w-1/4 mr-2"
-                    />
+                    <select
+                        id="${ticketTypeId}_features"
+                        name="ticketTypes[${ticketIndex}][features][]"
+                        multiple="multiple"
+                        class="tom-select w-full mt-2"
+                    >
+                        @foreach($features as $feature)
+                            <option value="{{ $feature->id }}">{{ $feature->name }}</option>
+                        @endforeach
+                    </select>
                     <x-base.button
                         type="button"
                         variant="outline-danger"
-                        onclick="removeTicketType('${ticketId}')"
+                        onclick="removeTicketType('${ticketTypeId}')"
+                        class="mt-3"
                     >
                         Eliminar
                     </x-base.button>
                 </div>
             `;
-            container.insertAdjacentHTML('beforeend', ticketHtml);
+            container.insertAdjacentHTML('beforeend', fieldHtml);
+
+            // Inicializar Tom Select en el nuevo elemento select
+            new TomSelect(`#${ticketTypeId}_features`, {
+                plugins: ['remove_button'],
+                maxItems: null,
+            });
+
             ticketIndex++;
         }
 
@@ -305,9 +415,51 @@
             container.insertAdjacentHTML('beforeend', fieldHtml);
             fieldIndex++;
         }
-
         function removeDynamicField(fieldId) {
             document.getElementById(`${fieldId}_wrapper`).remove();
+        }
+
+        function updateCityOptions(cities) {
+            var citySelect = document.querySelector('#city_id').tomselect;
+
+            // Verifica si 'cities' es un array
+            if (!Array.isArray(cities)) {
+                console.error('Expected an array of cities but got:', cities);
+                return;
+            }
+
+            // Limpia todas las opciones actuales
+            citySelect.clearOptions();
+
+            // Agrega nuevas opciones dinámicamente
+            cities.forEach(city => {
+                citySelect.addOption({value: city.id, text: city.name});
+            });
+
+            // Refresca la lista de opciones para que se muestren correctamente en la interfaz
+            citySelect.refreshOptions(false);
+        }
+
+        function filterCities() {
+            var departmentId = document.getElementById('department_id').value;
+            var citySelect = document.getElementById('city_id');
+
+            // Limpia el select de ciudades
+            citySelect.innerHTML = '<option></option>';
+
+            if (departmentId) {
+                fetch('/cities/' + departmentId)
+                    .then(response => response.json())
+                    .then(data => {
+                        // Verifica si 'data.cities' existe y es un array
+                        if (Array.isArray(data.cities)) {
+                            updateCityOptions(data.cities);
+                        } else {
+                            console.error('Invalid data format:', data);
+                        }
+                    })
+                    .catch(error => console.error('Error fetching cities:', error));
+            }
         }
     </script>
 @endsection

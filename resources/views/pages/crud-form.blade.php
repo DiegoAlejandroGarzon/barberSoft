@@ -28,15 +28,9 @@
                         id="crud-form-2"
                         multiple
                     >
-                        <option
-                            value="1"
-                            selected
-                        >Sport & Outdoor</option>
+                        <option value="1" selected >Sport & Outdoor</option>
                         <option value="2">PC & Laptop</option>
-                        <option
-                            value="3"
-                            selected
-                        >Smartphone & Tablet</option>
+                        <option value="3" selected >Smartphone & Tablet</option>
                         <option value="4">Photography</option>
                     </x-base.tom-select>
                 </div>
