@@ -54,5 +54,27 @@
         </x-base.button>
         </div>
     </form>
+
+    @if(session('importedUsers'))
+        <div class="mt-4">
+            <h2>Usuarios Importados</h2>
+            <ul>
+                @foreach(session('importedUsers') as $user)
+                    <li>{{ $user['user']->email }} - {{ $user['ticket_type'] }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
+    @if(session('messages'))
+        <div class="mt-4">
+            <h2>Novedades</h2>
+            <ul>
+                @foreach(session('messages') as $message)
+                    <li>{{ $message }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
 </div>
 @endsection

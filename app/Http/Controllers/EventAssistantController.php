@@ -28,13 +28,23 @@ class EventAssistantController extends Controller
         $request->validate([
             'file' => 'required|mimes:xlsx,xls,csv|max:2048', // Validar que sea un archivo Excel
         ]);
+
         try {
-            Excel::import(new AssistantsImport($idEvent), $request->file('file'));
+            // Instanciar el importador y recolectar los datos de las importaciones
+            $import = new AssistantsImport($idEvent);
+            Excel::import($import, $request->file('file'));
+
+            // Obtener los detalles de los usuarios agregados y las novedades
+            $importedUsers = $import->getImportedUsers();
+            $messages = $import->getMessages();
+
             return redirect()->route('eventAssistant.massAssign', $idEvent)
-                             ->with('success', 'Asistentes asignados exitosamente.');
+                            ->with('success', 'Asistentes asignados exitosamente.')
+                            ->with('importedUsers', $importedUsers)
+                            ->with('messages', $messages);
         } catch (\Exception $e) {
             return redirect()->route('eventAssistant.massAssign', $idEvent)
-                             ->with('error', 'Hubo un error al procesar el archivo: ' . $e->getMessage());
+                            ->with('error', 'Hubo un error al procesar el archivo: ' . $e->getMessage());
         }
     }
 }
