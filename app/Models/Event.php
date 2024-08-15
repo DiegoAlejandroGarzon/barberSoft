@@ -27,4 +27,9 @@ class Event extends Model
     {
         return $this->belongsTo(City::class);
     }
+
+    public function assistants()
+    {
+        return $this->hasMany(EventAssistant::class);
+    }
 }

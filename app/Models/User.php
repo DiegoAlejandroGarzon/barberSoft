@@ -63,4 +63,9 @@ class User extends Authenticatable
     {
         return Carbon::parse($this->birth_date)->age;
     }
+
+    public function events()
+    {
+        return $this->hasMany(EventAssistant::class);
+    }
 }

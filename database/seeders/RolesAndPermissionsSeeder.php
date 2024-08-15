@@ -44,5 +44,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'delete evento',
             'show evento',
         ]);
+
+        $role = Role::create(['name' => 'assistant']);
     }
 }

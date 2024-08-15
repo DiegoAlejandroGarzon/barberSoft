@@ -21,6 +21,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\CityController;
+use App\Http\Controllers\EventAssistantController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
@@ -67,6 +68,13 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post('/event/create', [EventController::class, 'store'])->name('event.store');
     Route::get('/event/update/{id}', [EventController::class, 'edit'])->name('event.edit');
     Route::post('/event/update', [EventController::class, 'update'])->name('event.update');
+    //ASISTENTS TO EVENT
+    Route::get('/assistants/{idEvent}', [EventAssistantController::class, 'index'])->name('assistantsEvent.index');
+    Route::get('/assistants/{idEvent}/massAssign', [EventAssistantController::class, 'showMassAssign'])->name('eventAssistant.massAssign');
+    Route::post('/assistants/{idEvent}/massAssign', [EventAssistantController::class, 'uploadMassAssign'])->name('eventAssistant.massAssign.upload');
+    Route::get('/assistants/{idEvent}/singleAssignForm', [EventAssistantController::class, 'singleAssignForm'])->name('eventAssistant.singleAssignForm');
+    Route::get('/assistants/update/{id}', [EventAssistantController::class, 'edit'])->name('eventAssistant.edit');
+
 
     //SELECTS
     Route::get('/cities/{department}', [CityController::class, 'getCitiesByDepartment']);
