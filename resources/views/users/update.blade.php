@@ -6,7 +6,7 @@
 
 @section('subcontent')
     <div class="intro-y mt-8 flex items-center">
-        <h2 class="mr-auto text-lg font-medium">Actualizar Usuario</h2>
+        <h2 class="mr-auto text-lg font-medium">Actualizar {{isset($profileUpdate) ? ' Perfil' : 'Usuario'}}</h2>
     </div>
     <div class="mt-5 grid grid-cols-12 gap-6">
         <div class="intro-y col-span-12 lg:col-span-12">
@@ -164,7 +164,7 @@
                     @enderror
                 </div>
 
-                @if(!isset($dissabledRole))
+                @if(!isset($profileUpdate))
                 <div class="mt-3">
                     <x-base.form-label for="role_id">Role</x-base.form-label>
                     <x-base.tom-select
@@ -182,7 +182,7 @@
                     @enderror
                 </div>
                 @endif
-                @if(!isset($dissabledStatus))
+                @if(!isset($profileUpdate))
                 <div class="mt-3">
                     <label>Status</label>
                     <x-base.form-switch class="mt-2">
@@ -215,24 +215,29 @@
     </div>
 
     <script>
+        @if (!isset($profileUpdate))
         document.getElementById('status-toggle').addEventListener('change', function() {
             document.getElementById('status-hidden').value = this.checked ? '1' : '0';
         });
+        @endif
 
         document.addEventListener('DOMContentLoaded', function() {
-            // Obtén el valor del estado desde un atributo de datos o directamente desde una variable de JavaScript
-            var statusValue = @json($user->status); // Se convierte el valor a una cadena de JavaScript
 
-            var checkbox = document.getElementById('status-toggle');
-            var hiddenInput = document.getElementById('status-hidden');
+            @if (!isset($profileUpdate))
+                // Obtén el valor del estado desde un atributo de datos o directamente desde una variable de JavaScript
+                var statusValue = @json($user->status); // Se convierte el valor a una cadena de JavaScript
 
-            // Establece el estado del checkbox
-            checkbox.checked = statusValue == '1';
+                var checkbox = document.getElementById('status-toggle');
+                var hiddenInput = document.getElementById('status-hidden');
 
-            // Actualiza el valor del input oculto
-            checkbox.addEventListener('change', function() {
-                hiddenInput.value = this.checked ? '1' : '0';
-            });
+                // Establece el estado del checkbox
+                checkbox.checked = statusValue == '1';
+
+                // Actualiza el valor del input oculto
+                checkbox.addEventListener('change', function() {
+                    hiddenInput.value = this.checked ? '1' : '0';
+                });
+            @endif
 
             // Establece el valor del departamento y filtra ciudades
             var departmentId = @json($user->department_id);

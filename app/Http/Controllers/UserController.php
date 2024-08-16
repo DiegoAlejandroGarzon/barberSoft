@@ -121,10 +121,8 @@ class UserController extends Controller
         $user = User::find($id);
         $roles = Role::all();
         $departments = Departament::all(); // Obtener los departamentos
-        $dissabledStatus = true;
-        $dissabledRole = true;
         $profileUpdate = true;
-        return view('users.update', compact(['user', 'roles', 'dissabledStatus', 'profileUpdate', 'departments', 'dissabledRole']));
+        return view('users.update', compact(['user', 'roles', 'profileUpdate', 'departments']));
     }
 
     public function profileUpdate(Request $request){
@@ -138,21 +136,32 @@ class UserController extends Controller
                 'max:255',
                 Rule::unique('users', 'email')->ignore($userId),
             ],
-            'role_id' => 'required|exists:roles,id',
+            'phone' => 'nullable|string|max:15', // Validación para el teléfono
+            'type_document' => 'required|string|max:50', // Validación para el tipo de documento
+            'document_number' => [
+                'required',
+                'string',
+                'max:20',
+                Rule::unique('users', 'document_number')->ignore($userId),
+            ],
+            'department_id' => 'required|exists:departments,id',
+            'city_id' => 'required|exists:cities,id',
+            'birth_date' => 'nullable|date',
         ]);
 
         $user = User::findOrFail($userId);
         $user->name = $request->name;
         $user->lastname = $request->lastname;
         $user->email = $request->email;
+        $user->phone = $request->phone; // Asignar el teléfono
+        $user->type_document = $request->type_document; // Asignar el tipo de documento
+        $user->document_number = $request->document_number; // Asignar el número de documento
+        $user->city_id = $request->city_id;
+        $user->birth_date = $request->birth_date;
         $user->save();
 
-        // Asignar el rol
-        $role = Role::findOrFail($request->role_id);
-        $user->syncRoles($role); // Usa syncRoles si el rol puede cambiar
-
         // Redirigir con mensaje de éxito
-        return redirect()->route('home')->with('success', 'Usuario actualizado con éxito.');
+        return redirect()->route('profile.edit', ['id' => $userId])->with('success', 'Perfil actualizado con éxito.');
     }
 
     public function RegisterUsers(){
