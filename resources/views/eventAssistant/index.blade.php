@@ -88,6 +88,9 @@
                             Teléfono
                         </x-base.table.th>
                         <x-base.table.th class="whitespace-nowrap border-b-0 text-center">
+                            Tipo de ticket
+                        </x-base.table.th>
+                        <x-base.table.th class="whitespace-nowrap border-b-0 text-center">
                             Acciones
                         </x-base.table.th>
                     </x-base.table.tr>
@@ -109,6 +112,11 @@
                                 class="box rounded-l-none rounded-r-none border-x-0 text-center shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
                             >
                             {{ $asistente->user->phone }}
+                            </x-base.table.td>
+                            <x-base.table.td
+                                class="box rounded-l-none rounded-r-none border-x-0 text-center shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
+                            >
+                            {{ $asistente->ticketType?->name }}
                             </x-base.table.td>
                             <x-base.table.td
                                 class="box w-56 rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"

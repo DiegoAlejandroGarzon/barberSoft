@@ -25,4 +25,9 @@ class TicketType extends Model
     {
         return $this->belongsToMany(TicketFeatures::class, 'ticket_type_feature', 'ticket_type_id', 'ticket_feature_id');
     }
+
+    public function eventAssistants()
+    {
+        return $this->hasMany(EventAssistant::class, 'ticket_type_id');
+    }
 }

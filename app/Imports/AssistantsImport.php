@@ -50,12 +50,24 @@ class AssistantsImport implements ToModel, WithHeadingRow
                 throw new Exception("Ticket type '{$row['ticket_type']}' not found for event ID {$this->eventId}");
             }
 
-            // Guardar la asignación del asistente al evento
-            $eventAssistant = new EventAssistant([
-                'event_id' => $this->eventId,
-                'user_id' => $user->id,
-                'ticket_type_id' => $ticketType->id,
-            ]);
+            // Verificar si ya existe una asignación para este usuario y este tipo de ticket
+            $eventAssistant = EventAssistant::where('event_id', $this->eventId)
+            ->where('user_id', $user->id)
+            ->first();
+
+            if ($eventAssistant) {
+                // Si ya existe, actualiza la información del EventAssistant si es necesario
+                $eventAssistant->update([
+                    'ticket_type_id' => $ticketType->id,
+                ]);
+            } else {
+                // Si no existe, crea un nuevo registro
+                $eventAssistant = EventAssistant::create([
+                    'event_id' => $this->eventId,
+                    'user_id' => $user->id,
+                    'ticket_type_id' => $ticketType->id,
+                ]);
+            }
 
             $eventAssistant->save();
 

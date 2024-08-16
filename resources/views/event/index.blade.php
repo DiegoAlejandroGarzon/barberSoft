@@ -149,9 +149,9 @@
                                     <a class="mr-3 flex items-center" href="{{ route('assistantsEvent.index', ['idEvent' => $evento->id]) }}">
                                         <x-base.lucide
                                             class="mr-1 h-4 w-4"
-                                            icon="CheckSquare"
+                                            icon="file-text"
                                         />
-                                        Listado Asistentes
+                                        Asistentes
                                     </a>
 
                                     <a class="mr-3 flex items-center" href="{{ route('event.edit', ['id' => $evento->id]) }}">

@@ -5,6 +5,11 @@
 @endsection
 
 @section('subcontent')
+    @if(session('error'))
+        <div class="alert alert-danger mb-4">
+            {{ session('error') }}
+        </div>
+    @endif
     <div class="intro-y mt-8 flex items-center">
         <h2 class="mr-auto text-lg font-medium">Editar Evento</h2>
     </div>
@@ -138,6 +143,8 @@
                         <div id="ticket-types-container">
                             @foreach($event->ticketTypes as $index => $ticket)
                                 <div class="flex items-center mt-2" id="ticket_type_{{ $index }}_wrapper">
+                                    <!-- Campo oculto para enviar el ID -->
+                                    <input type="hidden" name="ticketTypes[{{ $index }}][id]" value="{{ $ticket->id }}">
                                     <x-base.form-input
                                         type="text"
                                         name="ticketTypes[{{ $index }}][name]"
