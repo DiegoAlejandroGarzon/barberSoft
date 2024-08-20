@@ -141,7 +141,8 @@
                         @foreach ($errors->get('ticketTypes.*') as $index => $errorMessages)
                             @foreach ($errorMessages as $errorMessage)
                                 <div class="text-red-500 text-sm mt-1">
-                                    {{ "Tipo de entrada " . ($index + 1) . ": " . $errorMessage }}
+                                    {{ "Tipo de entrada " . (intval($index) + 1) . ": " . $errorMessage }}
+
                                 </div>
                             @endforeach
                         @endforeach

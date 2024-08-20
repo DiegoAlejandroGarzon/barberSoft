@@ -37,6 +37,7 @@ class EventController extends Controller
             'header_image_path' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'ticketTypes.*.name' => 'required|string|max:255',
             'ticketTypes.*.capacity' => 'required|integer|min:1',
+            'ticketTypes.*.price' => 'required|numeric',
             'ticketTypes.*.features' => 'required|array|exists:ticket_features,id',
             'additionalFields.*.label' => 'required|string|max:255',
             'additionalFields.*.value' => 'required|string|max:255',
