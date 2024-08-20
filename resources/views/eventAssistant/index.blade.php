@@ -21,7 +21,7 @@
                     class="mr-2 shadow-md"
                     variant="secondary"
                 >
-                    Asignar Asistente Individualmente
+                    Asignar Asistente Manualmente
                 </x-base.button>
             </a>
             <x-base.menu>
