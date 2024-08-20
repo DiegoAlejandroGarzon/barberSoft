@@ -15,6 +15,11 @@ class Event extends Model
         'header_image_path',
         'created_by',
         'additionalFields',
+        'end_time',
+        'start_time',
+        'event_date',
+        'city_id',
+        'public_link',
     ];
 
 

@@ -4,11 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Models\Departament;
 use App\Models\Event;
+use App\Models\EventAssistant;
 use App\Models\TicketFeatures;
 use App\Models\TicketType;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use Spatie\Permission\Models\Role;
 
 class EventController extends Controller
 {
@@ -168,5 +173,67 @@ class EventController extends Controller
         }
     }
 
+    public function generatePublicLink($id)
+    {
+        $event = Event::findOrFail($id);
 
+        // Generar GUID único
+        $guid = (string) Str::uuid();
+
+        // Guardar el GUID en el evento
+        $event->public_link = $guid;
+        $event->save();
+
+        // Devolver el enlace completo
+        return redirect()->route('event.index')->with('success', 'Enlace público generado: ' . route('event.register', $guid));
+    }
+
+    public function showPublicRegistrationForm($public_link)
+    {
+        // Busca el evento por el enlace público
+        $event = Event::where('public_link', $public_link)->firstOrFail();
+
+        // Retorna la vista de registro, pasando el evento
+        return view('event.public_registration', compact('event'));
+    }
+
+    public function submitPublicRegistration(Request $request, $public_link)
+    {
+        $event = Event::where('public_link', $public_link)->firstOrFail();
+
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+        ]);
+
+        // Buscar el usuario por correo electrónico, o crear uno nuevo si no existe
+        $user = User::firstOrCreate(
+            ['email' => $validatedData['email']],
+            [
+                'name' => $validatedData['name'],
+                'password' => Hash::make('12345678'), // Contraseña predeterminada
+                'status' => false,
+            ]
+        );
+
+        // Verificar si el usuario tiene el rol de 'assistant', si no, asignarlo
+        if (!$user->hasRole('assistant')) {
+            $assistantRole = Role::firstOrCreate(['name' => 'assistant']); // Crear el rol si no existe
+            $user->assignRole($assistantRole);
+        }
+
+        // Crear el registro en la tabla `event_assistant` si no existe
+        EventAssistant::firstOrCreate(
+            [
+                'event_id' => $event->id,
+                'user_id' => $user->id,
+            ],
+            [
+                'ticket_type_id' => null,
+                'has_entered' => false,
+            ]
+        );
+
+        return redirect()->route('event.register', $public_link)->with('success', 'Inscripción exitosa.');
+    }
 }
