@@ -16,6 +16,8 @@ class EventAssistant extends Model
         'user_id',
         'ticket_type_id',
         'has_entered',
+        'qrCode',
+        'guid',
     ];
 
     public function event()

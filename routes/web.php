@@ -46,6 +46,8 @@ Route::post('password/reset', [ResetPasswordController::class, 'reset'])->name('
 //inscripcion de asistente
 Route::get('/event/register/{public_link}', [EventController::class, 'showPublicRegistrationForm'])->name('event.register');
 Route::post('/event/register/{public_link}', [EventController::class, 'submitPublicRegistration'])->name('event.register.submit');
+//mostrar info del QR
+Route::get('/event-assistant/infoQr/{id}/{guid}', [EventAssistantController::class, 'infoQr'])->name('eventAssistant.infoQr');
 
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
@@ -74,13 +76,13 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post('/event/generatePublicLink/{id}', [EventController::class, 'generatePublicLink'])->name('event.generatePublicLink');
 
     //ASISTENTS TO EVENT
-    Route::get('/assistants/{idEvent}', [EventAssistantController::class, 'index'])->name('assistantsEvent.index');
+    Route::get('/assistants/{idEvent}', [EventAssistantController::class, 'index'])->name('eventAssistant.index');
     Route::get('/assistants/{idEvent}/massAssign', [EventAssistantController::class, 'showMassAssign'])->name('eventAssistant.massAssign');
     Route::post('/assistants/{idEvent}/massAssign', [EventAssistantController::class, 'uploadMassAssign'])->name('eventAssistant.massAssign.upload');
     Route::get('/assistants/{idEvent}/singleAssignForm', [EventAssistantController::class, 'singleAssignForm'])->name('eventAssistant.singleAssignForm');
     Route::post('/assistants/{idEvent}/singleAssignForm', [EventAssistantController::class, 'uploadSingleAssign'])->name('eventAssistant.singleAssign.upload');
     Route::get('/assistants/update/{id}', [EventAssistantController::class, 'edit'])->name('eventAssistant.edit');
-
+    Route::get('/event-assistant/{id}/qr', [EventAssistantController::class, 'showQr'])->name('eventAssistant.qr');
 
     //SELECTS
     Route::get('/cities/{department}', [CityController::class, 'getCitiesByDepartment']);

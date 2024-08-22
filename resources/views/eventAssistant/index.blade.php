@@ -140,6 +140,14 @@
                                             icon="Trash"
                                         /> Borrar
                                     </a>
+                                    <!-- New QR Button -->
+                                    <a class="flex items-center text-info" href="{{ route('eventAssistant.qr', ['id' => $asistente->id]) }}">
+                                        <x-base.lucide
+                                            class="mr-1 h-4 w-4"
+                                            icon="QrCode"
+                                        />
+                                        Ver QR
+                                    </a>
                                 </div>
                             </x-base.table.td>
                         </x-base.table.tr>

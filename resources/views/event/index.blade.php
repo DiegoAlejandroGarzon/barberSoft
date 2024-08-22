@@ -146,7 +146,7 @@
                                 'before:absolute before:inset-y-0 before:left-0 before:my-auto before:block before:h-8 before:w-px before:bg-slate-200 before:dark:bg-darkmode-400',
                             ])>
                                 <div class="flex items-center justify-center">
-                                    <a class="mr-3 flex items-center" href="{{ route('assistantsEvent.index', ['idEvent' => $evento->id]) }}">
+                                    <a class="mr-3 flex items-center" href="{{ route('eventAssistant.index', ['idEvent' => $evento->id]) }}">
                                         <x-base.lucide
                                             class="mr-1 h-4 w-4"
                                             icon="file-text"

@@ -8,7 +8,9 @@ use App\Models\EventAssistant;
 use App\Models\TicketType;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class EventAssistantController extends Controller
 {
@@ -93,7 +95,43 @@ class EventAssistantController extends Controller
         }
 
         // Redirigir con un mensaje de éxito
-        return redirect()->route('assistantsEvent.index', $eventId)
+        return redirect()->route('eventAssistant.index', $eventId)
         ->with('success', 'Asistentes asignados exitosamente.');
+    }
+
+    public function showQr($id)
+    {
+        // Obtener el asistente por ID
+        $asistente = EventAssistant::findOrFail($id);
+
+        // Retornar una vista que muestre el QR
+        return view('eventAssistant.qr', compact('asistente'));
+    }
+
+    public function infoQr($id)
+    {
+        // Buscar el asistente por su ID
+        $eventAssistant = EventAssistant::findOrFail($id);
+
+        // Verificar si el usuario está autenticado
+        if (Auth::check()) {
+            // Obtener el usuario autenticado
+            $user = Auth::user();
+
+            // Verificar si el usuario tiene los roles 'admin' o 'organizer'
+            if ($user->hasRole('admin') || $user->hasRole('organizer')) {
+                // Redirigir a la vista con información completa
+                return "es usuario autenticado con Role admin y organizer";
+                return view('eventAssistant.adminView', compact('eventAssistant'));
+            } else {
+                // Redirigir a la vista con información básica para usuarios autenticados que no tienen esos roles
+                return "es usuario autenticado SIN Role admin y organizer";
+                return view('eventAssistant.basicAuthView', compact('eventAssistant'));
+            }
+        } else {
+            // Redirigir a la vista con información básica para usuarios no autenticados
+            return "vista con información básica para usuarios no autenticados";
+            return view('eventAssistant.guestView', compact('eventAssistant'));
+        }
     }
 }
