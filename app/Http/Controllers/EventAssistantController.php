@@ -121,17 +121,27 @@ class EventAssistantController extends Controller
             // Verificar si el usuario tiene los roles 'admin' o 'organizer'
             if ($user->hasRole('admin') || $user->hasRole('organizer')) {
                 // Redirigir a la vista con información completa
-                return "es usuario autenticado con Role admin y organizer";
-                return view('eventAssistant.adminView', compact('eventAssistant'));
+                return view('eventAssistant.qr.adminView', compact('eventAssistant'));
             } else {
                 // Redirigir a la vista con información básica para usuarios autenticados que no tienen esos roles
-                return "es usuario autenticado SIN Role admin y organizer";
-                return view('eventAssistant.basicAuthView', compact('eventAssistant'));
+                return view('eventAssistant.qr.basicAuthView', compact('eventAssistant'));
             }
         } else {
             // Redirigir a la vista con información básica para usuarios no autenticados
-            return "vista con información básica para usuarios no autenticados";
-            return view('eventAssistant.guestView', compact('eventAssistant'));
+            return view('eventAssistant.qr.guestView', compact('eventAssistant'));
         }
+    }
+
+    public function registerEntry($id)
+    {
+        // Buscar el asistente por su ID
+        $eventAssistant = EventAssistant::findOrFail($id);
+
+        // Cambiar el estado de has_entered
+        $eventAssistant->has_entered = true;
+        $eventAssistant->save();
+
+        // Redirigir de nuevo a la vista con un mensaje de éxito
+        return redirect()->back()->with('success', 'Ingreso registrado correctamente.');
     }
 }
