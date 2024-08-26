@@ -18,9 +18,16 @@ use Spatie\Permission\Models\Role;
 class EventController extends Controller
 {
 
-    public function index(){
-        $eventos = Event::get();
-        return view('event.index', compact(['eventos']));
+    public function index(Request $request)
+    {
+        $search = $request->input('search');
+        $eventos = Event::query()
+            ->when($search, function ($query, $search) {
+                $query->where('name', 'like', "%{$search}%")
+                      ->orWhere('description', 'like', "%{$search}%");
+            })
+            ->paginate(10);
+        return view('event.index', compact('eventos', 'search'));
     }
 
     public function create (){
