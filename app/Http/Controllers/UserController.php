@@ -15,10 +15,29 @@ use Illuminate\Validation\ValidationException;
 
 class UserController extends Controller
 {
-    public function index(){
-        $usuarios = User::with('roles')->get();
-        return view('users.index', compact(['usuarios']));
+    public function index(Request $request)
+    {
+        $query = User::with('roles')
+        ->whereDoesntHave('roles', function ($q) {
+            $q->where('name', 'assistant');
+        })
+        ;
+        if ($request->has('search')) {
+            $search = $request->input('search');
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                ->orWhere('lastname', 'like', "%{$search}%")
+                ->orWhere('phone', 'like', "%{$search}%")
+                ->orWhereHas('roles', function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%");
+                });
+            });
+        }
+        $usuarios = $query->paginate(10);
+
+        return view('users.index', compact('usuarios'));
     }
+
 
     public function create(){
         $roles = Role::all();
