@@ -6,7 +6,27 @@
 
 @section('subcontent')
     <h2 class="intro-y mt-10 text-lg font-medium">Lista de Asistentes</h2>
-    <div class="mt-5 grid grid-cols-12 gap-6">
+        <div class="mt-5 grid grid-cols-12 gap-6"><script>
+            const chartData = @json($data);
+        </script>
+
+        <div class="intro-y box mt-5 p-5 col-span-12 items-center">
+            <div class="mt-3">
+                <x-chart-assistants height="h-[213px]" />
+            </div>
+            <div class="mx-auto mt-8 w-52 sm:w-auto">
+                <div class="flex items-center">
+                    <div class="mr-3 h-2 w-2 rounded-full bg-primary"></div>
+                    <span class="truncate">Entradas registradas</span>
+                    <span class="ml-auto font-medium">{{ round(($data['soldTickets'] / $data['capacity']) * 100, 2) }}%</span>
+                </div>
+                <div class="mt-4 flex items-center">
+                    <div class="mr-3 h-2 w-2 rounded-full bg-pending"></div>
+                    <span class="truncate">Entradas Disponibles</span>
+                    <span class="ml-auto font-medium">{{ round(($data['availableTickets'] / $data['capacity']) * 100, 2) }}%</span>
+                </div>
+            </div>
+        </div>
         <div class="intro-y col-span-12 mt-2 flex flex-wrap items-center sm:flex-nowrap">
             <a href="{{ route('eventAssistant.massAssign', ['idEvent' => $idEvent]) }}">
                 <x-base.button
@@ -91,6 +111,9 @@
                             Tipo de ticket
                         </x-base.table.th>
                         <x-base.table.th class="whitespace-nowrap border-b-0 text-center">
+                            Entrada
+                        </x-base.table.th>
+                        <x-base.table.th class="whitespace-nowrap border-b-0 text-center">
                             Acciones
                         </x-base.table.th>
                     </x-base.table.tr>
@@ -117,6 +140,19 @@
                                 class="box rounded-l-none rounded-r-none border-x-0 text-center shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
                             >
                             {{ $asistente->ticketType?->name }}
+                            </x-base.table.td>
+                            <x-base.table.td
+                                class="box rounded-l-none rounded-r-none border-x-0 text-center shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
+                            >
+                            @if ($asistente->has_entered)
+                            <div role="alert" class="alert relative border rounded-md px-5 py-4 bg-success border-success text-slate-900 dark:border-success mb-2 flex items-center"><i data-tw-merge data-lucide="alert-triangle" class="stroke-1.5 w-5 h-5 mr-2 h-6 w-6 mr-2 h-6 w-6"></i>
+
+                            @else
+                                <div role="alert" class="alert relative border rounded-md px-5 py-4 bg-warning border-warning text-slate-900 dark:border-warning mb-2 flex items-center"><i data-tw-merge data-lucide="alert-circle" class="stroke-1.5 w-5 h-5 mr-2 h-6 w-6 mr-2 h-6 w-6"></i>
+                            @endif
+                            <div class="mt-2 flex items-center">
+                                {{ $asistente->has_entered ? 'Entrada' : 'No entrada' }}
+                            </div>
                             </x-base.table.td>
                             <x-base.table.td
                                 class="box w-56 rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"

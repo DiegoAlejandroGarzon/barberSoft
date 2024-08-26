@@ -15,8 +15,23 @@ use SimpleSoftwareIO\QrCode\Facades\QrCode;
 class EventAssistantController extends Controller
 {
     public function index($idEvent){
+        $event = Event::findOrFail($idEvent);
+
+        // Número de asistentes registrados para el evento
+        $totalTickets = EventAssistant::where('event_id', $idEvent)->where('has_entered', true)->count();
+
+        // Capacidad total del evento
+        $capacity = $event->capacity;
+
+        // Calcula los datos para el gráfico
+        $availableTickets = $capacity - $totalTickets;
+        $data = [
+            'soldTickets' => $totalTickets, // Entradas vendidas
+            'availableTickets' => $availableTickets, // Entradas disponibles
+            'capacity' => $capacity // Capacidad total
+        ];
         $asistentes = EventAssistant::where('event_id', $idEvent)->get();
-        return view('eventAssistant.index', compact(['asistentes', 'idEvent']));
+        return view('eventAssistant.index', compact(['asistentes', 'idEvent', 'data']));
     }
 
     // Muestra la vista para subir el archivo de Excel
