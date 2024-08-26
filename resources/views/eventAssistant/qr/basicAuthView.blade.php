@@ -16,7 +16,7 @@
             <p><strong>Ciudad:</strong> {{ $eventAssistant->event->city->name ?? 'N/A' }}</p>
             <p><strong>Código QR:</strong></p>
             <div class="mt-2">
-                {!! $eventAssistant->qr_code !!}
+                {!! $eventAssistant->qrCode !!}
             </div>
         </div>
     </div>

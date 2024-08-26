@@ -204,15 +204,19 @@ class EventController extends Controller
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255',
+            'type_document' => 'required|string|max:3',
+            'document_number' => 'required|string|max:20|unique:users,document_number',
         ]);
 
         // Buscar el usuario por correo electrónico, o crear uno nuevo si no existe
         $user = User::firstOrCreate(
-            ['email' => $validatedData['email']],
+            ['document_number' => $validatedData['document_number']],
             [
                 'name' => $validatedData['name'],
                 'password' => Hash::make('12345678'), // Contraseña predeterminada
                 'status' => false,
+                'email' => $validatedData['email'],
+                'type_document' => $validatedData['type_document'],
             ]
         );
 

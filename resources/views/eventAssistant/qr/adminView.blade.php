@@ -25,7 +25,7 @@
             <p><strong>GUID:</strong> {{ $eventAssistant->guid }}</p>
             <p><strong>Código QR:</strong></p>
             <div class="mt-2">
-                {!! $eventAssistant->qr_code !!}
+                {!! $eventAssistant->qrCode !!}
             </div>
 
             <h3 class="text-lg font-medium mt-5">Información del Evento</h3>

@@ -18,12 +18,12 @@
                 <div class="flex items-center">
                     <div class="mr-3 h-2 w-2 rounded-full bg-primary"></div>
                     <span class="truncate">Entradas registradas</span>
-                    <span class="ml-auto font-medium">{{ round(($data['soldTickets'] / $data['capacity']) * 100, 2) }}%</span>
+                    <span class="ml-auto font-medium">{{$data['soldTickets']}} ({{ round(($data['soldTickets'] / $data['capacity']) * 100, 2) }}%)</span>
                 </div>
                 <div class="mt-4 flex items-center">
                     <div class="mr-3 h-2 w-2 rounded-full bg-pending"></div>
                     <span class="truncate">Entradas Disponibles</span>
-                    <span class="ml-auto font-medium">{{ round(($data['availableTickets'] / $data['capacity']) * 100, 2) }}%</span>
+                    <span class="ml-auto font-medium">{{$data['availableTickets'] }} ({{ round(($data['availableTickets'] / $data['capacity']) * 100, 2) }}%)</span>
                 </div>
             </div>
         </div>
