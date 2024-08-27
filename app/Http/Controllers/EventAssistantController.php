@@ -14,7 +14,7 @@ use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class EventAssistantController extends Controller
 {
-    public function index($idEvent){
+    public function index(Request $request, $idEvent){
         $event = Event::findOrFail($idEvent);
 
         // Número de asistentes registrados para el evento
@@ -30,7 +30,21 @@ class EventAssistantController extends Controller
             'availableTickets' => $availableTickets, // Entradas disponibles
             'capacity' => $capacity // Capacidad total
         ];
-        $asistentes = EventAssistant::where('event_id', $idEvent)->get();
+
+        // Aplicar búsqueda y paginación
+        $query = EventAssistant::where('event_id', $idEvent);
+
+        if ($request->has('search')) {
+            $search = $request->input('search');
+            $query->whereHas('user', function ($query) use ($search) {
+                $query->where('name', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%")
+                    ->orWhere('phone', 'like', "%{$search}%");
+            });
+        }
+
+        $asistentes = $query->paginate(10);
+
         return view('eventAssistant.index', compact(['asistentes', 'idEvent', 'data']));
     }
 
