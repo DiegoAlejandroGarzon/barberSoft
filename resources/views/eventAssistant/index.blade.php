@@ -114,6 +114,9 @@
                                     <a class="text-info" href="{{ route('eventAssistant.qr', ['id' => $asistente->id]) }}">
                                         <x-base.lucide icon="QrCode" /> Ver QR
                                     </a>
+                                    <a class="text-info" href="{{ route('eventAssistant.pdf', ['id' => $asistente->id]) }}" target="_blank">
+                                        <x-base.lucide icon="FileText" /> Generar PDF
+                                    </a>
                                 </div>
                             </x-base.table.td>
                         </x-base.table.tr>

@@ -7,6 +7,7 @@ use App\Models\Event;
 use App\Models\EventAssistant;
 use App\Models\TicketType;
 use App\Models\User;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
@@ -172,5 +173,21 @@ class EventAssistantController extends Controller
 
         // Redirigir de nuevo a la vista con un mensaje de éxito
         return redirect()->back()->with('success', 'Ingreso registrado correctamente.');
+    }
+
+    public function generatePDF($id)
+    {
+        $asistente = EventAssistant::with('user', 'event')->findOrFail($id);
+        $evento = Event::find($asistente->event_id);
+
+        // Generar QR code como base64
+        $qrCodeBase64 = 'data:image/png;base64,' . base64_encode($asistente->qrCode);
+
+        $pdf = Pdf::loadView('pdf.assistant', compact('asistente', 'evento', 'qrCodeBase64'));
+
+        //se muestra en una nueva ventana
+        return $pdf->stream('asistente_'.$asistente->user->name.'_evento_'.$evento->name.'.pdf');
+        // Se descarga,
+        // return $pdf->download('Asistente_Evento_' . $asistente->user->name . '.pdf');
     }
 }
