@@ -118,7 +118,7 @@ class EventAssistantController extends Controller
                 EventAssistant::create([
                     'event_id' => $eventId,
                     'user_id' => $userId,
-                    'ticket_type_id' => $validatedData['ticketTypes'][$ticketId] ?? null,
+                    'ticket_type_id' => $validatedData['ticketTypes'][$userId] ?? null,
                     'has_entered' => false, // Asumimos que inicialmente el usuario no ha entrado al evento
                 ]);
             }

@@ -89,8 +89,8 @@
                         <x-base.table.tr class="intro-x">
                             <x-base.table.td class="box">{{ $asistente->user->name }}</x-base.table.td>
                             <x-base.table.td class="box text-center">{{ $asistente->user->email }}</x-base.table.td>
-                            <x-base.table.td class="box text-center">{{ $asistente->user->phone }}</x-base.table.td>
-                            <x-base.table.td class="box text-center">{{ $asistente->ticketType?->name }}</x-base.table.td>
+                            <x-base.table.td class="box text-center">{{ $asistente->user->phone ?? "SIN REGISTRO" }}</x-base.table.td>
+                            <x-base.table.td class="box text-center">{{ $asistente->ticketType?->name ?? "SIN REGISTRO"  }}</x-base.table.td>
                             <x-base.table.td class="box text-center">
                                 @if ($asistente->has_entered)
                                     <div role="alert" class="alert bg-success text-slate-900 dark:border-success">
