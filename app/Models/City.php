@@ -11,7 +11,13 @@ class City extends Model
 
     protected $table = "cities";
 
-    protected $fillable = ['name', 'department_id'];
+    protected $fillable = [
+        'id',
+        'code_dane',
+        'name',
+        'department_id',
+        'provincia'
+        ];
 
     // A city belongs to a department
     public function department()

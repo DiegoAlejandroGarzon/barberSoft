@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\City;
 use Illuminate\Http\Request;
+use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\DB;
+use Illuminate\View\View;
+use App\Models\Department;
 
 class CityController extends Controller
 {
@@ -115,4 +119,5 @@ class CityController extends Controller
         $city = city::all(); // Obtener las ciudades
         return view('city.index', compact(['roles', 'city']));
     }
+
 }

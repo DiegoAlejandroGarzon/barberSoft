@@ -24,6 +24,7 @@ use App\Http\Controllers\CityController;
 use App\Http\Controllers\EventAssistantController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\DepartmentController;
 use Illuminate\Support\Facades\Auth;
 
 Route::get('theme-switcher/{activeTheme}', [ThemeController::class, 'switch'])->name('theme-switcher');
@@ -46,9 +47,6 @@ Route::post('password/reset', [ResetPasswordController::class, 'reset'])->name('
 //inscripcion de asistente
 Route::get('/event/register/{public_link}', [EventController::class, 'showPublicRegistrationForm'])->name('event.register');
 Route::post('/event/register/{public_link}', [EventController::class, 'submitPublicRegistration'])->name('event.register.submit');
-//mostrar info del QR
-Route::get('/event-assistant/infoQr/{id}/{guid}', [EventAssistantController::class, 'infoQr'])->name('eventAssistant.infoQr');
-
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
@@ -59,6 +57,25 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post('/users/create', [UserController::class, 'store'])->name('users.store');
     Route::get('/users/update/{id}', [UserController::class, 'edit'])->name('users.edit');
     Route::post('/users/update', [UserController::class, 'update'])->name('users.update');
+    
+    //CRUD CONFIGURACIONES
+    //CRUD CONFIGURACION DEPARTAMENTO
+    Route::get('/department',[DepartmentController::class,'list'])->name('department.index');
+    Route::get('/department/create',[DepartmentController::class,'create'])->name('department.create');
+    Route::post('/department/create',[DepartmentController::class,'store'])->name('department.store');
+    Route::get('/department/update/{id}',[DepartmentController::class,'edit'])->name('department.edit');
+    Route::post('/department/update/',[DepartmentController::class,'update'])->name('department.update');
+    Route::get('/department/delete/{id}',[DepartmentController::class,'delete'])->name('department.delete');
+    
+    //CRUD CONFIGURACION CIUDAD
+    Route::get('/city',[CityController::class,'list'])->name('city.index');
+    Route::get('/city/create',[CityController::class,'create'])->name('city.create');
+    Route::post('/city/create',[CityController::class,'store'])->name('city.store');
+    Route::get('/city/update/{id}',[CityController::class,'edit'])->name('city.edit');
+    Route::post('/city/update/',[CityController::class,'update'])->name('city.update');
+    Route::get('/city/delete/{id}',[CityController::class,'delete'])->name('city.delete');
+    
+    
     //EDITAR PERFIL
     Route::get('/profile/update/{id}', [UserController::class, 'profileEdit'])->name('profile.edit');
     Route::post('/profile/update', [UserController::class, 'profileUpdate'])->name('profile.update');
@@ -76,15 +93,13 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post('/event/generatePublicLink/{id}', [EventController::class, 'generatePublicLink'])->name('event.generatePublicLink');
 
     //ASISTENTS TO EVENT
-    Route::get('/assistants/{idEvent}', [EventAssistantController::class, 'index'])->name('eventAssistant.index');
+    Route::get('/assistants/{idEvent}', [EventAssistantController::class, 'index'])->name('assistantsEvent.index');
     Route::get('/assistants/{idEvent}/massAssign', [EventAssistantController::class, 'showMassAssign'])->name('eventAssistant.massAssign');
     Route::post('/assistants/{idEvent}/massAssign', [EventAssistantController::class, 'uploadMassAssign'])->name('eventAssistant.massAssign.upload');
     Route::get('/assistants/{idEvent}/singleAssignForm', [EventAssistantController::class, 'singleAssignForm'])->name('eventAssistant.singleAssignForm');
     Route::post('/assistants/{idEvent}/singleAssignForm', [EventAssistantController::class, 'uploadSingleAssign'])->name('eventAssistant.singleAssign.upload');
     Route::get('/assistants/update/{id}', [EventAssistantController::class, 'edit'])->name('eventAssistant.edit');
-    Route::get('/event-assistant/{id}/qr', [EventAssistantController::class, 'showQr'])->name('eventAssistant.qr');
-    Route::patch('/event-assistant/{id}/register-entry', [EventAssistantController::class, 'registerEntry'])->name('eventAssistant.registerEntry');
-    Route::get('/event-assistant/{id}/pdf', [EventAssistantController::class, 'generatePDF'])->name('eventAssistant.pdf');
+
 
     //SELECTS
     Route::get('/cities/{department}', [CityController::class, 'getCitiesByDepartment']);
@@ -164,6 +179,4 @@ Route::controller(PageController::class)->group(function () {
     Route::get('chart-page', 'chart')->name('chart');
     Route::get('slider-page', 'slider')->name('slider');
     Route::get('image-zoom-page', 'imageZoom')->name('image-zoom');
-
-    
 });

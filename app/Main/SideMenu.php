@@ -42,6 +42,22 @@ class SideMenu
                     ]
                 ]
             ],
+            'Configuraciones' => [
+                'icon' => 'file-text',
+                'title' => 'Configuraciones',
+                'sub_menu' => [                    
+                    'configuration.department' => [
+                        'icon' => 'file-text',
+                        'route_name' => 'department.index',
+                        'title' => 'Departamentos'
+                    ],
+                    'configuration.city' => [
+                        'icon' => 'file-text',
+                        'route_name' => 'city.index',
+                        'title' => 'ciudades'
+                    ]
+                ]
+            ],
             'divider',
             'divider',
             'dashboard' => [
