@@ -164,4 +164,6 @@ Route::controller(PageController::class)->group(function () {
     Route::get('chart-page', 'chart')->name('chart');
     Route::get('slider-page', 'slider')->name('slider');
     Route::get('image-zoom-page', 'imageZoom')->name('image-zoom');
+
+    
 });
