@@ -169,10 +169,25 @@ class EventAssistantController extends Controller
 
         // Cambiar el estado de has_entered
         $eventAssistant->has_entered = true;
+        $eventAssistant->entry_time = now();
         $eventAssistant->save();
 
         // Redirigir de nuevo a la vista con un mensaje de éxito
         return redirect()->back()->with('success', 'Ingreso registrado correctamente.');
+    }
+
+    public function rejectEntry($id)
+    {
+        // Buscar el asistente por su ID
+        $eventAssistant = EventAssistant::findOrFail($id);
+
+        // Cambiar el estado de rechazo
+        $eventAssistant->rejected = true;
+        $eventAssistant->rejected_time = now();
+        $eventAssistant->save();
+
+        // Redirigir de nuevo a la vista con un mensaje de rechazo
+        return redirect()->back()->with('success', 'Ingreso rechazado correctamente.');
     }
 
     public function generatePDF($id)

@@ -18,6 +18,9 @@ class EventAssistant extends Model
         'has_entered',
         'qrCode',
         'guid',
+        'entry_time',
+        'rejected',
+        'rejected_time',
     ];
 
     public function event()

@@ -40,7 +40,7 @@
             <br>
             <!-- Botón para Registrar Ingreso -->
 
-            @if(!$eventAssistant->has_entered)
+            @if(!$eventAssistant->has_entered && !$eventAssistant->rejected)
             <form action="{{ route('eventAssistant.registerEntry', $eventAssistant->id) }}" method="POST">
                 @csrf
                 @method('PATCH')
@@ -52,20 +52,61 @@
                 Registrar Ingreso
                 </x-base.button>
             </form>
-            @else
 
+            <form action="{{ route('eventAssistant.rejectEntry', $eventAssistant->id) }}" method="POST" class="inline-block ml-2">
+                @csrf
+                @method('PATCH')
+                <x-base.button
+                class="w-24"
+                type="submit"
+                variant="danger"
+                >
+                Rechazar Ingreso
+                </x-base.button>
+            </form>
+            @else
             <div class="mt-2 flex items-center">
+                @if($eventAssistant->has_entered)
                 <x-base.alert
                 class="mb-2 flex items-center"
                 variant="warning"
-            >
-                <x-base.lucide
-                    class="mr-2 h-6 w-6"
-                    icon="AlertCircle"
-                />
-                Status:
-                YA HA REGISTRADO EL INGRESO
-            </x-base.alert>
+                >
+                    <x-base.lucide
+                        class="mr-2 h-6 w-6"
+                        icon="AlertCircle"
+                    />
+                    Status:
+                    YA HA REGISTRADO EL INGRESO el {{$eventAssistant->entry_time}}
+                </x-base.alert>
+                @endif
+
+                @if($eventAssistant->rejected)
+                <x-base.alert
+                class="mb-2 flex items-center"
+                variant="danger"
+                >
+                    <x-base.lucide
+                        class="mr-2 h-6 w-6"
+                        icon="AlertCircle"
+                    />
+                    Status:
+                    INGRESO RECHAZADO el {{$eventAssistant->rejected_time}}
+                </x-base.alert>
+
+                @if(!$eventAssistant->has_entered)
+                <form action="{{ route('eventAssistant.registerEntry', $eventAssistant->id) }}" method="POST">
+                    @csrf
+                    @method('PATCH')
+                    <x-base.button
+                    class="w-24"
+                    type="submit"
+                    variant="primary"
+                    >
+                    Registrar Ingreso
+                    </x-base.button>
+                </form>
+                @endif
+                @endif
             </div>
             @endif
         </div>
