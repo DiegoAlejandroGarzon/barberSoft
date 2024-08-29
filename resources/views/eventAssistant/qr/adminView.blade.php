@@ -11,6 +11,18 @@
             {{ session('success') }}
         </div>
     @endif
+    @if(session('error'))
+        <x-base.alert
+        class="mb-2 flex items-center"
+        variant="danger"
+        >
+            <x-base.lucide
+                class="mr-2 h-6 w-6"
+                icon="AlertCircle"
+            />
+            {{ session('error') }}
+        </x-base.alert>
+    @endif
     <div class="mt-5">
         <div class="box p-5">
             <h3 class="text-lg font-medium">Información del Asistente</h3>

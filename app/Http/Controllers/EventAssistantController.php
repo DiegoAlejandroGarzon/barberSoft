@@ -172,8 +172,21 @@ class EventAssistantController extends Controller
         $eventAssistant->entry_time = now();
         $eventAssistant->save();
 
-        // Redirigir de nuevo a la vista con un mensaje de éxito
-        return redirect()->back()->with('success', 'Ingreso registrado correctamente.');
+        $event = $eventAssistant->event;
+        $currentCount = EventAssistant::where('event_id', $event->id)
+        ->where('has_entered', true)
+        ->count();
+        $successMessage = 'Ingreso registrado correctamente.';
+
+        if ($currentCount >= $event->capacity) {
+            // Redirigir con una alerta si se ha superado el aforo
+            return redirect()->back()->with([
+                'success' => $successMessage,
+                'error' => 'Aforo máximo alcanzado o superado. Se han registrado '.$currentCount." entradas y la capacidad maximo es de ".$event->capacity,
+            ]);
+        }else{
+            return redirect()->back()->with('success', $successMessage);
+        }
     }
 
     public function rejectEntry($id)
