@@ -48,7 +48,34 @@
             <p><strong>Hora de Finalización:</strong> {{ $eventAssistant->event->end_time }}</p>
             <p><strong>Ciudad:</strong> {{ $eventAssistant->event->city->name ?? 'N/A' }}</p>
             <p><strong>Capacidad:</strong> {{ $eventAssistant->event->capacity }}</p>
+            <br>
+            <h3 class="text-lg font-medium mt-5">Características del Ticket</h3>
+            <ul>
+                @if($eventAssistant?->ticketType)
 
+                @foreach ($eventAssistant?->ticketType?->features as $feature)
+                    <li>
+                        <strong>{{ $feature->name }}:</strong>
+                        @if ($feature->consumable)
+                        @php
+                            $featureConsumption = App\Models\FeatureConsumption::where('event_assistant_id', $eventAssistant->id)->where('ticket_feature_id', $feature->id)->first()
+                        @endphp
+                            @if (isset($featureConsumption))
+                                    <span class="text-gray-600">Consumido - {{$featureConsumption->consumed_at}}</span>
+                            @else
+                                <form action="{{ route('eventAssistant.consumeFeature', [$eventAssistant->id, $feature->id]) }}" method="POST" class="inline-block">
+                                    @csrf
+                                    @method('PATCH')
+                                    <x-base.button type="submit" variant="success">Consumir</x-base.button>
+                                </form>
+                            @endif
+                        @else
+                            <span class="text-gray-600">No Consumible</span>
+                        @endif
+                    </li>
+                @endforeach
+                @endif
+            </ul>
             <br>
             <!-- Botón para Registrar Ingreso -->
 

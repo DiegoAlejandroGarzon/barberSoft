@@ -86,6 +86,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::patch('/event-assistant/{id}/register-entry', [EventAssistantController::class, 'registerEntry'])->name('eventAssistant.registerEntry');
     Route::patch('/event-assistant/{id}/reject-entry', [EventAssistantController::class, 'rejectEntry'])->name('eventAssistant.rejectEntry');
     Route::get('/event-assistant/{id}/pdf', [EventAssistantController::class, 'generatePDF'])->name('eventAssistant.pdf');
+    Route::patch('event-assistants/{eventAssistant}/features/{feature}/consume', [EventAssistantController::class, 'consumeFeature'])->name('eventAssistant.consumeFeature');
 
     //SELECTS
     Route::get('/cities/{department}', [CityController::class, 'getCitiesByDepartment']);

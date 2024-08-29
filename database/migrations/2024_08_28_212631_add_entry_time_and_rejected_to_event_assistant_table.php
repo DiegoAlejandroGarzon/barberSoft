@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('event_assistant', function (Blueprint $table) {
+        Schema::table('event_assistants', function (Blueprint $table) {
             $table->timestamp('entry_time')->nullable()->after('has_entered');
             $table->boolean('rejected')->default(false)->after('entry_time');
             $table->timestamp('rejected_time')->nullable()->after('rejected');
@@ -23,7 +23,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('event_assistant', function (Blueprint $table) {
+        Schema::table('event_assistants', function (Blueprint $table) {
             $table->dropColumn('entry_time');
             $table->dropColumn('rejected');
             $table->dropColumn('rejected_time');

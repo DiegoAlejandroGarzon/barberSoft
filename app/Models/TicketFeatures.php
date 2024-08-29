@@ -11,10 +11,19 @@ class TicketFeatures extends Model
 
     protected $table = "ticket_features";
 
-    protected $fillable = ['name'];
+    protected $fillable = [
+        'name',
+        'consumable',
+    ];
 
     public function ticketTypes()
     {
         return $this->belongsToMany(TicketType::class, 'ticket_type_feature', 'ticket_feature_id', 'ticket_type_id');
     }
+
+    public function ticketTypes2()
+    {
+        return $this->belongsToMany(TicketType::class, 'ticket_type_feature');
+    }
+
 }

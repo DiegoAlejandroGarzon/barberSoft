@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Imports\AssistantsImport;
 use App\Models\Event;
 use App\Models\EventAssistant;
+use App\Models\FeatureConsumption;
+use App\Models\TicketFeatures;
 use App\Models\TicketType;
 use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -217,5 +219,27 @@ class EventAssistantController extends Controller
         return $pdf->stream('asistente_'.$asistente->user->name.'_evento_'.$evento->name.'.pdf');
         // Se descarga,
         // return $pdf->download('Asistente_Evento_' . $asistente->user->name . '.pdf');
+    }
+
+    public function consumeFeature(EventAssistant $eventAssistant, $feature)
+    {
+        $eventAssistant = EventAssistant::find($eventAssistant)->first();
+        // return $eventAssistant;
+        $feature = TicketFeatures::find($feature);
+        // return $feature->id;
+        $featureConsumptions = FeatureConsumption::where('event_assistant_id', $eventAssistant->id)->where('ticket_feature_id', $feature->id)->get()->count();
+        // Verificar si el feature es consumible y no ha sido consumido
+        if (!$feature->consumable || $featureConsumptions > 0) {
+            return redirect()->back()->with('error', 'El feature no es consumible o ya ha sido consumido.');
+        }
+
+        // Marcar el feature como consumido
+        $featureConsumptions = new FeatureConsumption();
+        $featureConsumptions->event_assistant_id = $eventAssistant->id;
+        $featureConsumptions->ticket_feature_id = $feature->id;
+        $featureConsumptions->consumed_at = now();
+        $featureConsumptions->save();
+
+        return redirect()->back()->with('success', 'El feature ha sido consumido exitosamente.');
     }
 }

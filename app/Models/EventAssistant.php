@@ -9,7 +9,7 @@ class EventAssistant extends Model
 {
     use HasFactory;
 
-    protected $table = "event_assistant";
+    protected $table = "event_assistants";
 
     protected $fillable = [
         'event_id',
