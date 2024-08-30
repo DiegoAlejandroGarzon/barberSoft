@@ -25,6 +25,7 @@ use App\Http\Controllers\EventAssistantController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\DepartmentController;
+use App\Http\Controllers\AjaxController;
 use Illuminate\Support\Facades\Auth;
 
 Route::get('theme-switcher/{activeTheme}', [ThemeController::class, 'switch'])->name('theme-switcher');
@@ -75,7 +76,23 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post('/city/update/',[CityController::class,'update'])->name('city.update');
     Route::get('/city/delete/{id}',[CityController::class,'delete'])->name('city.delete');
     
+    //CRUD AJAX
+    Route::get('input-form', [AjaxController::class, 'index']);
+    Route::get('search-Autocomplete', [AjaxController::class, 'searchAutocomplete']);   
+
+
+    Route::get('input-form-Layout', [AjaxController::class, 'index']);
+    Route::get('search-AutocompleteLayout', [AjaxController::class, 'searchAutocompleteLayout']);
+
+
+    Route::prefix('auth-complete-search')->group(function(){
+            Route::view('/','autocompletesearch.index');
+            Route::get('search/{query}',[AjaxController::class,'index']);
+
+    });
     
+    
+
     //EDITAR PERFIL
     Route::get('/profile/update/{id}', [UserController::class, 'profileEdit'])->name('profile.edit');
     Route::post('/profile/update', [UserController::class, 'profileUpdate'])->name('profile.update');
@@ -99,6 +116,9 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/assistants/{idEvent}/singleAssignForm', [EventAssistantController::class, 'singleAssignForm'])->name('eventAssistant.singleAssignForm');
     Route::post('/assistants/{idEvent}/singleAssignForm', [EventAssistantController::class, 'uploadSingleAssign'])->name('eventAssistant.singleAssign.upload');
     Route::get('/assistants/update/{id}', [EventAssistantController::class, 'edit'])->name('eventAssistant.edit');
+
+
+   
 
 
     //SELECTS
