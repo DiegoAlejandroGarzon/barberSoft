@@ -45,7 +45,7 @@ class SideMenu
             'Configuraciones' => [
                 'icon' => 'file-text',
                 'title' => 'Configuraciones',
-                'sub_menu' => [                    
+                'sub_menu' => [
                     'configuration.department' => [
                         'icon' => 'file-text',
                         'route_name' => 'department.index',
@@ -55,6 +55,11 @@ class SideMenu
                         'icon' => 'file-text',
                         'route_name' => 'city.index',
                         'title' => 'ciudades'
+                    ],
+                    'configuration.ticketFeature' => [
+                        'icon' => 'file-text',
+                        'route_name' => 'ticketFeatures.index',
+                        'title' => 'tickets'
                     ]
                 ]
             ],

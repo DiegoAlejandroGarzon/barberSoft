@@ -11,7 +11,9 @@ class TicketFeatures extends Model
 
     protected $table = "ticket_features";
 
-    protected $fillable = ['name'];
+    protected $fillable = [
+        'id',
+        'name'];
 
     public function ticketTypes()
     {

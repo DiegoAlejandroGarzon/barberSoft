@@ -27,6 +27,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\AjaxController;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\TicketFeatureController;
 
 Route::get('theme-switcher/{activeTheme}', [ThemeController::class, 'switch'])->name('theme-switcher');
 Route::get('layout-switcher/{activeLayout}', [LayoutController::class, 'switch'])->name('layout-switcher');
@@ -75,6 +76,15 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/city/update/{id}',[CityController::class,'edit'])->name('city.edit');
     Route::post('/city/update/',[CityController::class,'update'])->name('city.update');
     Route::get('/city/delete/{id}',[CityController::class,'delete'])->name('city.delete');
+    
+    //CRUD  CONFIGURACION TICKETFREATURE
+    Route::get('/ticketFeatures',[TicketFeatureController::class,'index'])->name('ticketFeatures.index');
+    Route::get('/ticketFeaturess/create',[TicketFeatureController::class,'create'])->name('ticketFeatures.create');
+    Route::post('/ticketFeatures/create',[TicketFeatureController::class,'store'])->name('ticketFeatures.store');
+    Route::get('/ticketFeatures/update/{id}',[TicketFeatureController::class,'edit'])->name('ticketFeatures.edit');
+    Route::post('/ticketFeatures/update/',[TicketFeatureController::class,'update'])->name('ticketFeatures.update');
+    Route::get('/ticketFeatures/delete/{id}',[TicketFeatureController::class,'delete'])->name('ticketFeatures.delete');
+    
     
     //CRUD AJAX
     Route::get('input-form', [AjaxController::class, 'index']);
