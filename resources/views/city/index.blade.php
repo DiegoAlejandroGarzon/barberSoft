@@ -56,15 +56,15 @@
             </div> --}}
             <div class="mt-3 w-full sm:ml-auto sm:mt-0 sm:w-auto md:ml-0">
                 <div class="relative w-56 text-slate-500">
-                    <x-base.form-input
-                        class="!box w-56 pr-10"
-                        type="text"
-                        placeholder="Search..."
-                    />
-                    <x-base.lucide
-                        class="absolute inset-y-0 right-0 my-auto mr-3 h-4 w-4"
-                        icon="Search"
-                    />
+                    <!-- Formulario de búsqueda -->
+                <form method="GET" action="{{ route('city.index') }}" class="mt-3 w-full sm:ml-auto sm:mt-0 sm:w-auto md:ml-0">
+                    <div class="relative w-56 text-slate-500">
+                        <x-base.form-input name="search" value="{{ request('search') }}" class="!box w-56 pr-10" type="text" placeholder="Search..." />
+                        <button type="submit" class="absolute inset-y-0 right-0 my-auto mr-3 h-4 w-4">
+                            <x-base.lucide icon="Search" />
+                        </button>
+                    </div>
+                </form>
                 </div>
             </div>
         </div>
@@ -72,7 +72,7 @@
         <div class="intro-y col-span-12 overflow-auto lg:overflow-visible">
             <x-base.table class="-mt-2 border-separate border-spacing-y-[10px]">
                 <x-base.table.thead>
-                    <x-base.table.tr>                        
+                    <x-base.table.tr>
                         <x-base.table.th class="whitespace-nowrap border-b-0">
                             id
                         </x-base.table.th>
