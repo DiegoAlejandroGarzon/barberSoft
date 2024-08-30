@@ -32,6 +32,13 @@
         </div>
     @endif
 
+    {{-- Botón para descargar plantilla --}}
+    <div class="mb-4">
+        <a href="{{ route('eventAssistant.downloadTemplate', $event->id) }}" class="btn btn-success">
+            Descargar Plantilla
+        </a>
+    </div>
+
     {{-- Formulario de subida de archivo --}}
     <form action="{{ route('eventAssistant.massAssign.upload', $event->id) }}" method="POST" enctype="multipart/form-data" class="bg-white p-6 rounded-lg shadow-md">
         @csrf
@@ -45,13 +52,9 @@
         </div>
 
         <div class="flex justify-end">
-            <x-base.button
-            class="w-24"
-            type="submit"
-            variant="primary"
-        >
-        Subir y Asignar
-        </x-base.button>
+            <x-base.button class="w-24" type="submit" variant="primary">
+                Subir y Asignar
+            </x-base.button>
         </div>
     </form>
 

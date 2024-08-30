@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\TemplateExport;
 use App\Imports\AssistantsImport;
 use App\Models\Event;
 use App\Models\EventAssistant;
@@ -241,5 +242,34 @@ class EventAssistantController extends Controller
         $featureConsumptions->save();
 
         return redirect()->back()->with('success', 'El feature ha sido consumido exitosamente.');
+    }
+
+    public function downloadTemplate($id)
+    {
+        // Obtener los parámetros de inscripción (registration_parameters) del evento desde la base de datos
+        $event = Event::findOrFail($id);
+
+        // Decodificar los parámetros de inscripción de formato JSON a un array PHP
+        $registration_parameters = json_decode($event->registration_parameters, true);
+
+        // Si registration_parameters es nulo o vacío, usa un conjunto predeterminado
+        if (empty($registration_parameters)) {
+            $registration_parameters = [
+                'name',
+                'lastname',
+                'email',
+                'type_document',
+                'document_number',
+                'phone',
+                'city_id',
+                'birth_date',
+            ];
+        }
+
+        // Crear una instancia de la exportación con los encabezados
+        $export = new TemplateExport($registration_parameters);
+
+        // Descargar el archivo Excel
+        return Excel::download($export, 'plantilla_asistentes-'.$event->name.'.xlsx');
     }
 }
