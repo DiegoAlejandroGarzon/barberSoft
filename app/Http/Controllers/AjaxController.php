@@ -19,8 +19,16 @@ class AjaxController extends Controller
     public function index()
     {
         $roles = Role::all();
-        $cities = City::all(); // Obtener los departamentos
-        $cities=DB::table('cities')->paginate(30);
+      
+        $query = City::query();
+
+        if (request('search')) {
+            $query
+                ->where('name', 'like', '%' . request('search') . '%');
+        }
+        
+        // Obtener los departamentos
+        $cities=$query->paginate(30);
         return view('search-form',compact(['roles', 'cities']));
     }
 
