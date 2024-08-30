@@ -20,6 +20,7 @@ class Event extends Model
         'event_date',
         'city_id',
         'public_link',
+        'registration_parameters',
     ];
 
 

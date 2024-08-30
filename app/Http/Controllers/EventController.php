@@ -199,9 +199,10 @@ class EventController extends Controller
     {
         // Busca el evento por el enlace público
         $event = Event::where('public_link', $public_link)->firstOrFail();
+        $departments = Departament::all();
 
         // Retorna la vista de registro, pasando el evento
-        return view('event.public_registration', compact('event'));
+        return view('event.public_registration', compact('event', 'departments'));
     }
 
     public function submitPublicRegistration(Request $request, $public_link)
@@ -246,5 +247,30 @@ class EventController extends Controller
         );
 
         return redirect()->route('event.register', $public_link)->with('success', 'Inscripción exitosa.');
+    }
+
+    public function setRegistrationParameters($id)
+    {
+        $event = Event::findOrFail($id);
+        return view('event.set-registration-parameters', compact('event'));
+    }
+
+    public function storeRegistrationParameters(Request $request, $id)
+    {
+        $event = Event::findOrFail($id);
+
+        // Validar la entrada de los campos seleccionados
+        $request->validate([
+            'fields' => 'required|array',
+            'fields.*' => 'in:name,lastname,email,type_document,document_number,phone,status,profile_photo_path,city_id,birth_date',
+        ]);
+
+        // Almacenar los campos seleccionados como parámetros de inscripción
+        $parameters = json_encode($request->fields); // Convertir a JSON
+
+        $event->registration_parameters = $parameters;
+        $event->save();
+
+        return redirect()->route('event.index')->with('success', 'Parámetros de inscripción guardados correctamente.');
     }
 }

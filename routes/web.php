@@ -74,6 +74,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/event/update/{id}', [EventController::class, 'edit'])->name('event.edit');
     Route::post('/event/update', [EventController::class, 'update'])->name('event.update');
     Route::post('/event/generatePublicLink/{id}', [EventController::class, 'generatePublicLink'])->name('event.generatePublicLink');
+    Route::get('/events/{id}/set-registration-parameters', [EventController::class, 'setRegistrationParameters'])->name('events.setRegistrationParameters');
+    Route::post('/events/{id}/store-registration-parameters', [EventController::class, 'storeRegistrationParameters'])->name('events.storeRegistrationParameters');
 
     //ASISTENTS TO EVENT
     Route::get('/assistants/{idEvent}', [EventAssistantController::class, 'index'])->name('eventAssistant.index');
