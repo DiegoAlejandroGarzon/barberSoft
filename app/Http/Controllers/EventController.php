@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AdditionalParameter;
 use App\Models\Departament;
 use App\Models\Event;
 use App\Models\EventAssistant;
@@ -252,7 +253,8 @@ class EventController extends Controller
     public function setRegistrationParameters($id)
     {
         $event = Event::findOrFail($id);
-        return view('event.set-registration-parameters', compact('event'));
+        $additional_parameters = AdditionalParameter::where('event_id', $id)->get();
+        return view('event.set-registration-parameters', compact('event', 'additional_parameters'));
     }
 
     public function storeRegistrationParameters(Request $request, $id)
@@ -271,6 +273,43 @@ class EventController extends Controller
         $event->registration_parameters = $parameters;
         $event->save();
 
+        // Manejar los parámetros adicionales
+        $additionalParameters = $request->input('additional_parameters', []);
+
+        // Obtener los nombres de los parámetros adicionales enviados desde el formulario
+        $newParameterNames = array_column($additionalParameters, 'name');
+
+        // Obtener todos los parámetros adicionales actuales en la base de datos para este evento
+        $existingParameters = AdditionalParameter::where('event_id', $event->id)->get();
+
+        // Eliminar los parámetros adicionales que ya no están presentes en los nuevos datos enviados
+        foreach ($existingParameters as $existingParameter) {
+            if (!in_array($existingParameter->name, $newParameterNames)) {
+                $existingParameter->delete();
+            }
+
+            // Agregar o actualizar los parámetros adicionales
+            foreach ($additionalParameters as $param) {
+                if (!empty($param['name']) && !empty($param['type'])) {
+                    // Verificar si ya existe un parámetro adicional con el mismo 'name' y 'event_id'
+                    $existingParameter = AdditionalParameter::where('event_id', $event->id)
+                        ->where('name', $param['name'])
+                        ->first();
+
+                    if ($existingParameter) {
+                        $existingParameter->update([
+                            'type' => $param['type']
+                        ]);
+                    } else {
+                        AdditionalParameter::create([
+                            'event_id' => $event->id,
+                            'name' => $param['name'],
+                            'type' => $param['type']
+                        ]);
+                    }
+                }
+            }
+        }
         return redirect()->route('event.index')->with('success', 'Parámetros de inscripción guardados correctamente.');
     }
 }
