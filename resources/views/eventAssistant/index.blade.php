@@ -40,6 +40,11 @@
                     Asignar Asistente Manualmente
                 </x-base.button>
             </a>
+            <a href="{{ route('eventAssistant.singleCreateForm', ['idEvent' => $idEvent]) }}">
+                <x-base.button class="mr-2 shadow-md" variant="secondary">
+                    Crear Asistente Manualmente
+                </x-base.button>
+            </a>
             <x-base.menu>
                 <x-base.menu.button class="!box px-2" as="x-base.button">
                     <span class="flex h-5 w-5 items-center justify-center">
