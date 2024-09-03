@@ -82,6 +82,9 @@
                     @endforeach
                 </div>
 
+                <!-- Campo oculto para IDs de parámetros a eliminar -->
+                <input type="hidden" id="parameters-to-delete" name="parameters_to_delete" value="">
+
                 <!-- Botón para agregar nuevos parámetros -->
                 <x-base.button type="button" class="w-full mt-3" variant="secondary" onclick="addAdditionalParameter()">
                     Agregar Parámetro Adicional

@@ -52,6 +52,7 @@
 
                                 <!-- Renderizar campos dinámicamente -->
                                 @if(in_array('name', $selectedFields))
+                                    <x-base.form-label for="name">Nombre</x-base.form-label>
                                     <x-base.form-input id="name" class="intro-x block min-w-full px-4 py-3 xl:min-w-[350px]" type="text" name="name" placeholder="Nombre" value="{{ old('name') }}" required />
                                     @error('name')
                                         <span class="invalid-feedback" role="alert">
@@ -61,7 +62,8 @@
                                 @endif
 
                                 @if(in_array('lastname', $selectedFields))
-                                    <x-base.form-input id="name" class="intro-x block min-w-full px-4 py-3 xl:min-w-[350px]" type="text" name="lastname" placeholder="Apellidos" value="{{ old('lastname') }}" required />
+                                    <x-base.form-label for="lastname">Nombre</x-base.form-label>
+                                    <x-base.form-input id="lastname" class="intro-x block min-w-full px-4 py-3 xl:min-w-[350px]" type="text" name="lastname" placeholder="Apellidos" value="{{ old('lastname') }}" required />
                                     @error('lastname')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
@@ -70,6 +72,7 @@
                                 @endif
 
                                 @if(in_array('email', $selectedFields))
+                                    <x-base.form-label for="email">Email</x-base.form-label>
                                     <x-base.form-input id="email" class="intro-x mt-4 block min-w-full px-4 py-3 xl:min-w-[350px]" type="email" name="email" placeholder="Correo Electrónico" value="{{ old('email') }}" required />
                                     @error('email')
                                         <span class="invalid-feedback" role="alert">
@@ -186,7 +189,45 @@
                                     </div>
                                 @endif
 
-                                <!-- Aquí puedes añadir otros campos de forma dinámica usando el mismo patrón -->
+                                <!-- Renderizar campos adicionales dinámicamente -->
+                                @foreach ($additionalParameters as $parameter)
+                                    @php
+                                        $type = $parameter['type'] ?? 'text'; // Tipo de input por defecto es 'text'
+                                        $name = $parameter['name'] ?? ''; // Nombre del input
+                                        $label = $parameter['label'] ?? ''; // Etiqueta del input
+                                        $options = $parameter['options'] ?? []; // Opciones en caso de ser select
+                                    @endphp
+
+                                    <div class="mt-3">
+                                        @if ($type == 'select')
+                                            <x-base.form-label for="{{ $name }}">{{ $label }}</x-base.form-label>
+                                            <x-base.tom-select
+                                                class="w-full {{ $errors->has($name) ? 'border-red-500' : '' }}"
+                                                id="{{ $name }}"
+                                                name="{{ $name }}"
+                                            >
+                                                <option value=""></option>
+                                                @foreach ($options as $key => $value)
+                                                    <option value="{{ $key }}" {{ old($name) == $key ? 'selected' : '' }}>{{ $value }}</option>
+                                                @endforeach
+                                            </x-base.tom-select>
+                                        @else
+                                            <x-base.form-label for="{{ $name }}">{{ $name }}</x-base.form-label>
+                                            <x-base.form-input
+                                                class="w-full {{ $errors->has($name) ? 'border-red-500' : '' }}"
+                                                id="{{ $name }}"
+                                                name="{{ $name }}"
+                                                type="{{ $type }}"
+                                                placeholder="{{ $label }}"
+                                                value="{{ old($name) }}"
+                                            />
+                                        @endif
+
+                                        @error($name)
+                                            <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                @endforeach
 
                                 <div class="intro-x mt-5 text-center xl:mt-8 xl:text-left">
                                     <x-base.button class="w-full px-4 py-3 align-top xl:mr-3 xl:w-32" type="submit" variant="primary">

@@ -9,6 +9,7 @@ use App\Models\EventAssistant;
 use App\Models\TicketFeatures;
 use App\Models\TicketType;
 use App\Models\User;
+use App\Models\UserEventParameter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -200,32 +201,32 @@ class EventController extends Controller
     {
         // Busca el evento por el enlace público
         $event = Event::where('public_link', $public_link)->firstOrFail();
+        $additionalParameters = json_decode($event->additionalParameters, true) ?? [];
         $departments = Departament::all();
 
         // Retorna la vista de registro, pasando el evento
-        return view('event.public_registration', compact('event', 'departments'));
+        return view('event.public_registration', compact('event', 'departments', 'additionalParameters'));
     }
 
     public function submitPublicRegistration(Request $request, $public_link)
     {
         $event = Event::where('public_link', $public_link)->firstOrFail();
 
-        $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
-            'type_document' => 'required|string|max:3',
-            'document_number' => 'required|string|max:20|unique:users,document_number',
-        ]);
+        // $request = $request->validate([
+        //     'name' => 'required|string|max:255',
+        //     'email' => 'required|email|max:255',
+        //     'type_document' => 'required|string|max:3',
+        //     'document_number' => 'required|string|max:20|unique:users,document_number',
+        // ]);
 
         // Buscar el usuario por correo electrónico, o crear uno nuevo si no existe
-        $user = User::firstOrCreate(
-            ['document_number' => $validatedData['document_number']],
+        $user = User::create(
             [
-                'name' => $validatedData['name'],
+                'name' => $request['name'],
                 'password' => Hash::make('12345678'), // Contraseña predeterminada
                 'status' => false,
-                'email' => $validatedData['email'],
-                'type_document' => $validatedData['type_document'],
+                'email' => $request['email'],
+                'type_document' => $request['type_document'],
             ]
         );
 
@@ -246,6 +247,24 @@ class EventController extends Controller
                 'has_entered' => false,
             ]
         );
+
+        // Obtener los parámetros adicionales definidos para el evento
+        $definedParameters = AdditionalParameter::where('event_id', $event->id)->get();
+        // Obtener las columnas definidas en $fillable del modelo User
+        $userFillableColumns = (new User())->getFillable();
+        // Detectar y almacenar parámetros adicionales enviados en el registro
+        $additionalParameters = $request->except(array_merge(['_token'], $userFillableColumns)); // Excluir columnas del modelo User
+
+        foreach ($definedParameters as $definedParameter) {
+            if (isset($additionalParameters[$definedParameter->name])) {
+                UserEventParameter::create([
+                    'event_id' => $event->id,
+                    'user_id' => $user->id,
+                    'additional_parameter_id' => $definedParameter->id,
+                    'value' => $additionalParameters[$definedParameter->name],
+                ]);
+            }
+        }
 
         return redirect()->route('event.register', $public_link)->with('success', 'Inscripción exitosa.');
     }

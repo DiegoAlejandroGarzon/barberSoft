@@ -38,4 +38,9 @@ class Event extends Model
     {
         return $this->hasMany(EventAssistant::class);
     }
+
+    public function additionalParameters()
+    {
+        return $this->hasMany(AdditionalParameter::class, 'event_id');
+    }
 }
