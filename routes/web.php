@@ -24,7 +24,10 @@ use App\Http\Controllers\CityController;
 use App\Http\Controllers\EventAssistantController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\DepartmentController;
+use App\Http\Controllers\AjaxController;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\TicketFeatureController;
 
 Route::get('theme-switcher/{activeTheme}', [ThemeController::class, 'switch'])->name('theme-switcher');
 Route::get('layout-switcher/{activeLayout}', [LayoutController::class, 'switch'])->name('layout-switcher');
@@ -46,9 +49,6 @@ Route::post('password/reset', [ResetPasswordController::class, 'reset'])->name('
 //inscripcion de asistente
 Route::get('/event/register/{public_link}', [EventController::class, 'showPublicRegistrationForm'])->name('event.register');
 Route::post('/event/register/{public_link}', [EventController::class, 'submitPublicRegistration'])->name('event.register.submit');
-//mostrar info del QR
-Route::get('/event-assistant/infoQr/{id}/{guid}', [EventAssistantController::class, 'infoQr'])->name('eventAssistant.infoQr');
-
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
@@ -59,6 +59,50 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post('/users/create', [UserController::class, 'store'])->name('users.store');
     Route::get('/users/update/{id}', [UserController::class, 'edit'])->name('users.edit');
     Route::post('/users/update', [UserController::class, 'update'])->name('users.update');
+
+    //CRUD CONFIGURACIONES
+    //CRUD CONFIGURACION DEPARTAMENTO
+    Route::get('/department',[DepartmentController::class,'list'])->name('department.index');
+    Route::get('/department/create',[DepartmentController::class,'create'])->name('department.create');
+    Route::post('/department/create',[DepartmentController::class,'store'])->name('department.store');
+    Route::get('/department/update/{id}',[DepartmentController::class,'edit'])->name('department.edit');
+    Route::post('/department/update/',[DepartmentController::class,'update'])->name('department.update');
+    Route::get('/department/delete/{id}',[DepartmentController::class,'delete'])->name('department.delete');
+
+    //CRUD CONFIGURACION CIUDAD
+    Route::get('/city',[CityController::class,'list'])->name('city.index');
+    Route::get('/city/create',[CityController::class,'create'])->name('city.create');
+    Route::post('/city/create',[CityController::class,'store'])->name('city.store');
+    Route::get('/city/update/{id}',[CityController::class,'edit'])->name('city.edit');
+    Route::post('/city/update/',[CityController::class,'update'])->name('city.update');
+    Route::get('/city/delete/{id}',[CityController::class,'delete'])->name('city.delete');
+
+    //CRUD  CONFIGURACION TICKETFREATURE
+    Route::get('/ticketFeatures',[TicketFeatureController::class,'index'])->name('ticketFeatures.index');
+    Route::get('/ticketFeaturess/create',[TicketFeatureController::class,'create'])->name('ticketFeatures.create');
+    Route::post('/ticketFeatures/create',[TicketFeatureController::class,'store'])->name('ticketFeatures.store');
+    Route::get('/ticketFeatures/update/{id}',[TicketFeatureController::class,'edit'])->name('ticketFeatures.edit');
+    Route::post('/ticketFeatures/update/',[TicketFeatureController::class,'update'])->name('ticketFeatures.update');
+    Route::get('/ticketFeatures/delete/{id}',[TicketFeatureController::class,'delete'])->name('ticketFeatures.delete');
+
+
+    //CRUD AJAX
+    Route::get('input-form', [AjaxController::class, 'index']);
+    Route::get('search-Autocomplete', [AjaxController::class, 'searchAutocomplete']);
+
+
+    Route::get('input-form-Layout', [AjaxController::class, 'index']);
+    Route::get('search-AutocompleteLayout', [AjaxController::class, 'searchAutocompleteLayout']);
+
+
+    Route::prefix('auth-complete-search')->group(function(){
+            Route::view('/','autocompletesearch.index');
+            Route::get('search/{query}',[AjaxController::class,'index']);
+
+    });
+
+
+
     //EDITAR PERFIL
     Route::get('/profile/update/{id}', [UserController::class, 'profileEdit'])->name('profile.edit');
     Route::post('/profile/update', [UserController::class, 'profileUpdate'])->name('profile.update');
@@ -78,7 +122,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post('/events/{id}/store-registration-parameters', [EventController::class, 'storeRegistrationParameters'])->name('events.storeRegistrationParameters');
 
     //ASISTENTS TO EVENT
-    Route::get('/assistants/{idEvent}', [EventAssistantController::class, 'index'])->name('eventAssistant.index');
+    Route::get('/assistants/{idEvent}', [EventAssistantController::class, 'index'])->name('assistantsEvent.index');
     Route::get('/assistants/{idEvent}/massAssign', [EventAssistantController::class, 'showMassAssign'])->name('eventAssistant.massAssign');
     Route::post('/assistants/{idEvent}/massAssign', [EventAssistantController::class, 'uploadMassAssign'])->name('eventAssistant.massAssign.upload');
     Route::get('/assistants/{idEvent}/singleAssignForm', [EventAssistantController::class, 'singleAssignForm'])->name('eventAssistant.singleAssignForm');

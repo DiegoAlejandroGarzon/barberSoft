@@ -76,7 +76,7 @@
         <!-- END: Data List -->
         <!-- BEGIN: Pagination -->
         <div class="intro-y col-span-12 flex flex-wrap items-center sm:flex-row sm:flex-nowrap">
-            {{ $usuarios->withQueryString()->links() }}
+            {{ $cities->withQueryString()->links() }}
         </div>
         <!-- END: Pagination -->
     </div>

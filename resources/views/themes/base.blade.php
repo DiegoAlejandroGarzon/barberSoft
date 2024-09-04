@@ -41,9 +41,13 @@ License: You must have a valid license purchased only from themeforest(the above
 
     <!-- BEGIN: CSS Assets-->
     @stack('styles')
+   
+   
     <!-- END: CSS Assets-->
 
     @vite('resources/css/app.css')
+
+ 
 </head>
 <!-- END: Head -->
 

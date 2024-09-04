@@ -14,15 +14,17 @@ return new class extends Migration
         // Create departments table
         Schema::create('departments', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
             $table->string('code_dane');
+            $table->string('name');            
             $table->timestamps();
         });
 
         // Create cities table
         Schema::create('cities', function (Blueprint $table) {
             $table->id();
+            $table->string('code_dane');
             $table->string('name');
+            $table->string('provincia');            
             $table->foreignId('department_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });

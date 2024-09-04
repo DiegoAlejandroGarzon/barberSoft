@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\City;
 use Illuminate\Http\Request;
+use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\DB;
+use Illuminate\View\View;
+use App\Models\Department;
 
 class CityController extends Controller
 {
@@ -18,9 +22,15 @@ class CityController extends Controller
 
     public function list():view{
         $roles = Role::all();
-        $cities = City::all(); // Obtener los departamentos
-        $cities=DB::table('cities')->paginate(30);
-        #return view('city.index', ['cities'=> DB::table('cities')->paginate(15)]);
+        $query = City::query();
+
+        if (request('search')) {
+            $query
+                ->where('name', 'like', '%' . request('search') . '%');
+        }
+        
+        // Obtener los departamentos
+        $cities=$query->paginate(30);
         return view('city.index', compact(['roles', 'cities']));
     }
 
@@ -115,4 +125,5 @@ class CityController extends Controller
         $city = city::all(); // Obtener las ciudades
         return view('city.index', compact(['roles', 'city']));
     }
+
 }
