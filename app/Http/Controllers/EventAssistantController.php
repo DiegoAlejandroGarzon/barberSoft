@@ -207,6 +207,90 @@ class EventAssistantController extends Controller
 
         return redirect()->route('eventAssistant.singleCreateForm', $idEvent)->with('success', 'Inscripción exitosa.');
     }
+
+    public function edit($idEventAssistant){
+        $eventAssistant = EventAssistant::find($idEventAssistant);
+        $userEventParameter = UserEventParameter::where('user_id', $eventAssistant->user_id)->where('event_id', $eventAssistant->event_id)->get();
+        // return $userEventParameter[0]->value;
+        $event = Event::find($eventAssistant->event_id);
+        $additionalParameters = json_decode($event->additionalParameters, true) ?? [];
+        $departments = Departament::all();
+        $event = Event::findOrFail($event->id);
+        $ticketTypes  = TicketType::where('event_id', $event->id)->get();
+        return view('eventAssistant.editAssistant', compact('event', 'departments', 'ticketTypes', 'additionalParameters', 'eventAssistant', 'userEventParameter'));
+    }
+
+    public function singleUpdateUpload(Request $request, $idEventAssistant)
+    {
+        $eventAssistant = EventAssistant::find($idEventAssistant);
+        // Encontrar el evento por su ID
+        $event = Event::findOrFail($eventAssistant->event_id);
+
+        // Encontrar el usuario por su ID
+        $user = User::findOrFail($eventAssistant->user_id);
+        // return "prueba";
+        // Validar la solicitud
+        // $request->validate([
+        //     'name' => 'required|string|max:255',
+        //     'email' => 'required|email|max:255|unique:users,email,' . $user->id,
+        //     'type_document' => 'required|string|max:3',
+        //     'document_number' => 'required|string|max:20|unique:users,document_number,' . $user->id,
+        // ]);
+
+        // Inicializar un arreglo para almacenar los datos a actualizar
+        $updateData = [];
+
+        // Obtener las columnas definidas en $fillable del modelo User
+        $userFillableColumns = (new User())->getFillable();
+
+        // Recorrer las columnas permitidas y verificar si están presentes en el request
+        foreach ($userFillableColumns as $column) {
+            if ($request->has($column)) {
+                $updateData[$column] = $request[$column];
+            }
+        }
+
+        // Actualizar los datos del usuario de manera dinámica
+        $user->update($updateData);
+
+        // Actualizar o crear el registro en la tabla `event_assistant`
+        $eventAssistant = EventAssistant::updateOrCreate(
+            [
+                'event_id' => $event->id,
+                'user_id' => $user->id,
+            ],
+            [
+                'ticket_type_id' => $request['id_ticket'] ?? null,
+            ]
+        );
+
+        // Obtener los parámetros adicionales definidos para el evento
+        $definedParameters = AdditionalParameter::where('event_id', $event->id)->get();
+        // Obtener las columnas definidas en $fillable del modelo User
+        $userFillableColumns = (new User())->getFillable();
+        // Detectar y almacenar parámetros adicionales enviados en el registro
+        $additionalParameters = $request->except(array_merge(['_token'], $userFillableColumns)); // Excluir columnas del modelo User
+
+        foreach ($definedParameters as $definedParameter) {
+            if (isset($additionalParameters[$definedParameter->name])) {
+                // Actualizar o crear el parámetro adicional del usuario
+                UserEventParameter::updateOrCreate(
+                    [
+                        'event_id' => $event->id,
+                        'user_id' => $user->id,
+                        'additional_parameter_id' => $definedParameter->id,
+                    ],
+                    [
+                        'value' => $additionalParameters[$definedParameter->name],
+                    ]
+                );
+            }
+        }
+
+        return redirect()->route('eventAssistant.singleUpdateForm', [$idEventAssistant])->with('success', 'Actualización exitosa.');
+    }
+
+
     public function showQr($id)
     {
         // Obtener el asistente por ID

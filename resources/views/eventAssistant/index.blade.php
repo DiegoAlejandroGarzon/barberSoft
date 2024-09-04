@@ -109,7 +109,7 @@
                             </x-base.table.td>
                             <x-base.table.td class="box w-56">
                                 <div class="flex items-center justify-center">
-                                    <a class="mr-3" href="{{ route('eventAssistant.edit', ['id' => $asistente->id]) }}">
+                                    <a class="mr-3" href="{{ route('eventAssistant.singleUpdateForm', ['idEventAssistant' => $asistente->id]) }}">
                                         <x-base.lucide icon="CheckSquare" /> Editar
                                     </a>
                                     <a class="text-danger" data-tw-toggle="modal" data-tw-target="#delete-confirmation-modal" href="#">
