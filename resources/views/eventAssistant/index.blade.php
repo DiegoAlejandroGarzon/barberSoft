@@ -5,6 +5,12 @@
 @endsection
 
 @section('subcontent')
+    @if(session('error'))
+        <x-base.alert class="mb-2 flex items-center" variant="danger">
+            <x-base.lucide class="mr-2 h-6 w-6" icon="AlertCircle" />
+            {{ session('error') }}
+        </x-base.alert>
+    @endif
     <h2 class="intro-y mt-10 text-lg font-medium">Lista de Asistentes</h2>
     <div class="mt-5 grid grid-cols-12 gap-6">
         <script>
@@ -109,18 +115,22 @@
                             </x-base.table.td>
                             <x-base.table.td class="box w-56">
                                 <div class="flex items-center justify-center">
-                                    <a class="mr-3" href="{{ route('eventAssistant.singleUpdateForm', ['idEventAssistant' => $asistente->id]) }}">
-                                        <x-base.lucide icon="CheckSquare" /> Editar
-                                    </a>
-                                    <a class="text-danger" data-tw-toggle="modal" data-tw-target="#delete-confirmation-modal" href="#">
-                                        <x-base.lucide icon="Trash" /> Borrar
-                                    </a>
                                     <!-- New QR Button -->
                                     <a class="text-info" href="{{ route('eventAssistant.qr', ['id' => $asistente->id]) }}">
                                         <x-base.lucide icon="QrCode" /> Ver QR
                                     </a>
                                     <a class="text-info" href="{{ route('eventAssistant.pdf', ['id' => $asistente->id]) }}" target="_blank">
                                         <x-base.lucide icon="FileText" /> Generar PDF
+                                    </a>
+                                    <a class="mr-3" href="{{ route('eventAssistant.singleUpdateForm', ['idEventAssistant' => $asistente->id]) }}">
+                                        <x-base.lucide icon="CheckSquare" /> Editar
+                                    </a>
+                                    <a class="text-danger"
+                                    data-tw-toggle="modal"
+                                    data-tw-target="#delete-confirmation-modal"
+                                    data-id="{{ $asistente->id }}"
+                                    onclick="setDeleteAction(this)">
+                                    <x-base.lucide icon="Trash" /> Borrar
                                     </a>
                                 </div>
                             </x-base.table.td>
@@ -130,6 +140,58 @@
             </x-base.table>
         </div>
         <!-- END: Data List -->
+
+    <!-- BEGIN: Delete Confirmation Modal -->
+    <x-base.dialog id="delete-confirmation-modal">
+        <x-base.dialog.panel>
+            <div class="p-5 text-center">
+                <x-base.lucide
+                    class="mx-auto mt-3 h-16 w-16 text-danger"
+                    icon="XCircle"
+                />
+                <div class="mt-5 text-3xl">¿Está seguro?</div>
+                <div class="mt-2 text-slate-500">
+                    ¿Realmente desea eliminar estos registros? <br />
+                    Este proceso no se puede deshacer.
+                </div>
+            </div>
+            <div class="px-5 pb-8 text-center">
+                <x-base.button
+                    class="mr-1 w-24"
+                    data-tw-dismiss="modal"
+                    type="button"
+                    variant="outline-secondary"
+                >
+                    Cancel
+                </x-base.button>
+
+                <!-- Formulario de eliminación -->
+                <form id="delete-form" method="POST" action="">
+                    @csrf
+                    @method('DELETE')
+                    <x-base.button
+                        class="w-24"
+                        type="submit"
+                        variant="danger"
+                    >
+                        Delete
+                    </x-base.button>
+                </form>
+            </div>
+        </x-base.dialog.panel>
+    </x-base.dialog>
+
+    <script>
+        function setDeleteAction(element) {
+            // Obtener el ID desde el atributo data-id
+            const id = element.getAttribute('data-id');
+            // Establecer la acción del formulario con la ruta dinámica
+            const form = document.getElementById('delete-form');
+            form.action = `/assistants/delete/${id}`;
+        }
+    </script>
+
+    <!-- END: Delete Confirmation Modal -->
 
         <!-- BEGIN: Pagination -->
         <div class="intro-y col-span-12 flex flex-wrap items-center sm:flex-row sm:flex-nowrap">

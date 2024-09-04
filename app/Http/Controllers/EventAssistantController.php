@@ -290,6 +290,34 @@ class EventAssistantController extends Controller
         return redirect()->route('eventAssistant.singleUpdateForm', [$idEventAssistant])->with('success', 'Actualización exitosa.');
     }
 
+    public function singleDelete($idEventAssistant)
+    {
+        // Buscar el registro de EventAssistant por el ID proporcionado
+        $eventAssistant = EventAssistant::find($idEventAssistant);
+        // Verificar si el registro existe
+        if (!$eventAssistant) {
+            return redirect()->back()->with('error', 'El registro no fue encontrado.');
+        }
+        // Validar que has_entered no sea 1
+        if ($eventAssistant->has_entered == 1) {
+            return redirect()->back()->with('error', 'No se puede eliminar el registro porque el asistente ya ha ingresado.');
+        }
+        // Verificar si existen registros relacionados en feature_consumptions
+        $relatedFeatureConsumptions = FeatureConsumption::where('event_assistant_id', $idEventAssistant)->exists();
+        if ($relatedFeatureConsumptions) {
+            return redirect()->back()->with('error', 'No se puede eliminar el registro porque tiene consumos de características asociados.');
+        }
+        try {
+            // Intentar eliminar el registro
+            $eventAssistant->delete();
+
+            // Redirigir de vuelta con un mensaje de éxito
+            return redirect()->route('eventAssistant.index')->with('success', 'El registro fue eliminado exitosamente.');
+        } catch (\Exception $e) {
+            // Manejo de errores, redirigir de vuelta con un mensaje de error
+            return redirect()->back()->with('error', 'Ocurrió un error al intentar eliminar el registro.');
+        }
+    }
 
     public function showQr($id)
     {
