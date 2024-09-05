@@ -23,10 +23,17 @@ class EventController extends Controller
     public function index(Request $request)
     {
         $search = $request->input('search');
+        // $status = config('statusEvento.'.$search);
+        // return $status;
         $eventos = Event::query()
             ->when($search, function ($query, $search) {
+                $status = config('statusEvento.'.$search);
                 $query->where('name', 'like', "%{$search}%")
                       ->orWhere('description', 'like', "%{$search}%");
+                if($status){
+                    $query
+                    ->orWhere('status', 'like', "%{$status}%");
+                }
             })
             ->paginate(10);
         return view('event.index', compact('eventos', 'search'));
