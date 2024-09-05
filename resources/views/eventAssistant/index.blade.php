@@ -80,6 +80,12 @@
                     </div>
                 </form>
             </div>
+
+            <a class="ml-3" href="{{ route('eventAssistant.specificSearch', ['idEvent' => $idEvent]) }}">
+                <x-base.button class="mr-2 shadow-md" variant="primary">
+                    Busqueda especifica de Asistente
+                </x-base.button>
+            </a>
         </div>
 
         <!-- BEGIN: Data List -->

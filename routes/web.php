@@ -139,6 +139,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/event-assistant/{id}/pdf', [EventAssistantController::class, 'generatePDF'])->name('eventAssistant.pdf');
     Route::patch('event-assistants/{eventAssistant}/features/{feature}/consume', [EventAssistantController::class, 'consumeFeature'])->name('eventAssistant.consumeFeature');
     Route::get('events/{id}/download-template', [EventAssistantController::class, 'downloadTemplate'])->name('eventAssistant.downloadTemplate');
+    Route::get('events/{idEvent}/specificSearch', [EventAssistantController::class, 'specificSearch'])->name('eventAssistant.specificSearch');
+    Route::get('events/{idEvent}/specificSearchUploead', [EventAssistantController::class, 'specificSearchUploead'])->name('eventAssistant.specificSearch.upload');
 
     //SELECTS
     Route::get('/cities/{department}', [CityController::class, 'getCitiesByDepartment']);

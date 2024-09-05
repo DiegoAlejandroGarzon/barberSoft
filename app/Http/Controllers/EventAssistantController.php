@@ -459,4 +459,74 @@ class EventAssistantController extends Controller
         // Descargar el archivo Excel
         return Excel::download($export, 'plantilla_asistentes-'.$event->name.'.xlsx');
     }
+
+    public function specificSearch($idEvent){
+        $eventAssistant = EventAssistant::where('event_id', $idEvent)->get();
+        $event = Event::find($idEvent);
+        $additionalParameters = json_decode($event->additionalParameters, true) ?? [];
+        $departments = Departament::all();
+        $event = Event::findOrFail($idEvent);
+        $ticketTypes  = TicketType::where('event_id', $idEvent)->get();
+        return view('eventAssistant.specificSearch', compact('event', 'departments', 'ticketTypes', 'additionalParameters'));
+    }
+
+    public function specificSearchUploead(Request $request, $idEvent){
+        // Obtener los campos de búsqueda del request y eliminar aquellos con valores nulos
+        $input = array_filter($request->except('_token'), function($value) {
+            return !is_null($value); // Filtra inputs que no sean null
+        });
+
+        // Obtener los IDs de usuarios que ya están registrados como asistentes del evento
+        $eventAssistantUserIds = EventAssistant::where('event_id', $idEvent)->pluck('user_id');
+
+        // Buscar en la tabla Users, pero solo aquellos que estén asociados con el evento
+        $query = User::whereIn('id', $eventAssistantUserIds);
+        $query->where('id', -1);
+        foreach ($input as $key => $value) {
+            if ($value) {
+                $query->orWhere($key, 'LIKE', '%' . $value . '%');
+            }
+        }
+
+        // Ejecutar la búsqueda en la tabla Users
+        $users = $query->get();
+        // Si no se encontraron usuarios en la tabla User, buscar en UserEventParameter y AdditionalParameter
+        if ($users->isEmpty()) {
+            $additionalParameterMatches = [];
+
+            foreach ($input as $key => $value) {
+                if ($value) {
+                    // Encontrar los additional_parameters que coincidan con los nombres de los campos
+                    $parameters = AdditionalParameter::where('event_id', $idEvent)
+                        ->where('name', $key)
+                        ->get();
+
+                    foreach ($parameters as $parameter) {
+                        // Buscar en UserEventParameter por el valor correspondiente y usuarios relacionados con el evento
+                        $matches = UserEventParameter::where('event_id', $idEvent)
+                            ->whereIn('user_id', $eventAssistantUserIds)
+                            ->where('additional_parameter_id', $parameter->id)
+                            ->where('value', 'LIKE', '%' . $value . '%')
+                            ->pluck('user_id');
+
+                        // Agregar los matches al arreglo de resultados
+                        $additionalParameterMatches = array_merge($additionalParameterMatches, $matches->toArray());
+                    }
+                }
+            }
+
+            // Obtener los usuarios que coinciden en UserEventParameter y están relacionados con el evento
+            $users = User::whereIn('id', $additionalParameterMatches)->get();
+        }
+
+        // Retornar la vista con los resultados
+        $eventAssistant = EventAssistant::where('event_id', $idEvent)->get();
+        $event = Event::find($idEvent);
+        $additionalParameters = json_decode($event->additionalParameters, true) ?? [];
+        $departments = Departament::all();
+        $event = Event::findOrFail($idEvent);
+        $ticketTypes  = TicketType::where('event_id', $idEvent)->get();
+        // return view('eventAssistant.specificSearch', compact('users', 'event'));
+        return view('eventAssistant.specificSearch', compact('event', 'departments', 'ticketTypes', 'additionalParameters', 'users'));
+    }
 }
