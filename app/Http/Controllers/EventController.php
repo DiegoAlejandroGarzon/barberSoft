@@ -42,6 +42,8 @@ class EventController extends Controller
         // Validar los datos de entrada
         $request->validate([
             'name' => 'required|string|max:255',
+            'address' => 'required|max:255',
+            'status' => 'required',
             'description' => 'required|string',
             'capacity' => 'required|integer|min:1',
             'city_id' => 'required|integer|exists:cities,id',
@@ -73,7 +75,9 @@ class EventController extends Controller
         $event->event_date = $request->event_date;
         $event->start_time = $request->start_time;
         $event->end_time = $request->end_time;
+        $event->address = $request->address;
         $event->header_image_path = $imagePath;
+        $event->status = $request->status;
         // Convertir los campos adicionales a JSON
         if($request->input('additionalFields')){
             $event->additionalFields = json_encode($request->input('additionalFields', []));
@@ -122,6 +126,8 @@ class EventController extends Controller
                 'ticketTypes.*.name' => 'required|string|max:255',
                 'ticketTypes.*.capacity' => 'required|integer|min:1',
                 'ticketTypes.*.price' => 'required|numeric',
+                'address' => 'required|max:255',
+                'status' => 'required',
             ]);
 
             // Manejar la carga de la nueva imagen si se sube una
@@ -141,6 +147,8 @@ class EventController extends Controller
             $event->event_date = $request->event_date;
             $event->start_time = $request->start_time;
             $event->end_time = $request->end_time;
+            $event->address = $request->address;
+            $event->status = $request->status;
 
             // Convertir los campos adicionales a JSON
             if($request->input('additionalFields')){

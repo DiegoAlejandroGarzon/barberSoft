@@ -21,6 +21,8 @@ class Event extends Model
         'city_id',
         'public_link',
         'registration_parameters',
+        'status',
+        'address',
     ];
 
 
