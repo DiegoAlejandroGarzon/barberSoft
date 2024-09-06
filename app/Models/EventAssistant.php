@@ -37,4 +37,11 @@ class EventAssistant extends Model
     {
         return $this->belongsTo(TicketType::class, 'ticket_type_id');
     }
+
+    // Define la relación con los parámetros adicionales
+    public function eventParameters()
+    {
+        return $this->hasMany(UserEventParameter::class, 'user_id', 'user_id')
+                    ->where('event_id', $this->event_id);
+    }
 }

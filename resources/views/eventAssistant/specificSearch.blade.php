@@ -6,11 +6,7 @@
 
 @section('subcontent')
 <div class="container">
-    <h2 class="mb-4">Crear Asistente para el Evento: <b>{{ $event->name }}</b></h2>
-
-    <form method="POST" action="{{ route('eventAssistant.singleAssign.upload', $event->id) }}">
-
-    </form>
+    <h2 class="mb-4">Busqueda del Asistente para el Evento: <b>{{ $event->name }}</b></h2>
 
     <div class="intro-x mt-8">
         <form method="GET" action="{{ route('eventAssistant.specificSearch.upload', $event->id) }}">

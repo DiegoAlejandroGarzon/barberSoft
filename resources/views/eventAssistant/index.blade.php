@@ -62,7 +62,13 @@
                         <x-base.lucide class="mr-2 h-4 w-4" icon="Printer" /> Imprimir
                     </x-base.menu.item>
                     <x-base.menu.item>
-                        <x-base.lucide class="mr-2 h-4 w-4" icon="FileText" /> Exportar a Excel
+                        <a target="_blank" href="{{ route('eventAssistant.exportExcel', [
+                            'idEvent' => $idEvent,
+                            'search' => request()->input('search'),
+                            'additionalParameters' => request()->input('additionalParameters', [])
+                            ]) }}">
+                            <x-base.lucide class="mr-2 h-4 w-4" icon="FileText" /> Exportar a Excel
+                        </a>
                     </x-base.menu.item>
                     <x-base.menu.item>
                         <x-base.lucide class="mr-2 h-4 w-4" icon="FileText" /> Exportar a PDF

@@ -141,6 +141,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('events/{id}/download-template', [EventAssistantController::class, 'downloadTemplate'])->name('eventAssistant.downloadTemplate');
     Route::get('events/{idEvent}/specificSearch', [EventAssistantController::class, 'specificSearch'])->name('eventAssistant.specificSearch');
     Route::get('events/{idEvent}/specificSearchUploead', [EventAssistantController::class, 'specificSearchUploead'])->name('eventAssistant.specificSearch.upload');
+    Route::get('/event-assistant/{idEvent}/export-excel', [EventAssistantController::class, 'exportExcel'])->name('eventAssistant.exportExcel');
 
     //SELECTS
     Route::get('/cities/{department}', [CityController::class, 'getCitiesByDepartment']);

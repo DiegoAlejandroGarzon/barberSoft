@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\EventAssistantsExport;
 use App\Exports\TemplateExport;
 use App\Imports\AssistantsImport;
 use App\Models\AdditionalParameter;
@@ -528,5 +529,19 @@ class EventAssistantController extends Controller
         $ticketTypes  = TicketType::where('event_id', $idEvent)->get();
         // return view('eventAssistant.specificSearch', compact('users', 'event'));
         return view('eventAssistant.specificSearch', compact('event', 'departments', 'ticketTypes', 'additionalParameters', 'users'));
+    }
+
+    public function exportExcel(Request $request, $idEvent)
+    {
+        $event = Event::find($idEvent);
+        // Obtener la búsqueda, campos seleccionados y parámetros adicionales desde el request
+        $search = $request->input('search');
+        $selectedFields = json_decode($event->registration_parameters, true) ?? [];
+        $additionalParameters = $event->additionalParameters;
+        // Exportar el archivo Excel usando los datos proporcionados
+        return Excel::download(
+            new EventAssistantsExport($idEvent, $selectedFields, $additionalParameters, $search),
+            'asistentes_de_'.$event->name.'_'.date('d-m-Y').'.xlsx'
+        );
     }
 }
