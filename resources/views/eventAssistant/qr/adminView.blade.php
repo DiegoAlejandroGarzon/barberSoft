@@ -11,6 +11,18 @@
             {{ session('success') }}
         </div>
     @endif
+    @if(session('error'))
+        <x-base.alert
+        class="mb-2 flex items-center"
+        variant="danger"
+        >
+            <x-base.lucide
+                class="mr-2 h-6 w-6"
+                icon="AlertCircle"
+            />
+            {{ session('error') }}
+        </x-base.alert>
+    @endif
     <div class="mt-5">
         <div class="box p-5">
             <h3 class="text-lg font-medium">Información del Asistente</h3>
@@ -36,11 +48,38 @@
             <p><strong>Hora de Finalización:</strong> {{ $eventAssistant->event->end_time }}</p>
             <p><strong>Ciudad:</strong> {{ $eventAssistant->event->city->name ?? 'N/A' }}</p>
             <p><strong>Capacidad:</strong> {{ $eventAssistant->event->capacity }}</p>
+            <br>
+            <h3 class="text-lg font-medium mt-5">Características del Ticket</h3>
+            <ul>
+                @if($eventAssistant?->ticketType)
 
+                @foreach ($eventAssistant?->ticketType?->features as $feature)
+                    <li>
+                        <strong>{{ $feature->name }}:</strong>
+                        @if ($feature->consumable)
+                        @php
+                            $featureConsumption = App\Models\FeatureConsumption::where('event_assistant_id', $eventAssistant->id)->where('ticket_feature_id', $feature->id)->first()
+                        @endphp
+                            @if (isset($featureConsumption))
+                                    <span class="text-gray-600">Consumido - {{$featureConsumption->consumed_at}}</span>
+                            @else
+                                <form action="{{ route('eventAssistant.consumeFeature', [$eventAssistant->id, $feature->id]) }}" method="POST" class="inline-block">
+                                    @csrf
+                                    @method('PATCH')
+                                    <x-base.button type="submit" variant="success">Consumir</x-base.button>
+                                </form>
+                            @endif
+                        @else
+                            <span class="text-gray-600">No Consumible</span>
+                        @endif
+                    </li>
+                @endforeach
+                @endif
+            </ul>
             <br>
             <!-- Botón para Registrar Ingreso -->
 
-            @if(!$eventAssistant->has_entered)
+            @if(!$eventAssistant->has_entered && !$eventAssistant->rejected)
             <form action="{{ route('eventAssistant.registerEntry', $eventAssistant->id) }}" method="POST">
                 @csrf
                 @method('PATCH')
@@ -52,20 +91,61 @@
                 Registrar Ingreso
                 </x-base.button>
             </form>
-            @else
 
+            <form action="{{ route('eventAssistant.rejectEntry', $eventAssistant->id) }}" method="POST" class="inline-block ml-2">
+                @csrf
+                @method('PATCH')
+                <x-base.button
+                class="w-24"
+                type="submit"
+                variant="danger"
+                >
+                Rechazar Ingreso
+                </x-base.button>
+            </form>
+            @else
             <div class="mt-2 flex items-center">
+                @if($eventAssistant->has_entered)
                 <x-base.alert
                 class="mb-2 flex items-center"
                 variant="warning"
-            >
-                <x-base.lucide
-                    class="mr-2 h-6 w-6"
-                    icon="AlertCircle"
-                />
-                Status:
-                YA HA REGISTRADO EL INGRESO
-            </x-base.alert>
+                >
+                    <x-base.lucide
+                        class="mr-2 h-6 w-6"
+                        icon="AlertCircle"
+                    />
+                    Status:
+                    YA HA REGISTRADO EL INGRESO el {{$eventAssistant->entry_time}}
+                </x-base.alert>
+                @endif
+
+                @if($eventAssistant->rejected)
+                <x-base.alert
+                class="mb-2 flex items-center"
+                variant="danger"
+                >
+                    <x-base.lucide
+                        class="mr-2 h-6 w-6"
+                        icon="AlertCircle"
+                    />
+                    Status:
+                    INGRESO RECHAZADO el {{$eventAssistant->rejected_time}}
+                </x-base.alert>
+
+                @if(!$eventAssistant->has_entered)
+                <form action="{{ route('eventAssistant.registerEntry', $eventAssistant->id) }}" method="POST">
+                    @csrf
+                    @method('PATCH')
+                    <x-base.button
+                    class="w-24"
+                    type="submit"
+                    variant="primary"
+                    >
+                    Registrar Ingreso
+                    </x-base.button>
+                </form>
+                @endif
+                @endif
             </div>
             @endif
         </div>

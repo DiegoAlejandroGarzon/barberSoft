@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('event_assistant', function (Blueprint $table) {
+        Schema::table('event_assistants', function (Blueprint $table) {
             $table->longText('qrCode')->nullable()->after('has_entered');
         });
     }
@@ -21,7 +21,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('event_assistant', function (Blueprint $table) {
+        Schema::table('event_assistants', function (Blueprint $table) {
             //
         });
     }

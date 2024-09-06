@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('event_assistants', function (Blueprint $table) {
-            $table->uuid('guid')->nullable();
+        Schema::table('events', function (Blueprint $table) {
+            $table->json('registration_parameters')->nullable()->after('description');
         });
     }
 
@@ -21,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('event_assistants', function (Blueprint $table) {
-            $table->dropColumn('guid');
+        Schema::table('events', function (Blueprint $table) {
+            $table->dropColumn('registration_parameters');
         });
     }
 };

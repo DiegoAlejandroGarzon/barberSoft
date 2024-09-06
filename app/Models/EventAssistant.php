@@ -9,7 +9,7 @@ class EventAssistant extends Model
 {
     use HasFactory;
 
-    protected $table = "event_assistant";
+    protected $table = "event_assistants";
 
     protected $fillable = [
         'event_id',
@@ -18,6 +18,9 @@ class EventAssistant extends Model
         'has_entered',
         'qrCode',
         'guid',
+        'entry_time',
+        'rejected',
+        'rejected_time',
     ];
 
     public function event()

@@ -20,6 +20,7 @@ class Event extends Model
         'event_date',
         'city_id',
         'public_link',
+        'registration_parameters',
     ];
 
 
@@ -36,5 +37,10 @@ class Event extends Model
     public function assistants()
     {
         return $this->hasMany(EventAssistant::class);
+    }
+
+    public function additionalParameters()
+    {
+        return $this->hasMany(AdditionalParameter::class, 'event_id');
     }
 }

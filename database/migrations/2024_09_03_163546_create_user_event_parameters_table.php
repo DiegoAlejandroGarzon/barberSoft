@@ -9,24 +9,23 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up()
+    public function up(): void
     {
-        Schema::create('event_assistants', function (Blueprint $table) {
+        Schema::create('user_event_parameters', function (Blueprint $table) {
             $table->id();
             $table->foreignId('event_id')->constrained()->onDelete('cascade');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('ticket_type_id')->nullable()->constrained()->onDelete('cascade');
-            $table->boolean('has_entered')->default(false);
+            $table->foreignId('additional_parameter_id')->constrained()->onDelete('cascade');
+            $table->text('value');
             $table->timestamps();
         });
     }
-
 
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
-        Schema::dropIfExists('event_user');
+        Schema::dropIfExists('user_event_parameters');
     }
 };

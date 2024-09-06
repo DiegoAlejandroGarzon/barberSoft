@@ -148,6 +148,14 @@
                                         />
                                         Asistentes
                                     </a>
+
+                                    <a class="mr-3 flex items-center" href="{{ route('events.setRegistrationParameters',  $evento->id) }}">
+                                        <x-base.lucide
+                                            class="mr-1 h-4 w-4"
+                                            variant="primary"
+                                        />
+                                        Registro Parametros
+                                    </a>
                                     @if ($evento->public_link)
                                         <a href="{{ route('event.register', $evento->public_link) }}" target="_blank">Ver enlace</a>
                                     @else

@@ -61,7 +61,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post('/users/create', [UserController::class, 'store'])->name('users.store');
     Route::get('/users/update/{id}', [UserController::class, 'edit'])->name('users.edit');
     Route::post('/users/update', [UserController::class, 'update'])->name('users.update');
-    
+
     //CRUD CONFIGURACIONES
     //CRUD CONFIGURACION DEPARTAMENTO
     Route::get('/department',[DepartmentController::class,'list'])->name('department.index');
@@ -70,7 +70,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/department/update/{id}',[DepartmentController::class,'edit'])->name('department.edit');
     Route::post('/department/update/',[DepartmentController::class,'update'])->name('department.update');
     Route::get('/department/delete/{id}',[DepartmentController::class,'delete'])->name('department.delete');
-    
+
     //CRUD CONFIGURACION CIUDAD
     Route::get('/city',[CityController::class,'list'])->name('city.index');
     Route::get('/city/create',[CityController::class,'create'])->name('city.create');
@@ -78,7 +78,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/city/update/{id}',[CityController::class,'edit'])->name('city.edit');
     Route::post('/city/update/',[CityController::class,'update'])->name('city.update');
     Route::get('/city/delete/{id}',[CityController::class,'delete'])->name('city.delete');
-    
+
     //CRUD  CONFIGURACION TICKETFREATURE
     Route::get('/ticketFeatures',[TicketFeatureController::class,'index'])->name('ticketFeatures.index');
     Route::get('/ticketFeaturess/create',[TicketFeatureController::class,'create'])->name('ticketFeatures.create');
@@ -87,15 +87,10 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post('/ticketFeatures/update/',[TicketFeatureController::class,'update'])->name('ticketFeatures.update');
     Route::get('/ticketFeatures/delete/{id}',[TicketFeatureController::class,'delete'])->name('ticketFeatures.delete');
     
-       //pdf
-    Route::get('/pdf',[PDFController::class, 'getPDF'])->name('pdf.PDF_Example');
-    Route::get('/pdf/{id}',[PDFController::class, 'buildPDF'])->name('pdf.PDF_Example');
-
-
     
     //CRUD AJAX
     Route::get('input-form', [AjaxController::class, 'index']);
-    Route::get('search-Autocomplete', [AjaxController::class, 'searchAutocomplete']);   
+    Route::get('search-Autocomplete', [AjaxController::class, 'searchAutocomplete']);
 
 
     Route::get('input-form-Layout', [AjaxController::class, 'index']);
@@ -107,8 +102,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
             Route::get('search/{query}',[AjaxController::class,'index']);
 
     });
-    
-    
+
+
 
     //EDITAR PERFIL
     Route::get('/profile/update/{id}', [UserController::class, 'profileEdit'])->name('profile.edit');
@@ -125,6 +120,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/event/update/{id}', [EventController::class, 'edit'])->name('event.edit');
     Route::post('/event/update', [EventController::class, 'update'])->name('event.update');
     Route::post('/event/generatePublicLink/{id}', [EventController::class, 'generatePublicLink'])->name('event.generatePublicLink');
+    Route::get('/events/{id}/set-registration-parameters', [EventController::class, 'setRegistrationParameters'])->name('events.setRegistrationParameters');
+    Route::post('/events/{id}/store-registration-parameters', [EventController::class, 'storeRegistrationParameters'])->name('events.storeRegistrationParameters');
 
     //ASISTENTS TO EVENT
     Route::get('/assistants/{idEvent}', [EventAssistantController::class, 'index'])->name('assistantsEvent.index');
@@ -132,23 +129,10 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post('/assistants/{idEvent}/massAssign', [EventAssistantController::class, 'uploadMassAssign'])->name('eventAssistant.massAssign.upload');
     Route::get('/assistants/{idEvent}/singleAssignForm', [EventAssistantController::class, 'singleAssignForm'])->name('eventAssistant.singleAssignForm');
     Route::post('/assistants/{idEvent}/singleAssignForm', [EventAssistantController::class, 'uploadSingleAssign'])->name('eventAssistant.singleAssign.upload');
-    Route::get('/assistants/update/{id}', [EventAssistantController::class, 'edit'])->name('eventAssistant.edit');
-
-    //ASISTENTS TO EVENT
-    Route::get('/assistants/{idEvent}', [EventAssistantController::class, 'index'])->name('eventAssistant.index');
-    Route::get('/assistants/{idEvent}/massAssign', [EventAssistantController::class, 'showMassAssign'])->name('eventAssistant.massAssign');
-    Route::post('/assistants/{idEvent}/massAssign', [EventAssistantController::class, 'uploadMassAssign'])->name('eventAssistant.massAssign.upload');
-    Route::get('/assistants/{idEvent}/singleAssignForm', [EventAssistantController::class, 'singleAssignForm'])->name('eventAssistant.singleAssignForm');
-    Route::post('/assistants/{idEvent}/singleAssignForm', [EventAssistantController::class, 'uploadSingleAssign'])->name('eventAssistant.singleAssign.upload');
     Route::get('/assistants/{idEvent}/singleCreateForm', [EventAssistantController::class, 'singleCreateForm'])->name('eventAssistant.singleCreateForm');
     Route::post('/assistants/{idEvent}/singleCreate', [EventAssistantController::class, 'singleCreateUpload'])->name('eventAssistant.singleCreate.upload');
     Route::get('/assistants/update/{id}', [EventAssistantController::class, 'edit'])->name('eventAssistant.edit');
-    Route::get('/event-assistant/{id}/qr', [EventAssistantController::class, 'showQr'])->name('eventAssistant.qr');
-    Route::patch('/event-assistant/{id}/register-entry', [EventAssistantController::class, 'registerEntry'])->name('eventAssistant.registerEntry');
-    Route::patch('/event-assistant/{id}/reject-entry', [EventAssistantController::class, 'rejectEntry'])->name('eventAssistant.rejectEntry');
-    Route::get('/event-assistant/{id}/pdf', [EventAssistantController::class, 'generatePDF'])->name('eventAssistant.pdf');
-    Route::patch('event-assistants/{eventAssistant}/features/{feature}/consume', [EventAssistantController::class, 'consumeFeature'])->name('eventAssistant.consumeFeature');
-    Route::get('events/{id}/download-template', [EventAssistantController::class, 'downloadTemplate'])->name('eventAssistant.downloadTemplate');
+
 
    
 
