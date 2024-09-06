@@ -25,7 +25,7 @@ class DepartmentController extends Controller
 
 
     public function create(){
-        $roles = Role::all();
+        $roles = Role::all();       
         return view('department.create', compact(['roles']));
     }
 

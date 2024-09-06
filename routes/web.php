@@ -5,6 +5,7 @@ use App\Http\Controllers\PageController;
 use App\Http\Controllers\ThemeController;
 use App\Http\Controllers\LayoutController;
 
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes

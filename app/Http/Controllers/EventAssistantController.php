@@ -2,16 +2,24 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\TemplateExport;
 use App\Imports\AssistantsImport;
+use App\Models\AdditionalParameter;
+use App\Models\Departament;
 use App\Models\Event;
 use App\Models\EventAssistant;
+use App\Models\FeatureConsumption;
+use App\Models\TicketFeatures;
 use App\Models\TicketType;
 use App\Models\User;
+use App\Models\UserEventParameter;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Maatwebsite\Excel\Facades\Excel;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use Spatie\Permission\Models\Role;
 
 class EventAssistantController extends Controller
 {
@@ -129,6 +137,76 @@ class EventAssistantController extends Controller
         ->with('success', 'Asistentes asignados exitosamente.');
     }
 
+    public function singleCreateForm($idEvent)
+    {
+        $event = Event::find($idEvent);
+        $additionalParameters = json_decode($event->additionalParameters, true) ?? [];
+        $departments = Departament::all();
+        $event = Event::findOrFail($idEvent);
+        $ticketTypes  = TicketType::where('event_id', $idEvent)->get();
+        return view('eventAssistant.singleCreate', compact('event', 'departments', 'ticketTypes', 'additionalParameters'));
+    }
+
+    public function singleCreateUpload(Request $request, $idEvent)
+    {
+        $event = Event::find($idEvent);
+
+        // $request = $request->validate([
+        //     'name' => 'required|string|max:255',
+        //     'email' => 'required|email|max:255',
+        //     'type_document' => 'required|string|max:3',
+        //     'document_number' => 'required|string|max:20|unique:users,document_number',
+        // ]);
+
+        // Buscar el usuario por correo electrónico, o crear uno nuevo si no existe
+        $user = User::create(
+            [
+                'name' => $request['name'],
+                'password' => Hash::make('12345678'), // Contraseña predeterminada
+                'status' => false,
+                'email' => $request['email'],
+                'type_document' => $request['type_document'],
+            ]
+        );
+
+        // Verificar si el usuario tiene el rol de 'assistant', si no, asignarlo
+        if (!$user->hasRole('assistant')) {
+            $assistantRole = Role::firstOrCreate(['name' => 'assistant']); // Crear el rol si no existe
+            $user->assignRole($assistantRole);
+        }
+
+        // Crear el registro en la tabla `event_assistant` si no existe
+        EventAssistant::firstOrCreate(
+            [
+                'event_id' => $event->id,
+                'user_id' => $user->id,
+            ],
+            [
+                'ticket_type_id' => $request['id_ticket'] ?? null,
+                'has_entered' => false,
+            ]
+        );
+
+        // Obtener los parámetros adicionales definidos para el evento
+        $definedParameters = AdditionalParameter::where('event_id', $event->id)->get();
+        // Obtener las columnas definidas en $fillable del modelo User
+        $userFillableColumns = (new User())->getFillable();
+        // Detectar y almacenar parámetros adicionales enviados en el registro
+        $additionalParameters = $request->except(array_merge(['_token'], $userFillableColumns)); // Excluir columnas del modelo User
+
+        foreach ($definedParameters as $definedParameter) {
+            if (isset($additionalParameters[$definedParameter->name])) {
+                UserEventParameter::create([
+                    'event_id' => $event->id,
+                    'user_id' => $user->id,
+                    'additional_parameter_id' => $definedParameter->id,
+                    'value' => $additionalParameters[$definedParameter->name],
+                ]);
+            }
+        }
+
+        return redirect()->route('eventAssistant.singleCreateForm', $idEvent)->with('success', 'Inscripción exitosa.');
+    }
     public function showQr($id)
     {
         // Obtener el asistente por ID
@@ -169,10 +247,38 @@ class EventAssistantController extends Controller
 
         // Cambiar el estado de has_entered
         $eventAssistant->has_entered = true;
+        $eventAssistant->entry_time = now();
         $eventAssistant->save();
 
-        // Redirigir de nuevo a la vista con un mensaje de éxito
-        return redirect()->back()->with('success', 'Ingreso registrado correctamente.');
+        $event = $eventAssistant->event;
+        $currentCount = EventAssistant::where('event_id', $event->id)
+        ->where('has_entered', true)
+        ->count();
+        $successMessage = 'Ingreso registrado correctamente.';
+
+        if ($currentCount >= $event->capacity) {
+            // Redirigir con una alerta si se ha superado el aforo
+            return redirect()->back()->with([
+                'success' => $successMessage,
+                'error' => 'Aforo máximo alcanzado o superado. Se han registrado '.$currentCount." entradas y la capacidad maximo es de ".$event->capacity,
+            ]);
+        }else{
+            return redirect()->back()->with('success', $successMessage);
+        }
+    }
+
+    public function rejectEntry($id)
+    {
+        // Buscar el asistente por su ID
+        $eventAssistant = EventAssistant::findOrFail($id);
+
+        // Cambiar el estado de rechazo
+        $eventAssistant->rejected = true;
+        $eventAssistant->rejected_time = now();
+        $eventAssistant->save();
+
+        // Redirigir de nuevo a la vista con un mensaje de rechazo
+        return redirect()->back()->with('success', 'Ingreso rechazado correctamente.');
     }
 
     public function generatePDF($id)
@@ -189,5 +295,56 @@ class EventAssistantController extends Controller
         return $pdf->stream('asistente_'.$asistente->user->name.'_evento_'.$evento->name.'.pdf');
         // Se descarga,
         // return $pdf->download('Asistente_Evento_' . $asistente->user->name . '.pdf');
+    }
+
+    public function consumeFeature(EventAssistant $eventAssistant, $feature)
+    {
+        $eventAssistant = EventAssistant::find($eventAssistant)->first();
+        // return $eventAssistant;
+        $feature = TicketFeatures::find($feature);
+        // return $feature->id;
+        $featureConsumptions = FeatureConsumption::where('event_assistant_id', $eventAssistant->id)->where('ticket_feature_id', $feature->id)->get()->count();
+        // Verificar si el feature es consumible y no ha sido consumido
+        if (!$feature->consumable || $featureConsumptions > 0) {
+            return redirect()->back()->with('error', 'El feature no es consumible o ya ha sido consumido.');
+        }
+
+        // Marcar el feature como consumido
+        $featureConsumptions = new FeatureConsumption();
+        $featureConsumptions->event_assistant_id = $eventAssistant->id;
+        $featureConsumptions->ticket_feature_id = $feature->id;
+        $featureConsumptions->consumed_at = now();
+        $featureConsumptions->save();
+
+        return redirect()->back()->with('success', 'El feature ha sido consumido exitosamente.');
+    }
+
+    public function downloadTemplate($id)
+    {
+        // Obtener los parámetros de inscripción (registration_parameters) del evento desde la base de datos
+        $event = Event::findOrFail($id);
+
+        // Decodificar los parámetros de inscripción de formato JSON a un array PHP
+        $registration_parameters = json_decode($event->registration_parameters, true);
+
+        // Si registration_parameters es nulo o vacío, usa un conjunto predeterminado
+        if (empty($registration_parameters)) {
+            $registration_parameters = [
+                'name',
+                'lastname',
+                'email',
+                'type_document',
+                'document_number',
+                'phone',
+                'city_id',
+                'birth_date',
+            ];
+        }
+
+        // Crear una instancia de la exportación con los encabezados
+        $export = new TemplateExport($registration_parameters);
+
+        // Descargar el archivo Excel
+        return Excel::download($export, 'plantilla_asistentes-'.$event->name.'.xlsx');
     }
 }
