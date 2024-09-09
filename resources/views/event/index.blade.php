@@ -16,6 +16,9 @@
                     Crear nuevo Evento
                 </x-base.button>
             </a>
+            <div class="text-center">
+                <a data-tw-merge data-tw-toggle="modal" data-tw-target="#basic-slide-over-preview" href="#" class="transition duration-200 border shadow-sm inline-flex items-center justify-center py-2 px-3 rounded-md font-medium cursor-pointer focus:ring-4 focus:ring-primary focus:ring-opacity-20 focus-visible:outline-none dark:focus:ring-slate-700 dark:focus:ring-opacity-50 [&amp;:hover:not(:disabled)]:bg-opacity-90 [&amp;:hover:not(:disabled)]:border-opacity-90 [&amp;:not(button)]:text-center disabled:opacity-70 disabled:cursor-not-allowed bg-primary border-primary text-white dark:border-primary">Escaner QR</a>
+            </div>
             <x-base.menu>
                 <x-base.menu.button
                     class="!box px-2"
@@ -195,4 +198,44 @@
         </div>
         <!-- END: Pagination -->
     </div>
+    <!-- Incluir la biblioteca de html5-qrcode -->
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+
+
+    <!-- BEGIN: Slide Over QR -->
+    <div data-tw-backdrop="" aria-hidden="true" tabindex="-1" id="basic-slide-over-preview" class="modal group bg-black/60 transition-[visibility,opacity] w-screen h-screen fixed left-0 top-0 [&amp;:not(.show)]:duration-[0s,0.2s] [&amp;:not(.show)]:delay-[0.2s,0s] [&amp;:not(.show)]:invisible [&amp;:not(.show)]:opacity-0 [&amp;.show]:visible [&amp;.show]:opacity-100 [&amp;.show]:duration-[0s,0.4s]">
+        <div data-tw-merge class="w-[90%] ml-auto h-screen flex flex-col bg-white relative shadow-md transition-[margin-right] duration-[0.6s] -mr-[100%] group-[.show]:mr-0 dark:bg-darkmode-600 sm:w-[460px]">
+            <div data-tw-merge class="flex items-center px-5 py-3 border-b border-slate-200/60 dark:border-darkmode-400 p-5">
+                <h2 class="mr-auto text-base font-medium">
+                    Escaner de Codigo QR
+                </h2>
+            </div>
+            <div data-tw-merge class="p-5 overflow-y-auto flex-1">
+                <div id="qr-reader" style="width: 300px;" class="border "></div>
+                <div id="qr-reader-results" class="border "></div>
+            </div>
+
+        </div>
+    </div>
+    <!-- END: Slide Over QR -->
+    <!-- Contenedor para el lector de QR -->
+    <script>
+        function onScanSuccess(decodedText, decodedResult) {
+            // Manejar el resultado escaneado aquí
+            document.getElementById('qr-reader-results').innerText = `Codigo QR Detectado: ${decodedText}`;
+        }
+
+        function onScanError(errorMessage) {
+            // Manejar el error de escaneo
+            console.error(`Error al escanear codigo QR: ${errorMessage}`);
+        }
+
+        // Inicializa el lector de QR
+        let html5QrcodeScanner = new Html5QrcodeScanner(
+            "qr-reader", { fps: 10, qrbox: 250 }
+        );
+
+        // Comienza a escanear
+        html5QrcodeScanner.render(onScanSuccess, onScanError);
+    </script>
 @endsection

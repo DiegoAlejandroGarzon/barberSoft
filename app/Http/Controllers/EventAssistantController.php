@@ -329,11 +329,14 @@ class EventAssistantController extends Controller
         return view('eventAssistant.qr', compact('asistente'));
     }
 
-    public function infoQr($id)
+    public function infoQr($id, $public_link)
     {
         // Buscar el asistente por su ID
         $eventAssistant = EventAssistant::findOrFail($id);
 
+        if($eventAssistant->guid != $public_link){
+            abort(404); // Devuelve un error 404 Not Found
+        }
         // Verificar si el usuario está autenticado
         if (Auth::check()) {
             // Obtener el usuario autenticado
