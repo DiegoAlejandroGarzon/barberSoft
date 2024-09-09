@@ -84,7 +84,7 @@
                         name="document_number"
                         type="text"
                         placeholder="Número de Documento"
-                        value="{{ old('document_number') }}"
+                        value="{{ $eventAssistant->user->document_number }}"
                     />
                     @error('document_number')
                         <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
@@ -101,7 +101,7 @@
                         name="phone"
                         type="text"
                         placeholder="Teléfono"
-                        value="{{ old('phone') }}"
+                        value="{{ $eventAssistant->user->birth_date->phone }}"
                     />
                     @error('phone')
                         <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
@@ -121,7 +121,7 @@
                     >
                         <option></option>
                         @foreach ($departments as $department)
-                            <option value="{{$department->id}}" {{ old('department_id') == $department->id ? 'selected' : '' }}>{{ $department->code_dane }} - {{ $department->name }}</option>
+                            <option value="{{$department->id}}" {{ $eventAssistant->user->birth_date->department_id == $department->id ? 'selected' : '' }}>{{ $department->code_dane }} - {{ $department->name }}</option>
                         @endforeach
                     </x-base.tom-select>
                     @error('department_id')
@@ -155,13 +155,38 @@
                         id="birth_date"
                         name="birth_date"
                         type="date"
-                        value="{{ old('birth_date') }}"
+                        value="{{ $eventAssistant->user->birth_date }}"
+                        onchange="checkAge()"
                     />
                     @error('birth_date')
                         <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
                     @enderror
                 </div>
 
+                <!-- Botón Asignar Acudiente -->
+                <div class="mt-3" id="guardian-section" style="display:none;">
+                    <a onclick="showGuardianSelect()" class="bg-blue-500 text-white px-4 py-2 rounded">
+                        Asignar Acudiente
+                    </a>
+                </div>
+                <!-- Select Acudiente -->
+                <div class="mt-3" id="guardian-select-section" style="{{$eventAssistant->guardian_id != null ? '' : 'display:none;'}}">
+                    <x-base.form-label for="guardian_id">Acudientes disponibles</x-base.form-label>
+                    <x-base.tom-select
+                        class="w-full {{ $errors->has('guardian_id') ? 'border-red-500' : '' }}"
+                        id="guardian_id"
+                        name="guardian_id"
+                        onchange="filterCities()"
+                    >
+                        <option></option>
+                        @foreach ($guardians as $guardian)
+                            <option value="{{$guardian->user->id}}" {{ $eventAssistant->guardian_id == $guardian->user->id ? 'selected' : '' }}>{{ $guardian->user->name }} - {{ $guardian->user->document_number }}</option>
+                        @endforeach
+                    </x-base.tom-select>
+                    @error('guardian_id')
+                        <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                    @enderror
+                </div>
                 @break
             <!-- Continúa con los demás campos de manera similar -->
         @endswitch
@@ -220,4 +245,51 @@
         </div>
     </form>
 </div>
+
+
+<script>
+    // Función para calcular la edad y mostrar el botón si es menor de edad
+    function checkAge() {
+        const birthDate = document.getElementById('birth_date').value;
+        if (birthDate) {
+            const today = new Date();
+            const birth = new Date(birthDate);
+            let age = today.getFullYear() - birth.getFullYear(); // Cambiado a 'let'
+            const monthDiff = today.getMonth() - birth.getMonth();
+
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+                age--;
+            }
+
+            if (age < 18) {
+                document.getElementById('guardian-section').style.display = 'block';
+            } else {
+                document.getElementById('guardian-section').style.display = 'none';
+                document.getElementById('guardian-select-section').style.display = 'none';
+            }
+        }
+    }
+
+    // Función para mostrar el select de acudiente con una alerta
+    function showGuardianSelect() {
+        alert("Recuerda que para asignar un acudiente, solo van a poder ser asignados los que ya están creados en el evento y tengan un tipo de documento.");
+        document.getElementById('guardian-select-section').style.display = 'block';
+
+        // Realizar petición para obtener los asistentes
+        fetch('/event-assistants?event_id={{ $event->id }}') // Ruta al controlador para obtener los asistentes
+            .then(response => response.json())
+            .then(data => {
+                const select = document.getElementById('guardian_id');
+                select.innerHTML = ''; // Limpiar select
+                data.forEach(assistant => {
+                    if (assistant.document_number !== null) {
+                        const option = document.createElement('option');
+                        option.value = assistant.id;
+                        option.text = assistant.name + ' ' + assistant.lastname;
+                        select.appendChild(option);
+                    }
+                });
+            });
+    }
+</script>
 @endsection

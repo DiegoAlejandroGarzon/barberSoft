@@ -8,10 +8,6 @@
 <div class="container">
     <h2 class="mb-4">Crear Asistente para el Evento: <b>{{ $event->name }}</b></h2>
 
-    <form method="POST" action="{{ route('eventAssistant.singleAssign.upload', $event->id) }}">
-
-    </form>
-
     <div class="intro-x mt-8">
         <form method="POST" action="{{ route('eventAssistant.singleCreate.upload', $event->id) }}">
             @csrf
@@ -171,8 +167,36 @@
                         name="birth_date"
                         type="date"
                         value="{{ old('birth_date') }}"
+                        onchange="checkAge()"
                     />
                     @error('birth_date')
+                        <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <!-- Botón Asignar Acudiente -->
+                <div class="mt-3" id="guardian-section" style="display:none;">
+                    <button type="button" onclick="showGuardianSelect()" class="bg-blue-500 text-white px-4 py-2 rounded">
+                        Asignar Acudiente
+                    </button>
+                </div>
+
+                <!-- Select Acudiente -->
+
+                <div class="mt-3" id="guardian-select-section" style="display:none;">
+                    <x-base.form-label for="guardian_id">Acudientes disponibles</x-base.form-label>
+                    <x-base.tom-select
+                        class="w-full {{ $errors->has('guardian_id') ? 'border-red-500' : '' }}"
+                        id="guardian_id"
+                        name="guardian_id"
+                        onchange="filterCities()"
+                    >
+                        <option></option>
+                        @foreach ($guardians as $guardian)
+                            <option value="{{$guardian->user->id}}" {{ old('guardian_id') == $guardian->user->id ? 'selected' : '' }}>{{ $guardian->user->name }} - {{ $guardian->user->document_number }}</option>
+                        @endforeach
+                    </x-base.tom-select>
+                    @error('guardian_id')
                         <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
                     @enderror
                 </div>
@@ -218,6 +242,7 @@
                 </div>
             @endforeach
 
+            <!-- Botón de Registro -->
             <div class="intro-x mt-5 text-center xl:mt-8 xl:text-left">
                 <x-base.button class="w-full px-4 py-3 align-top xl:mr-3 xl:w-32" type="submit" variant="primary">
                     Registrarse
@@ -226,4 +251,50 @@
         </form>
     </div>
 </div>
+
+<script>
+    // Función para calcular la edad y mostrar el botón si es menor de edad
+    function checkAge() {
+        const birthDate = document.getElementById('birth_date').value;
+        if (birthDate) {
+            const today = new Date();
+            const birth = new Date(birthDate);
+            let age = today.getFullYear() - birth.getFullYear(); // Cambiado a 'let'
+            const monthDiff = today.getMonth() - birth.getMonth();
+
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+                age--;
+            }
+
+            if (age < 18) {
+                document.getElementById('guardian-section').style.display = 'block';
+            } else {
+                document.getElementById('guardian-section').style.display = 'none';
+                document.getElementById('guardian-select-section').style.display = 'none';
+            }
+        }
+    }
+
+    // Función para mostrar el select de acudiente con una alerta
+    function showGuardianSelect() {
+        alert("Recuerda que para asignar un acudiente, solo van a poder ser asignados los que ya están creados en el evento y tengan un tipo de documento.");
+        document.getElementById('guardian-select-section').style.display = 'block';
+
+        // Realizar petición para obtener los asistentes
+        fetch('/event-assistants?event_id={{ $event->id }}') // Ruta al controlador para obtener los asistentes
+            .then(response => response.json())
+            .then(data => {
+                const select = document.getElementById('guardian_id');
+                select.innerHTML = ''; // Limpiar select
+                data.forEach(assistant => {
+                    if (assistant.document_number !== null) {
+                        const option = document.createElement('option');
+                        option.value = assistant.id;
+                        option.text = assistant.name + ' ' + assistant.lastname;
+                        select.appendChild(option);
+                    }
+                });
+            });
+    }
+</script>
 @endsection

@@ -49,7 +49,7 @@ Route::post('password/reset', [ResetPasswordController::class, 'reset'])->name('
 //inscripcion de asistente
 Route::get('/event/register/{public_link}', [EventController::class, 'showPublicRegistrationForm'])->name('event.register');
 Route::post('/event/register/{public_link}', [EventController::class, 'submitPublicRegistration'])->name('event.register.submit');
-Route::get('/event-assistant/infoQr/{id}/{public_link}', [EventAssistantController::class, 'infoQr'])->name('event.register.submit');
+Route::get('/event-assistant/infoQr/{id}/{guid}', [EventAssistantController::class, 'infoQr'])->name('eventAssistant.infoQr');
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

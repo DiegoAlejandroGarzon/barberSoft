@@ -145,7 +145,18 @@ class EventAssistantController extends Controller
         $departments = Departament::all();
         $event = Event::findOrFail($idEvent);
         $ticketTypes  = TicketType::where('event_id', $idEvent)->get();
-        return view('eventAssistant.singleCreate', compact('event', 'departments', 'ticketTypes', 'additionalParameters'));
+        // Obtener asistentes mayores de 18 años con número de documento
+        $guardians = EventAssistant::where('event_id', $idEvent)
+            ->whereHas('user', function ($query) {
+                $query->whereNotNull('document_number')
+                    ->where('birth_date', '<=', now()->subYears(18))
+                    ; // Filtrar mayores de 18
+            })
+            ->with(['user' => function ($query) {
+                $query->select('id', 'name', 'document_number'); // Seleccionar solo los campos requeridos
+            }])
+        ->get();
+        return view('eventAssistant.singleCreate', compact('event', 'departments', 'ticketTypes', 'additionalParameters', 'guardians'));
     }
 
     public function singleCreateUpload(Request $request, $idEvent)
@@ -160,24 +171,37 @@ class EventAssistantController extends Controller
         // ]);
 
         // Buscar el usuario por correo electrónico, o crear uno nuevo si no existe
-        $user = User::create(
-            [
-                'name' => $request['name'],
-                'password' => Hash::make('12345678'), // Contraseña predeterminada
-                'status' => false,
-                'email' => $request['email'],
-                'type_document' => $request['type_document'],
-            ]
-        );
+        // $user = User::create(
+        //     [
+        //         'name' => $request['name'],
+        //         'password' => Hash::make('12345678'), // Contraseña predeterminada
+        //         'status' => false,
+        //         'email' => $request['email'],
+        //         'type_document' => $request['type_document'],
+        //     ]
+        // );
+        // Obtener las columnas definidas en $fillable del modelo User
+        $user = new User();
+        $userFillableColumns = (new User())->getFillable();
+        $createData = []; // Inicializar el array para los datos de creación
+        // Recorrer las columnas permitidas y verificar si están presentes en el request
+        foreach ($userFillableColumns as $column) {
+            if ($request->has($column)) {
+                $createData[$column] = $request[$column];
+            }
+        }
+        $createData['status'] = false;
+        $user = User::create($createData);
 
         // Verificar si el usuario tiene el rol de 'assistant', si no, asignarlo
         if (!$user->hasRole('assistant')) {
             $assistantRole = Role::firstOrCreate(['name' => 'assistant']); // Crear el rol si no existe
             $user->assignRole($assistantRole);
         }
+        $guardianId = $request->input('guardian_id') ?? null; // Asegúrate de que tu formulario tenga este campo
 
         // Crear el registro en la tabla `event_assistant` si no existe
-        EventAssistant::firstOrCreate(
+        $eventAssistant = EventAssistant::firstOrCreate(
             [
                 'event_id' => $event->id,
                 'user_id' => $user->id,
@@ -185,6 +209,7 @@ class EventAssistantController extends Controller
             [
                 'ticket_type_id' => $request['id_ticket'] ?? null,
                 'has_entered' => false,
+                'guardian_id' => $guardianId,
             ]
         );
 
@@ -218,7 +243,18 @@ class EventAssistantController extends Controller
         $departments = Departament::all();
         $event = Event::findOrFail($event->id);
         $ticketTypes  = TicketType::where('event_id', $event->id)->get();
-        return view('eventAssistant.editAssistant', compact('event', 'departments', 'ticketTypes', 'additionalParameters', 'eventAssistant', 'userEventParameter'));
+        // Obtener asistentes mayores de 18 años con número de documento
+        $guardians = EventAssistant::where('event_id', $eventAssistant->event_id)
+            ->whereHas('user', function ($query) {
+                $query->whereNotNull('document_number')
+                    ->where('birth_date', '<=', now()->subYears(18))
+                    ; // Filtrar mayores de 18
+            })
+            ->with(['user' => function ($query) {
+                $query->select('id', 'name', 'document_number'); // Seleccionar solo los campos requeridos
+            }])
+        ->get();
+        return view('eventAssistant.editAssistant', compact('event', 'departments', 'ticketTypes', 'additionalParameters', 'eventAssistant', 'userEventParameter', 'guardians'));
     }
 
     public function singleUpdateUpload(Request $request, $idEventAssistant)
@@ -254,6 +290,7 @@ class EventAssistantController extends Controller
         // Actualizar los datos del usuario de manera dinámica
         $user->update($updateData);
 
+        $guardianId = $request->input('guardian_id') ?? null; // Asegúrate de que tu formulario tenga este campo
         // Actualizar o crear el registro en la tabla `event_assistant`
         $eventAssistant = EventAssistant::updateOrCreate(
             [
@@ -262,6 +299,7 @@ class EventAssistantController extends Controller
             ],
             [
                 'ticket_type_id' => $request['id_ticket'] ?? null,
+                'guardian_id' => $guardianId,
             ]
         );
 

@@ -21,6 +21,7 @@ class EventAssistant extends Model
         'entry_time',
         'rejected',
         'rejected_time',
+        'guardian_id',
     ];
 
     public function event()
