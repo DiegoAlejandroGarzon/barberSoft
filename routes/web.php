@@ -143,6 +143,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('events/{idEvent}/specificSearch', [EventAssistantController::class, 'specificSearch'])->name('eventAssistant.specificSearch');
     Route::get('events/{idEvent}/specificSearchUploead', [EventAssistantController::class, 'specificSearchUploead'])->name('eventAssistant.specificSearch.upload');
     Route::get('/event-assistant/{idEvent}/export-excel', [EventAssistantController::class, 'exportExcel'])->name('eventAssistant.exportExcel');
+    Route::get('/event-assistant/{idEvent}/send-msg', [EventAssistantController::class, 'sendMsg'])->name('eventAssistant.sendMsg');
 
     //SELECTS
     Route::get('/cities/{department}', [CityController::class, 'getCitiesByDepartment']);

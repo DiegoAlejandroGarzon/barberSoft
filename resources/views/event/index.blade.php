@@ -160,6 +160,14 @@
                                         Asistentes
                                     </a>
 
+                                    <a class="mr-3 flex items-center" href="{{ route('eventAssistant.sendMsg', ['idEvent' => $evento->id]) }}">
+                                        {{-- <x-base.lucide
+                                            class="mr-1 h-4 w-4"
+                                            icon="file-text"
+                                        /> --}}
+                                        Mensaje Celular
+                                    </a>
+
                                     <a class="mr-3 flex items-center" href="{{ route('events.setRegistrationParameters',  $evento->id) }}">
                                         <x-base.lucide
                                             class="mr-1 h-4 w-4"

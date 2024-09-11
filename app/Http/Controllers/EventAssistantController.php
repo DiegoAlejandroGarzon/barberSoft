@@ -585,4 +585,25 @@ class EventAssistantController extends Controller
             'asistentes_de_'.$event->name.'_'.date('d-m-Y').'.xlsx'
         );
     }
+
+    public function sendMsg($idEvent){
+        $eventAssistants = EventAssistant::where('event_id', $idEvent)->get();
+        // Obtener todos los asistentes del evento
+        $eventAssistants = EventAssistant::where('event_id', $idEvent)->get();
+
+        foreach ($eventAssistants as $eventAssistant) {
+            // Generar la URL con la ruta nombrada 'eventAssistant.infoQr'
+            $url = route('eventAssistant.infoQr', ['id' => $eventAssistant->id, 'guid' => $eventAssistant->guid]);
+
+            // Construir el mensaje de texto
+            $message = "La URL para que puedas acceder al evento es la siguiente: $url";
+
+            // Aquí puedes utilizar un servicio de SMS para enviar el mensaje
+            // Ejemplo de uso de un servicio de SMS (Twilio, Nexmo, etc.)
+            // SmsService::send($assistant->user->phone, $message);
+
+            // Mostrar en consola o logs para depuración
+            info("Mensaje enviado a {$eventAssistant->user->phone}: $message");
+        }
+    }
 }
