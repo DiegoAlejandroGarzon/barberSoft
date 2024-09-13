@@ -46,22 +46,27 @@ class EventAssistantController extends Controller
 
         if ($request->has('search')) {
             $search = $request->input('search');
+
+            $query->where(function ($q) use ($search) {
             // Buscar en la relación 'user'
-            $query->whereHas('user', function ($query) use ($search) {
+            $q->whereHas('user', function ($query) use ($search) {
                 $query->where('name', 'like', "%{$search}%")
-                    ->orWhere('email', 'like', "%{$search}%")
-                    ->orWhere('phone', 'like', "%{$search}%");
+                        ->orWhere('email', 'like', "%{$search}%")
+                        ->orWhere('phone', 'like', "%{$search}%");
             });
+
             // Buscar en la relación 'ticketType'
-            $query->orWhereHas('ticketType', function ($query2) use ($search) {
+            $q->orWhereHas('ticketType', function ($query2) use ($search) {
                 $query2->where('name', 'like', "%{$search}%");
             });
+
             // Verificar si 'search' contiene "Entrada" y filtrar por 'has_entered'
             if (strtolower($search) === 'entrada') {
-                $query->orWhere('has_entered', 1); // Buscar entradas con valor 1
-            } else {
-                $query->orWhere('has_entered', 0); // Buscar entradas con valor 0
+                $q->orWhere('has_entered', 1); // Buscar entradas con valor 1
+            } elseif(strtolower($search) === 'no entrada') {
+                $q->orWhere('has_entered', 0); // Buscar entradas con valor 0
             }
+            });
         }
 
         $asistentes = $query->paginate(10);
