@@ -143,7 +143,13 @@
                                 {{ $evento->created_at->format('Y-m-d') }}
                             </x-base.table.td>
                             <x-base.table.td
-                                class="box rounded-l-none rounded-r-none border-x-0 text-center shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
+                                class="
+                                    box rounded-l-none rounded-r-none border-x-0 text-center shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600
+                                    {{ $evento->status == 1 ? 'bg-gray-400 text-white' : '' }}
+                                    {{ $evento->status == 2 ? 'bg-green-500 text-white' : '' }}
+                                    {{ $evento->status == 3 ? 'bg-yellow-400 text-black' : '' }}
+                                    {{ $evento->status == 4 ? 'bg-red-500 text-white' : '' }}
+                                "
                             >
                                 {{ array_search($evento->status, config('statusEvento')) }}
                             </x-base.table.td>
