@@ -71,7 +71,7 @@ class EventAssistantController extends Controller
 
         $asistentes = $query->paginate(10);
 
-        return view('eventAssistant.index', compact(['asistentes', 'idEvent', 'data']));
+        return view('eventAssistant.index', compact(['asistentes', 'idEvent', 'data', 'event']));
     }
 
     // Muestra la vista para subir el archivo de Excel

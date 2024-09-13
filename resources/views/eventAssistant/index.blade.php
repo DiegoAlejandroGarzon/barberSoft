@@ -95,13 +95,22 @@
         </div>
 
         <!-- BEGIN: Data List -->
+        @php
+            // Obtener los parámetros guardados en registration_parameters
+            $selectedFields = json_decode($event->registration_parameters, true) ?? [];
+            $additionalParameters = json_decode($event->additionalParameters, true) ?? [];
+        @endphp
         <div class="intro-y col-span-12 overflow-auto lg:overflow-visible">
             <x-base.table class="-mt-2 border-separate border-spacing-y-[10px]">
                 <x-base.table.thead>
                     <x-base.table.tr>
-                        <x-base.table.th class="whitespace-nowrap border-b-0">Nombre</x-base.table.th>
-                        <x-base.table.th class="whitespace-nowrap border-b-0 text-center">Correo</x-base.table.th>
-                        <x-base.table.th class="whitespace-nowrap border-b-0 text-center">Teléfono</x-base.table.th>
+                        <!-- Carga dinámica de columnas -->
+                        @foreach($selectedFields as $field)
+                            <x-base.table.th class="whitespace-nowrap border-b-0 text-center">{{ ucfirst(str_replace('_', ' ', $field)) }}</x-base.table.th>
+                        @endforeach
+                        @foreach($additionalParameters as $parameter)
+                            <x-base.table.th class="whitespace-nowrap border-b-0 text-center">{{ ucfirst(str_replace('_', ' ', $parameter['name'])) }}</x-base.table.th>
+                        @endforeach
                         <x-base.table.th class="whitespace-nowrap border-b-0 text-center">Tipo de ticket</x-base.table.th>
                         <x-base.table.th class="whitespace-nowrap border-b-0 text-center">Entrada</x-base.table.th>
                         <x-base.table.th class="whitespace-nowrap border-b-0 text-center">Acciones</x-base.table.th>
@@ -110,9 +119,19 @@
                 <x-base.table.tbody>
                     @foreach ($asistentes as $asistente)
                         <x-base.table.tr class="intro-x">
-                            <x-base.table.td class="box">{{ $asistente->user->name }}</x-base.table.td>
-                            <x-base.table.td class="box text-center">{{ $asistente->user->email }}</x-base.table.td>
-                            <x-base.table.td class="box text-center">{{ $asistente->user->phone ?? "SIN REGISTRO" }}</x-base.table.td>
+                            <!-- Carga dinámica de contenido de las filas -->
+                            @foreach($selectedFields as $field)
+                                <x-base.table.td class="box text-center">{{ $asistente->user->$field }}</x-base.table.td>
+                            @endforeach
+
+                            @foreach ($additionalParameters as $parameter)
+                                @php
+                                    $userParameter = $asistente->eventParameters->where('event_id', $idEvent)->where('additional_parameter_id', $parameter['id'])->first();
+                                @endphp
+                                <x-base.table.td class="box text-center">{{ $userParameter ? $userParameter->value : '-' }}</x-base.table.td>
+                            @endforeach
+
+                            <!-- Columna de acciones -->
                             <x-base.table.td class="box text-center">{{ $asistente->ticketType?->name ?? "SIN REGISTRO"  }}</x-base.table.td>
                             <x-base.table.td class="box text-center">
                                 @if ($asistente->has_entered)
