@@ -132,7 +132,6 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post('/assistants/{idEvent}/singleCreate', [EventAssistantController::class, 'singleCreateUpload'])->name('eventAssistant.singleCreate.upload');
     Route::get('/assistants/update/{idEventAssistant}', [EventAssistantController::class, 'edit'])->name('eventAssistant.singleUpdateForm');
     Route::put('/assistants/update/{idEventAssistant}', [EventAssistantController::class, 'singleUpdateUpload'])->name('eventAssistant.update');
-    Route::put('/assistants/update/{idEventAssistant}', [EventAssistantController::class, 'singleUpdateUpload'])->name('eventAssistant.update');
     Route::delete('/assistants/delete/{idEventAssistant}', [EventAssistantController::class, 'singleDelete'])->name('eventAssistant.singleDelete');
     Route::get('/event-assistant/{id}/qr', [EventAssistantController::class, 'showQr'])->name('eventAssistant.qr');
     Route::patch('/event-assistant/{id}/register-entry', [EventAssistantController::class, 'registerEntry'])->name('eventAssistant.registerEntry');

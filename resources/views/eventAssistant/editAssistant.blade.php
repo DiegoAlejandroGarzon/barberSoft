@@ -101,7 +101,7 @@
                         name="phone"
                         type="text"
                         placeholder="Teléfono"
-                        value="{{ $eventAssistant->user->birth_date->phone }}"
+                        value="{{ $eventAssistant->user->phone }}"
                     />
                     @error('phone')
                         <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
@@ -121,7 +121,7 @@
                     >
                         <option></option>
                         @foreach ($departments as $department)
-                            <option value="{{$department->id}}" {{ $eventAssistant->user->birth_date->department_id == $department->id ? 'selected' : '' }}>{{ $department->code_dane }} - {{ $department->name }}</option>
+                            <option value="{{$department->id}}" {{ $eventAssistant->user->department_id == $department->id ? 'selected' : '' }}>{{ $department->code_dane }} - {{ $department->name }}</option>
                         @endforeach
                     </x-base.tom-select>
                     @error('department_id')

@@ -84,6 +84,10 @@ class EventAssistantController extends Controller
     // Procesa el archivo de Excel y asigna los asistentes de forma masiva
     public function uploadMassAssign(Request $request, $idEvent)
     {
+        if($this->eventoFinalizado($idEvent)){
+            return redirect()->route('eventAssistant.massAssign', $idEvent)
+                            ->with('messages', 'No se puede realizar está acción porque el evento ya ha sido finalizado');
+        }
         $request->validate([
             'file' => 'required|mimes:xlsx,xls,csv|max:2048', // Validar que sea un archivo Excel
         ]);
@@ -119,6 +123,10 @@ class EventAssistantController extends Controller
 
     public function uploadSingleAssign(Request $request, $eventId)
     {
+        if($this->eventoFinalizado($eventId)){
+            return redirect()->route('eventAssistant.index', $eventId)
+            ->with('success', 'No se puede realizar está acción porque el evento ya ha sido finalizado.');
+        }
         // Validar los datos recibidos
         $validatedData = $request->validate([
             'ticketTypes' => 'nullable|array',
@@ -177,6 +185,10 @@ class EventAssistantController extends Controller
 
     public function singleCreateUpload(Request $request, $idEvent)
     {
+        if($this->eventoFinalizado($idEvent)){
+            return redirect()->route('eventAssistant.singleCreateForm', $idEvent)
+            ->with('success', 'No se puede realizar está acción porque el evento ya ha sido finalizado.');
+        }
         $event = Event::find($idEvent);
 
         // $request = $request->validate([
@@ -276,8 +288,13 @@ class EventAssistantController extends Controller
     public function singleUpdateUpload(Request $request, $idEventAssistant)
     {
         $eventAssistant = EventAssistant::find($idEventAssistant);
+        $idEvent = $eventAssistant->event_id;
+        if($this->eventoFinalizado($idEvent)){
+            return redirect()->route('eventAssistant.singleCreateForm', $idEvent)
+            ->with('success', 'No se puede realizar está acción porque el evento ya ha sido finalizado.');
+        }
         // Encontrar el evento por su ID
-        $event = Event::findOrFail($eventAssistant->event_id);
+        $event = Event::findOrFail($idEvent);
 
         // Encontrar el usuario por su ID
         $user = User::findOrFail($eventAssistant->user_id);
@@ -621,5 +638,9 @@ class EventAssistantController extends Controller
             // Mostrar en consola o logs para depuración
             info("Mensaje enviado a {$eventAssistant->user->phone}: $message");
         }
+    }
+
+    public function eventoFinalizado ($idEvent){
+        return Event::find($idEvent)->status == 4 ? true : false;
     }
 }
