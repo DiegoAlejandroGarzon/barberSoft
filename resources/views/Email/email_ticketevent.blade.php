@@ -20,8 +20,7 @@
 <body>
 <div>
     
-    <p>Hey {{ $user->name }},</p>
-    <p>Para el Evento  {{ $event->name }},</p>
+    
     <p>Tu ticket fue enviado yet? 😉 </p>
     <p class="signature">Mailtrap</p>
     <div class="Footer"></div>

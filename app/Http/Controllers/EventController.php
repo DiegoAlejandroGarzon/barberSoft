@@ -151,9 +151,9 @@ class EventController extends Controller
             // Obtener los IDs de los ticketTypes que vienen en la solicitud
             $newTicketTypeIds = collect($request->ticketTypes)->pluck('id')->filter()->all();
 
-            // Eliminar los ticketTypes que no están en la solicitud y no están asociados con EventAssistants
+            // Eliminar los ticketTypes que no están en la solicitud y no están asociados con EventAssistant
             $event->ticketTypes()->whereNotIn('id', $newTicketTypeIds)->get()->each(function ($ticketType) {
-                if ($ticketType->eventAssistants()->exists()) {
+                if ($ticketType->EventAssistant()->exists()) {
                     // Si el tipo de ticket está asociado a algún EventAssistant, no lo eliminamos y podríamos optar por otra lógica aquí
                     throw new \Exception("El tipo de ticket '{$ticketType->name}' no puede ser eliminado porque está asociado a un asistente.");
                 }

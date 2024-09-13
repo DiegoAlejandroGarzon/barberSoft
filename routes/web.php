@@ -87,6 +87,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post('/ticketFeatures/update/',[TicketFeatureController::class,'update'])->name('ticketFeatures.update');
     Route::get('/ticketFeatures/delete/{id}',[TicketFeatureController::class,'delete'])->name('ticketFeatures.delete');
     
+    //CRUD PDF
+    Route::get('/pdf/{id}',[PDFController::class,'buildPDF'])->name('pdf');
     
     //CRUD AJAX
     Route::get('input-form', [AjaxController::class, 'index']);
@@ -124,7 +126,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post('/events/{id}/store-registration-parameters', [EventController::class, 'storeRegistrationParameters'])->name('events.storeRegistrationParameters');
 
     //ASISTENTS TO EVENT
-    Route::get('/assistants/{idEvent}', [EventAssistantController::class, 'index'])->name('assistantsEvent.index');
+    Route::get('/assistants/{idEvent}', [EventAssistantController::class, 'index'])->name('eventAssistant.index');
     Route::get('/assistants/{idEvent}/massAssign', [EventAssistantController::class, 'showMassAssign'])->name('eventAssistant.massAssign');
     Route::post('/assistants/{idEvent}/massAssign', [EventAssistantController::class, 'uploadMassAssign'])->name('eventAssistant.massAssign.upload');
     Route::get('/assistants/{idEvent}/singleAssignForm', [EventAssistantController::class, 'singleAssignForm'])->name('eventAssistant.singleAssignForm');
@@ -132,9 +134,9 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/assistants/{idEvent}/singleCreateForm', [EventAssistantController::class, 'singleCreateForm'])->name('eventAssistant.singleCreateForm');
     Route::post('/assistants/{idEvent}/singleCreate', [EventAssistantController::class, 'singleCreateUpload'])->name('eventAssistant.singleCreate.upload');
     Route::get('/assistants/update/{id}', [EventAssistantController::class, 'edit'])->name('eventAssistant.edit');
+    Route::get('/event-assistant/{id}/qr', [EventAssistantController::class, 'showQr'])->name('eventAssistant.qr');
+    Route::get('/event-assistant/{id}/pdf', [EventAssistantController::class, 'generatePDF'])->name('eventAssistant.pdf');
 
-
-   
 
 
     //SELECTS
