@@ -51,7 +51,7 @@
                     Crear Asistente Manualmente
                 </x-base.button>
             </a>
-            <x-base.menu>
+            {{-- <x-base.menu>
                 <x-base.menu.button class="!box px-2" as="x-base.button">
                     <span class="flex h-5 w-5 items-center justify-center">
                         <x-base.lucide class="h-4 w-4" icon="Plus" />
@@ -74,7 +74,7 @@
                         <x-base.lucide class="mr-2 h-4 w-4" icon="FileText" /> Exportar a PDF
                     </x-base.menu.item>
                 </x-base.menu.items>
-            </x-base.menu>
+            </x-base.menu> --}}
             <div class="mt-3 w-full sm:ml-auto sm:mt-0 sm:w-auto md:ml-0">
                 <form method="GET" action="{{ route('eventAssistant.index', ['idEvent' => $idEvent]) }}">
                     <div class="relative w-56 text-slate-500">
@@ -91,6 +91,14 @@
                 <x-base.button class="mr-2 shadow-md" variant="primary">
                     Busqueda especifica de Asistente
                 </x-base.button>
+            </a>
+
+            <a class="mr-3" target="_blank" href="{{ route('eventAssistant.exportExcel', [
+                'idEvent' => $idEvent,
+                'search' => request()->input('search'),
+                'additionalParameters' => request()->input('additionalParameters', [])
+                ]) }}">
+                <x-base.lucide class="mr-2 h-4 w-4" icon="FileText" /> Exportar a Excel
             </a>
         </div>
 
