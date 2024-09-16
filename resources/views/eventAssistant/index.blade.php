@@ -121,6 +121,7 @@
                         @endforeach
                         <x-base.table.th class="whitespace-nowrap border-b-0 text-center">Tipo de ticket</x-base.table.th>
                         <x-base.table.th class="whitespace-nowrap border-b-0 text-center">Entrada</x-base.table.th>
+                        <x-base.table.th class="whitespace-nowrap border-b-0 text-center">Ticket</x-base.table.th>
                         <x-base.table.th class="whitespace-nowrap border-b-0 text-center">Acciones</x-base.table.th>
                     </x-base.table.tr>
                 </x-base.table.thead>
@@ -143,13 +144,31 @@
                             <x-base.table.td class="box text-center">{{ $asistente->ticketType?->name ?? "SIN REGISTRO"  }}</x-base.table.td>
                             <x-base.table.td class="box text-center">
                                 @if ($asistente->has_entered)
-                                    <div role="alert" class="alert bg-success text-slate-900 dark:border-success">
+                                    <div role="alert" class="alert rounded-md bg-success text-slate-900 dark:border-success">
                                         Entrada
                                     </div>
                                 @else
-                                    <div role="alert" class="alert bg-warning text-slate-900 dark:border-warning">
+                                    <div role="alert" class="alert rounded-md bg-warning text-slate-900 dark:border-warning">
                                         No entrada
                                     </div>
+                                @endif
+                            </x-base.table.td>
+                            <x-base.table.td class="box text-center">
+                                @if ($asistente->is_paid)
+                                    <div role="alert" class="alert rounded-md bg-success text-slate-900 dark:border-success">
+                                        Pagado
+                                    </div>
+                                @else
+                                    @if ($asistente->totalPayments() == 0)
+                                    <div role="alert" class="alert relative border rounded-md bg-danger border-danger text-white dark:border-danger mb-2">
+                                        No Pagado
+
+                                    </div>
+                                    @else
+                                    <div role="alert" class="alert rounded-md bg-warning text-slate-900 dark:border-warning">
+                                        Pendiente
+                                    </div>
+                                    @endif
                                 @endif
                             </x-base.table.td>
                             <x-base.table.td class="box w-56">
