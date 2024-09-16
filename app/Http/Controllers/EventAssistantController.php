@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Hash;
 use Maatwebsite\Excel\Facades\Excel;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\Mail;
 
 class EventAssistantController extends Controller
 {
@@ -638,6 +639,30 @@ class EventAssistantController extends Controller
             // Mostrar en consola o logs para depuración
             info("Mensaje enviado a {$eventAssistant->user->phone}: $message");
         }
+    }
+
+    public function sendEmail($id){
+        // Buscar el registro de EventAssistant por ID
+        $eventAssistant = EventAssistant::find($id);
+
+        // Asegúrate de que el asistente existe
+        if (!$eventAssistant || !$eventAssistant->user) {
+            return response()->json(['message' => 'No se ha encontrado el usuario respectivo'], 404);
+        }
+
+        // Obtener el correo electrónico del usuario relacionado
+        $email = $eventAssistant->user->email;
+        // return $email;
+
+        // Enviar el correo
+        Mail::send('emails.assistant',
+        ['eventAssistant' => $eventAssistant]
+        , function($message) use ($email) {
+            $message->to($email)
+                    ->subject('Información del evento');
+        });
+
+        return response()->json(['message' => 'Email enviado a ' . $email]);
     }
 
     public function eventoFinalizado ($idEvent){

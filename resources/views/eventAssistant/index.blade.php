@@ -164,6 +164,9 @@
                                     <a class="mr-3" href="{{ route('eventAssistant.singleUpdateForm', ['idEventAssistant' => $asistente->id]) }}">
                                         <x-base.lucide icon="CheckSquare" /> Editar
                                     </a>
+                                    <a class="text-info" href="{{ route('eventAssistant.sendEmail', ['id' => $asistente->id]) }}" target="_blank">
+                                        <x-base.lucide icon="send" /> Enviar Correo
+                                    </a>
                                     <a class="text-danger"
                                     data-tw-toggle="modal"
                                     data-tw-target="#delete-confirmation-modal"
