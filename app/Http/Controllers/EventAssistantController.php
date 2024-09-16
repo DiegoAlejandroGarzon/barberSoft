@@ -10,6 +10,7 @@ use App\Models\Departament;
 use App\Models\Event;
 use App\Models\EventAssistant;
 use App\Models\FeatureConsumption;
+use App\Models\Payment;
 use App\Models\TicketFeatures;
 use App\Models\TicketType;
 use App\Models\User;
@@ -667,5 +668,45 @@ class EventAssistantController extends Controller
 
     public function eventoFinalizado ($idEvent){
         return Event::find($idEvent)->status == 4 ? true : false;
+    }
+
+    public function payment($id){
+        $eventAssistant = EventAssistant::find($id);
+        return view('eventAssistant.payment', compact('eventAssistant'));
+    }
+
+    public function paymentStore(Request $request){
+
+        $request->validate([
+            'payer_name' => 'required|string|max:255',
+            'payer_document_type' => 'required|string|max:10',
+            'payer_document_number' => 'required|string|max:50',
+            'amount' => 'required|numeric',
+            'payment_method' => 'required|string',
+            'payment_proof' => 'nullable|image|max:2048', // Validación de la imagen
+        ]);
+
+        $paymentProofPath = null;
+        if ($request->hasFile('payment_proof')) {
+            $paymentProofPath = $request->file('payment_proof')->store('payment_proofs', 'public');
+        }
+
+        Payment::create([
+            'event_assistant_id' => $request->event_assistant_id,
+            'payer_name' => $request->payer_name,
+            'payer_document_type' => $request->payer_document_type,
+            'payer_document_number' => $request->payer_document_number,
+            'amount' => $request->amount,
+            'payment_method' => $request->payment_method,
+            'payment_proof' => $paymentProofPath,
+            'description' => 'Pago de Ticket',
+        ]);
+
+        $eventAsistant = EventAssistant::find($request->event_assistant_id);
+        if($eventAsistant->isFullyPaid()){
+            $eventAsistant->is_paid = true;
+            $eventAsistant->save();
+        }
+        return redirect()->back()->with('success', 'Pago registrado correctamente.');
     }
 }

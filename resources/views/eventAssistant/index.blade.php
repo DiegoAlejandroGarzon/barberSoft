@@ -156,16 +156,19 @@
                                 <div class="flex items-center justify-center">
                                     <!-- New QR Button -->
                                     <a class="text-info" href="{{ route('eventAssistant.qr', ['id' => $asistente->id]) }}">
-                                        <x-base.lucide icon="QrCode" /> Ver QR
+                                        <x-base.lucide icon="QrCode" /> QR
                                     </a>
                                     <a class="text-info" href="{{ route('eventAssistant.pdf', ['id' => $asistente->id]) }}" target="_blank">
-                                        <x-base.lucide icon="FileText" /> Generar PDF
-                                    </a>
-                                    <a class="mr-3" href="{{ route('eventAssistant.singleUpdateForm', ['idEventAssistant' => $asistente->id]) }}">
-                                        <x-base.lucide icon="CheckSquare" /> Editar
+                                        <x-base.lucide icon="FileText" /> PDF
                                     </a>
                                     <a class="text-info" href="{{ route('eventAssistant.sendEmail', ['id' => $asistente->id]) }}" target="_blank">
                                         <x-base.lucide icon="send" /> Enviar Correo
+                                    </a>
+                                    <a class="text-warning" href="{{ route('eventAssistant.payment', ['id' => $asistente->id]) }}" target="_blank">
+                                        <x-base.lucide icon="credit-card" /> Pago
+                                    </a>
+                                    <a class="mr-3" href="{{ route('eventAssistant.singleUpdateForm', ['idEventAssistant' => $asistente->id]) }}">
+                                        <x-base.lucide icon="CheckSquare" /> Editar
                                     </a>
                                     <a class="text-danger"
                                     data-tw-toggle="modal"

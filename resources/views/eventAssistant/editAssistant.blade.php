@@ -27,7 +27,7 @@
                 >
                     <option></option>
                     @foreach ($ticketTypes as $ticket)
-                        <option value="{{ $ticket->id }}" {{ $eventAssistant->ticketType->id == $ticket->id ? 'selected' : '' }}>{{ $ticket->name }}</option>
+                        <option value="{{ $ticket->id }}" {{ $eventAssistant->ticketType?->id == $ticket?->id ? 'selected' : '' }}>{{ $ticket->name }}</option>
                     @endforeach
                 </x-base.tom-select>
                 @error('id_ticket')
