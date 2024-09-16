@@ -57,6 +57,13 @@
     <div class="mt-5">
         <div class="box p-5">
             Actualmente se tiene registrado un abono Total de {{$eventAssistant->totalPayments()}}
+
+            @foreach($eventAssistant->payments as $payment)
+            <div class="mb-4 box p-1">
+                Pago por un valor de  <strong>{{$payment->amount}}</strong> por <strong>{{$payment->payer_name}}</strong>
+                <a class="ml-1 underline" target="_blank" href="{{ route('payments.generatePDF', ['id' => $payment->id]) }}">Generar PDF</a>
+            </div>
+            @endforeach
         </div>
     </div>
     @endif
@@ -112,7 +119,7 @@
 
                 <!-- Botón para enviar -->
                 <div class="mt-5">
-                    <button type="submit" class="btn btn-primary">Realizar Pago</button>
+                    <button data-tw-merge type="submit" class="transition duration-200 border shadow-sm inline-flex items-center justify-center py-2 px-3 rounded-md font-medium cursor-pointer focus:ring-4 focus:ring-primary focus:ring-opacity-20 focus-visible:outline-none dark:focus:ring-slate-700 dark:focus:ring-opacity-50 [&amp;:hover:not(:disabled)]:bg-opacity-90 [&amp;:hover:not(:disabled)]:border-opacity-90 [&amp;:not(button)]:text-center disabled:opacity-70 disabled:cursor-not-allowed bg-primary border-primary text-white dark:border-primary mb-2 mr-1 w-24 mb-2 mr-1 w-24">Realizar Pago</button>
                 </div>
 
                 <!-- ID del asistente -->

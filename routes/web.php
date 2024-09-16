@@ -26,6 +26,7 @@ use App\Http\Controllers\EventController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\AjaxController;
+use App\Http\Controllers\PaymentController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\TicketFeatureController;
 
@@ -147,6 +148,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/event-assistant/{id}/payment', [EventAssistantController::class, 'payment'])->name('eventAssistant.payment');
     Route::post('/event-assistant/payment', [EventAssistantController::class, 'paymentStore'])->name('eventAssistant.payment.store');
 
+    Route::get('/payment/{id}', [PaymentController::class, 'generatePDF'])->name('payments.generatePDF');
     //SELECTS
     Route::get('/cities/{department}', [CityController::class, 'getCitiesByDepartment']);
 });
