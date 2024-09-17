@@ -229,6 +229,40 @@
                         @enderror
                     </div>
 
+                    <!-- Dirección del Evento -->
+                    <div class="mt-3">
+                        <x-base.form-label for="address">Dirección del Evento</x-base.form-label>
+                        <x-base.form-input
+                            class="w-full {{ $errors->has('address') ? 'border-red-500' : '' }}"
+                            id="address"
+                            name="address"
+                            type="text"
+                            placeholder="Direccion del evento"
+                            value="{{ old('address', $event->address) }}"
+                        />
+                        @error('address')
+                            <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <!-- Estado por defecto-->
+                    <div class="mt-3">
+                        <x-base.form-label for="department_id">Estado por defecto</x-base.form-label>
+                        <x-base.tom-select
+                            class="w-full {{ $errors->has('status') ? 'border-red-500' : '' }}"
+                            id="status"
+                            name="status"
+                            onchange="filterCities()"
+                        >
+                            <option></option>
+                            @foreach (config('statusEvento') as $label => $valor)
+                                <option value="{{$valor}}" {{ old('status', $event->status) == $valor ? 'selected' : '' }}>{{ $label }}</option>
+                            @endforeach
+                        </x-base.tom-select>
+                        @error('status')
+                            <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                        @enderror
+                    </div>
                     <!-- Imagen del Encabezado -->
                     <div class="mt-3">
                         <x-base.form-label for="header_image_path">Imagen del Encabezado</x-base.form-label>

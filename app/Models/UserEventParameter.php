@@ -22,7 +22,6 @@ class UserEventParameter extends Model
     {
         return $this->belongsTo(User::class);
     }
-
     // Relación con el modelo AdditionalParameter
     public function additionalParameter()
     {

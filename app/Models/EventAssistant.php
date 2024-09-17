@@ -21,6 +21,8 @@ class EventAssistant extends Model
         'entry_time',
         'rejected',
         'rejected_time',
+        'guardian_id',
+        'is_paid',
     ];
 
     public function event()
@@ -36,5 +38,31 @@ class EventAssistant extends Model
     public function ticketType()
     {
         return $this->belongsTo(TicketType::class, 'ticket_type_id');
+    }
+
+    // Define la relación con los parámetros adicionales
+    public function eventParameters()
+    {
+        return $this->hasMany(UserEventParameter::class, 'user_id', 'user_id')
+                    ->where('event_id', $this->event_id);
+    }
+
+    public function payments()
+    {
+        return $this->hasMany(Payment::class);
+    }
+
+    // Función para sumar todos los pagos asociados al EventAssistant
+    public function totalPayments()
+    {
+        // Suma el campo 'amount' de todos los pagos asociados
+        return $this->payments->sum('amount');
+    }
+
+    // Función para verificar si los pagos cubren o superan el valor del ticket
+    public function isFullyPaid()
+    {
+        // Verifica si el total de pagos es mayor o igual al precio del ticket
+        return $this->totalPayments() >= $this->ticketType->price;
     }
 }

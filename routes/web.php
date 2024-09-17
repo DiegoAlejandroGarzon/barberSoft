@@ -27,6 +27,7 @@ use App\Http\Controllers\EventController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\AjaxController;
+use App\Http\Controllers\PaymentController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\TicketFeatureController;
 use App\Http\Controllers\PDFController;
@@ -51,6 +52,7 @@ Route::post('password/reset', [ResetPasswordController::class, 'reset'])->name('
 //inscripcion de asistente
 Route::get('/event/register/{public_link}', [EventController::class, 'showPublicRegistrationForm'])->name('event.register');
 Route::post('/event/register/{public_link}', [EventController::class, 'submitPublicRegistration'])->name('event.register.submit');
+Route::get('/event-assistant/infoQr/{id}/{guid}', [EventAssistantController::class, 'infoQr'])->name('eventAssistant.infoQr');
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
@@ -133,11 +135,13 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post('/assistants/{idEvent}/singleAssignForm', [EventAssistantController::class, 'uploadSingleAssign'])->name('eventAssistant.singleAssign.upload');
     Route::get('/assistants/{idEvent}/singleCreateForm', [EventAssistantController::class, 'singleCreateForm'])->name('eventAssistant.singleCreateForm');
     Route::post('/assistants/{idEvent}/singleCreate', [EventAssistantController::class, 'singleCreateUpload'])->name('eventAssistant.singleCreate.upload');
-    Route::get('/assistants/update/{id}', [EventAssistantController::class, 'edit'])->name('eventAssistant.edit');
+    Route::get('/assistants/update/{idEventAssistant}', [EventAssistantController::class, 'edit'])->name('eventAssistant.singleUpdateForm');
+    Route::put('/assistants/update/{idEventAssistant}', [EventAssistantController::class, 'singleUpdateUpload'])->name('eventAssistant.update');
+    Route::delete('/assistants/delete/{idEventAssistant}', [EventAssistantController::class, 'singleDelete'])->name('eventAssistant.singleDelete');
     Route::get('/event-assistant/{id}/qr', [EventAssistantController::class, 'showQr'])->name('eventAssistant.qr');
     Route::get('/event-assistant/{id}/pdf', [EventAssistantController::class, 'generatePDF'])->name('eventAssistant.pdf');
-
-
+    Route::patch('event-assistants/{eventAssistant}/features/{feature}/consume', [EventAssistantController::class, 'consumeFeature'])->name('eventAssistant.consumeFeature');
+    Route::get('events/{id}/download-template', [EventAssistantController::class, 'downloadTemplate'])->name('eventAssistant.downloadTemplate');
 
     //SELECTS
     Route::get('/cities/{department}', [CityController::class, 'getCitiesByDepartment']);
