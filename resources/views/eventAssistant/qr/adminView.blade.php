@@ -23,15 +23,49 @@
             {{ session('error') }}
         </x-base.alert>
     @endif
+
+
+    <div class="mt-5">
+        <div class="">
+            @if ($eventAssistant->is_paid)
+                <div role="alert" class="alert rounded-md bg-success text-slate-900 dark:border-success box p-5">
+                    <H1>ESTADO DEL PAGO DEL TICKET: </H1>Pagado
+                </div>
+            @else
+                @if ($eventAssistant->totalPayments() == 0)
+                <div role="alert" class="alert relative border rounded-md bg-danger border-danger text-white dark:border-danger mb-2 box p-5">
+                    <H1>ESTADO DEL TICKET DEL TICKET: </H1>No Pagado
+
+                </div>
+                @else
+                <div role="alert" class="alert rounded-md bg-warning text-slate-900 dark:border-warning box p-5">
+                    <H1>ESTADO DEL TICKET DEL TICKET: </H1>Pendiente
+                </div>
+                @endif
+            @endif
+        </div>
+    </div>
     <div class="mt-5">
         <div class="box p-5">
             <h3 class="text-lg font-medium">Información del Asistente</h3>
-            <p><strong>Nombre:</strong> {{ $eventAssistant->user->name }} {{ $eventAssistant->user->lastname }}</p>
-            <p><strong>Correo:</strong> {{ $eventAssistant->user->email }}</p>
-            <p><strong>Teléfono:</strong> {{ $eventAssistant->user->phone }}</p>
-            <p><strong>Tipo de Documento:</strong> {{ $eventAssistant->user->type_document }}</p>
-            <p><strong>Número de Documento:</strong> {{ $eventAssistant->user->document_number }}</p>
-            <p><strong>Ciudad:</strong> {{ $eventAssistant->user->city->name ?? 'N/A' }}</p>
+
+            <!-- Cargar informacion del asistente con sus parametros establecidos -->
+            @php
+                // Obtener los parámetros guardados en registration_parameters
+                $selectedFields = json_decode($eventAssistant->event->registration_parameters, true) ?? [];
+                $additionalParameters = json_decode($eventAssistant->event->additionalParameters, true) ?? [];
+            @endphp
+            @foreach($selectedFields as $field)
+                <p class=""><strong>{{ ucfirst(str_replace('_', ' ', $field)) }} </strong>: {{ $eventAssistant->user->$field }}</p>
+            @endforeach
+            @foreach($additionalParameters as $parameter)
+            @php
+                $userParameter = $eventAssistant->eventParameters->where('event_id', $eventAssistant->event_id)->where('additional_parameter_id', $parameter['id'])->first();
+            @endphp
+                <p class=""><strong>{{ ucfirst(str_replace('_', ' ', $parameter['name'])) }}</strong>: {{ $userParameter ? $userParameter->value : '-' }}</p>
+            @endforeach
+            <!-- FIN Cargar informacion del asistente con sus parametros establecidos -->
+
             <p><strong>Tipo de Ticket:</strong> {{ $eventAssistant->ticketType->name ?? 'N/A' }}</p>
             <p><strong>Fecha de Registro:</strong> {{ $eventAssistant->created_at->format('d/m/Y') }}</p>
             <p><strong>GUID:</strong> {{ $eventAssistant->guid }}</p>
@@ -39,6 +73,8 @@
             <div class="mt-2">
                 {!! $eventAssistant->qrCode !!}
             </div>
+
+            <br>
 
             <h3 class="text-lg font-medium mt-5">Información del Evento</h3>
             <p><strong>Nombre del Evento:</strong> {{ $eventAssistant->event->name }}</p>
