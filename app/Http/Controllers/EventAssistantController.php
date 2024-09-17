@@ -731,7 +731,7 @@ class EventAssistantController extends Controller
         ['eventAssistant' => $eventAssistant]
         , function($message) use ($email) {
             $message->to($email)
-                    ->subject('Información del evento');
+                    ->subject('Información del Pago');
         });
 
         return response()->json(['message' => 'Email enviado a ' . $email]);
