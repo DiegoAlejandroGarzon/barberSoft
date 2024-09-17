@@ -87,7 +87,7 @@ class EventAssistantController extends Controller
     public function uploadMassAssign(Request $request, $idEvent)
     {
         if($this->eventoFinalizado($idEvent)){
-            return redirect()->route('eventAssistant.massAssign', $idEvent)
+            return redirect()->back()
                             ->with('messages', 'No se puede realizar está acción porque el evento ya ha sido finalizado');
         }
         $request->validate([
@@ -188,7 +188,7 @@ class EventAssistantController extends Controller
     public function singleCreateUpload(Request $request, $idEvent)
     {
         if($this->eventoFinalizado($idEvent)){
-            return redirect()->route('eventAssistant.singleCreateForm', $idEvent)
+            return redirect()->back()
             ->with('success', 'No se puede realizar está acción porque el evento ya ha sido finalizado.');
         }
         $event = Event::find($idEvent);
@@ -292,7 +292,7 @@ class EventAssistantController extends Controller
         $eventAssistant = EventAssistant::find($idEventAssistant);
         $idEvent = $eventAssistant->event_id;
         if($this->eventoFinalizado($idEvent)){
-            return redirect()->route('eventAssistant.singleCreateForm', $idEvent)
+            return redirect()->back()
             ->with('success', 'No se puede realizar está acción porque el evento ya ha sido finalizado.');
         }
         // Encontrar el evento por su ID
@@ -708,5 +708,32 @@ class EventAssistantController extends Controller
             $eventAsistant->save();
         }
         return redirect()->back()->with('success', 'Pago registrado correctamente.');
+    }
+
+    public function sendEmailInfoPago($id){
+        // Buscar el registro de EventAssistant por ID
+        $eventAssistant = EventAssistant::find($id);
+
+        // Asegúrate de que el asistente existe
+        if (!$eventAssistant || !$eventAssistant->user) {
+            return response()->json(['message' => 'No se ha encontrado el usuario respectivo'], 404);
+        }
+
+        // Obtener el correo electrónico del usuario relacionado
+        $email = $eventAssistant->user->email;
+        // Asegúrate de que el email existe
+        if (!$email) {
+            return response()->json(['message' => 'No se ha encontrado el email respectivo'], 404);
+        }
+
+        // Enviar el correo
+        Mail::send('emails.infoPagoAssistant',
+        ['eventAssistant' => $eventAssistant]
+        , function($message) use ($email) {
+            $message->to($email)
+                    ->subject('Información del evento');
+        });
+
+        return response()->json(['message' => 'Email enviado a ' . $email]);
     }
 }

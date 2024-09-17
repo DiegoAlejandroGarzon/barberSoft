@@ -5,8 +5,11 @@
 @endsection
 
 @section('subcontent')
-    <h2 class="intro-y mt-10 text-lg font-medium">Informacion del Asistente</h2>
+    <h2 class="intro-y mt-10 text-lg font-medium">Informacion del Pago</h2>
     <div class="mt-5 flex justify-center">
+        <a class="text-info box p-3" href="{{ route('eventAssistant.sendEmailInfoPago', ['id' => $eventAssistant->id]) }}" target="_blank">
+            <x-base.lucide icon="send" /> Enviar Correo
+        </a>
     </div>
 
     @php
