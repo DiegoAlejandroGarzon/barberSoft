@@ -109,99 +109,101 @@
             $additionalParameters = json_decode($event->additionalParameters, true) ?? [];
         @endphp
         <div class="intro-y col-span-12 overflow-auto lg:overflow-visible">
-            <x-base.table class="-mt-2 border-separate border-spacing-y-[10px]">
-                <x-base.table.thead>
-                    <x-base.table.tr>
-                        <!-- Carga dinámica de columnas -->
-                        @foreach($selectedFields as $field)
-                            <x-base.table.th class="whitespace-nowrap border-b-0 text-center">{{ ucfirst(str_replace('_', ' ', $field)) }}</x-base.table.th>
-                        @endforeach
-                        @foreach($additionalParameters as $parameter)
-                            <x-base.table.th class="whitespace-nowrap border-b-0 text-center">{{ ucfirst(str_replace('_', ' ', $parameter['name'])) }}</x-base.table.th>
-                        @endforeach
-                        <x-base.table.th class="whitespace-nowrap border-b-0 text-center">Tipo de ticket</x-base.table.th>
-                        <x-base.table.th class="whitespace-nowrap border-b-0 text-center">Entrada</x-base.table.th>
-                        <x-base.table.th class="whitespace-nowrap border-b-0 text-center">Ticket</x-base.table.th>
-                        <x-base.table.th class="whitespace-nowrap border-b-0 text-center">Acciones</x-base.table.th>
-                    </x-base.table.tr>
-                </x-base.table.thead>
-                <x-base.table.tbody>
-                    @foreach ($asistentes as $asistente)
-                        <x-base.table.tr class="intro-x">
-                            <!-- Carga dinámica de contenido de las filas -->
+            <div class="overflow-x-auto">
+                <x-base.table class="-mt-2 border-separate border-spacing-y-[10px]">
+                    <x-base.table.thead>
+                        <x-base.table.tr>
+                            <!-- Carga dinámica de columnas -->
                             @foreach($selectedFields as $field)
-                                <x-base.table.td class="box text-center">{{ $asistente->user->$field }}</x-base.table.td>
+                                <x-base.table.th class="whitespace-nowrap border-b-0 text-center">{{ ucfirst(str_replace('_', ' ', $field)) }}</x-base.table.th>
                             @endforeach
-
-                            @foreach ($additionalParameters as $parameter)
-                                @php
-                                    $userParameter = $asistente->eventParameters->where('event_id', $idEvent)->where('additional_parameter_id', $parameter['id'])->first();
-                                @endphp
-                                <x-base.table.td class="box text-center">{{ $userParameter ? $userParameter->value : '-' }}</x-base.table.td>
+                            @foreach($additionalParameters as $parameter)
+                                <x-base.table.th class="whitespace-nowrap border-b-0 text-center">{{ ucfirst(str_replace('_', ' ', $parameter['name'])) }}</x-base.table.th>
                             @endforeach
-
-                            <!-- Columna de acciones -->
-                            <x-base.table.td class="box text-center">{{ $asistente->ticketType?->name ?? "SIN REGISTRO"  }}</x-base.table.td>
-                            <x-base.table.td class="box text-center">
-                                @if ($asistente->has_entered)
-                                    <div role="alert" class="alert rounded-md bg-success text-slate-900 dark:border-success">
-                                        Entrada
-                                    </div>
-                                @else
-                                    <div role="alert" class="alert rounded-md bg-warning text-slate-900 dark:border-warning">
-                                        No entrada
-                                    </div>
-                                @endif
-                            </x-base.table.td>
-                            <x-base.table.td class="box text-center">
-                                @if ($asistente->is_paid)
-                                    <div role="alert" class="alert rounded-md bg-success text-slate-900 dark:border-success">
-                                        Pagado
-                                    </div>
-                                @else
-                                    @if ($asistente->totalPayments() == 0)
-                                    <div role="alert" class="alert relative border rounded-md bg-danger border-danger text-white dark:border-danger mb-2">
-                                        No Pagado
-
-                                    </div>
-                                    @else
-                                    <div role="alert" class="alert rounded-md bg-warning text-slate-900 dark:border-warning">
-                                        Pendiente
-                                    </div>
-                                    @endif
-                                @endif
-                            </x-base.table.td>
-                            <x-base.table.td class="box w-56">
-                                <div class="flex items-center justify-center">
-                                    <!-- New QR Button -->
-                                    <a class="text-info" href="{{ route('eventAssistant.qr', ['id' => $asistente->id]) }}">
-                                        <x-base.lucide icon="QrCode" /> QR
-                                    </a>
-                                    <a class="text-info" href="{{ route('eventAssistant.pdf', ['id' => $asistente->id]) }}" target="_blank">
-                                        <x-base.lucide icon="FileText" /> PDF
-                                    </a>
-                                    <a class="text-info" href="{{ route('eventAssistant.sendEmail', ['id' => $asistente->id]) }}" target="_blank">
-                                        <x-base.lucide icon="send" /> Enviar Correo
-                                    </a>
-                                    <a class="text-warning" href="{{ route('eventAssistant.payment', ['id' => $asistente->id]) }}" target="_blank">
-                                        <x-base.lucide icon="credit-card" /> Pago
-                                    </a>
-                                    <a class="mr-3" href="{{ route('eventAssistant.singleUpdateForm', ['idEventAssistant' => $asistente->id]) }}">
-                                        <x-base.lucide icon="CheckSquare" /> Editar
-                                    </a>
-                                    <a class="text-danger"
-                                    data-tw-toggle="modal"
-                                    data-tw-target="#delete-confirmation-modal"
-                                    data-id="{{ $asistente->id }}"
-                                    onclick="setDeleteAction(this)">
-                                    <x-base.lucide icon="Trash" /> Borrar
-                                    </a>
-                                </div>
-                            </x-base.table.td>
+                            <x-base.table.th class="whitespace-nowrap border-b-0 text-center">Tipo de ticket</x-base.table.th>
+                            <x-base.table.th class="whitespace-nowrap border-b-0 text-center">Entrada</x-base.table.th>
+                            <x-base.table.th class="whitespace-nowrap border-b-0 text-center">Ticket</x-base.table.th>
+                            <x-base.table.th class="whitespace-nowrap border-b-0 text-center">Acciones</x-base.table.th>
                         </x-base.table.tr>
-                    @endforeach
-                </x-base.table.tbody>
-            </x-base.table>
+                    </x-base.table.thead>
+                    <x-base.table.tbody>
+                        @foreach ($asistentes as $asistente)
+                            <x-base.table.tr class="intro-x">
+                                <!-- Carga dinámica de contenido de las filas -->
+                                @foreach($selectedFields as $field)
+                                    <x-base.table.td class="box text-center">{{ $asistente->user->$field }}</x-base.table.td>
+                                @endforeach
+
+                                @foreach ($additionalParameters as $parameter)
+                                    @php
+                                        $userParameter = $asistente->eventParameters->where('event_id', $idEvent)->where('additional_parameter_id', $parameter['id'])->first();
+                                    @endphp
+                                    <x-base.table.td class="box text-center">{{ $userParameter ? $userParameter->value : '-' }}</x-base.table.td>
+                                @endforeach
+
+                                <!-- Columna de acciones -->
+                                <x-base.table.td class="box text-center">{{ $asistente->ticketType?->name ?? "SIN REGISTRO"  }}</x-base.table.td>
+                                <x-base.table.td class="box text-center">
+                                    @if ($asistente->has_entered)
+                                        <div role="alert" class="alert rounded-md bg-success text-slate-900 dark:border-success p-1">
+                                            Entrada
+                                        </div>
+                                    @else
+                                        <div role="alert" class="alert rounded-md bg-warning text-slate-900 dark:border-warning p-1">
+                                            No Entrada
+                                        </div>
+                                    @endif
+                                </x-base.table.td>
+                                <x-base.table.td class="box text-center">
+                                    @if ($asistente->is_paid)
+                                        <div role="alert" class="alert rounded-md bg-success text-slate-900 dark:border-success">
+                                            Pagado
+                                        </div>
+                                    @else
+                                        @if ($asistente->totalPayments() == 0)
+                                        <div role="alert" class="alert relative border rounded-md bg-danger border-danger text-white dark:border-danger mb-2 p-1">
+                                            No Pagado
+
+                                        </div>
+                                        @else
+                                        <div role="alert" class="alert rounded-md bg-warning text-slate-900 dark:border-warning p-1">
+                                            Pendiente
+                                        </div>
+                                        @endif
+                                    @endif
+                                </x-base.table.td>
+                                <x-base.table.td class="box w-56">
+                                    <div class="flex items-center justify-center">
+                                        <!-- New QR Button -->
+                                        <a class="text-info" href="{{ route('eventAssistant.qr', ['id' => $asistente->id]) }}">
+                                            <x-base.lucide icon="QrCode" /> QR
+                                        </a>
+                                        <a class="text-info" href="{{ route('eventAssistant.pdf', ['id' => $asistente->id]) }}" target="_blank">
+                                            <x-base.lucide icon="FileText" /> PDF
+                                        </a>
+                                        <a class="text-info" href="{{ route('eventAssistant.sendEmail', ['id' => $asistente->id]) }}" target="_blank">
+                                            <x-base.lucide icon="send" /> Enviar Correo
+                                        </a>
+                                        <a class="text-warning" href="{{ route('eventAssistant.payment', ['id' => $asistente->id]) }}" target="_blank">
+                                            <x-base.lucide icon="credit-card" /> Pago
+                                        </a>
+                                        <a class="mr-3" href="{{ route('eventAssistant.singleUpdateForm', ['idEventAssistant' => $asistente->id]) }}">
+                                            <x-base.lucide icon="CheckSquare" /> Editar
+                                        </a>
+                                        <a class="text-danger"
+                                        data-tw-toggle="modal"
+                                        data-tw-target="#delete-confirmation-modal"
+                                        data-id="{{ $asistente->id }}"
+                                        onclick="setDeleteAction(this)">
+                                        <x-base.lucide icon="Trash" /> Borrar
+                                        </a>
+                                    </div>
+                                </x-base.table.td>
+                            </x-base.table.tr>
+                        @endforeach
+                    </x-base.table.tbody>
+                </x-base.table>
+            </div>
         </div>
         <!-- END: Data List -->
 
