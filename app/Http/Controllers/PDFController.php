@@ -59,7 +59,6 @@ class PDFController extends Controller
 		    $pdf = Pdf::loadView('pdf.pdf_example', compact('registros'));
 		    $pdf->setPaper(array(0,0,170,450));
 		    $pdf->save(storage_path('app/public/'.$registro->evento_name.'.pdf'));
-
 			$meta['id'] = $registro->event_id;
 			$meta['title'] = $registro->evento_name;
 			$meta['name'] = $registro->name;
@@ -72,11 +71,7 @@ class PDFController extends Controller
 	
 	public function enviarEmailticket($meta)
 	{
-	
-	   Mail::to('julianmarcelog@mail.com')->send(new EnvioNotificacionTickenGenerado($meta));
-
-		
-		
+	   Mail::to($meta['email'])->send(new EnvioNotificacionTickenGenerado($meta));
 	}
 
 

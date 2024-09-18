@@ -742,16 +742,15 @@ class EventAssistantController extends Controller
 			$meta['email'] = $registro->email;
 			$meta['fileName'] = $registro->evento_name.'.pdf';
 			$this->enviarEmailticket($meta);
-            return $meta;            
-			
-		}
-	}
+            return $meta;
+        }
+    }
 
 
     public function enviarEmailticket($meta)
 	{
 	
-	   Mail::to('julianmarcelog@mail.com')->send(new EnvioNotificacionTickenGenerado($meta));
+	   Mail::to($meta['email'])->send(new EnvioNotificacionTickenGenerado($meta));
 
 		
 		
