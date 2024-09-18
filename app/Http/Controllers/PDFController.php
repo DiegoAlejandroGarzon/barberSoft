@@ -56,7 +56,7 @@ class PDFController extends Controller
 	{
 	    $registros=$this->getPDFEventoQuery($id);
 		foreach ($registros as &$registro){
-		    $pdf = Pdf::loadView('pdf.pdf_example', compact('registros'));
+		    $pdf = Pdf::loadView('pdf.PDF_TicketEvento', compact('registros'));
 		    $pdf->setPaper(array(0,0,170,450));
 		    $pdf->save(storage_path('app/public/'.$registro->evento_name.'.pdf'));
 			$meta['id'] = $registro->event_id;
