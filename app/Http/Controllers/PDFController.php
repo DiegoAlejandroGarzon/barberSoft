@@ -43,7 +43,7 @@ class PDFController extends Controller
         
 		$query=EventAssistant::select('events.id','events.name as evento_name','events.header_image_path',
 		'events.created_at','events.event_date','events.start_time','users.id','users.name',
-		'users.lastname','users.email','users.type_document','users.document_number','event_assistants.qrCode',
+		'users.lastname','users.email','users.type_document','users.document_number','event_assistants.event_id','event_assistants.qrCode',
 		'event_assistants.guid','ticket_types.name as localidad','event_assistants.has_entered')
 		->join('events','events.id','=','event_assistants.event_id')
 		->join('users','users.id','=','event_assistants.user_id')
@@ -59,12 +59,14 @@ class PDFController extends Controller
 		    $pdf = Pdf::loadView('pdf.pdf_example', compact('registros'));
 		    $pdf->setPaper(array(0,0,170,450));
 		    $pdf->save(storage_path('app/public/'.$registro->evento_name.'.pdf'));
+
+			$meta['id'] = $registro->event_id;
 			$meta['title'] = $registro->evento_name;
 			$meta['name'] = $registro->name;
 			$meta['email'] = $registro->email;
 			$meta['fileName'] = $registro->evento_name.'.pdf';
 			$this->enviarEmailticket($meta);
-			return $pdf->stream($registro->evento_name.'.pdf');
+			return view('email.return_email_ticketevent',compact('meta'));
 		}
 	}
 	
@@ -72,6 +74,16 @@ class PDFController extends Controller
 	{
 	
 	   Mail::to('julianmarcelog@mail.com')->send(new EnvioNotificacionTickenGenerado($meta));
+
+		
+		
+	}
+
+
+	public function return_email($id)
+	{
+	
+	   return view(event.index);
 
 		
 		

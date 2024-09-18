@@ -92,6 +92,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     //CRUD PDF
     Route::get('/pdf/{id}',[PDFController::class,'buildPDF'])->name('pdf');
    
+   
 
     //CRUD AJAX
     Route::get('input-form', [AjaxController::class, 'index']);
@@ -155,6 +156,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/event-assistant/{id}/sendEmailInfoPago', [EventAssistantController::class, 'sendEmailInfoPago'])->name('eventAssistant.sendEmailInfoPago');
 
     Route::get('/payment/{id}', [PaymentController::class, 'generatePDF'])->name('payments.generatePDF');
+    
+    
     //SELECTS
     Route::get('/cities/{department}', [CityController::class, 'getCitiesByDepartment']);
 });
