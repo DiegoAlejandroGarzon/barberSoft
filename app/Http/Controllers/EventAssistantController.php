@@ -742,7 +742,7 @@ class EventAssistantController extends Controller
 			$meta['email'] = $registro->email;
 			$meta['fileName'] = $registro->evento_name.'.pdf';
 			$this->enviarEmailticket($meta);
-            return $meta;
+            return $meta;            
 			
 		}
 	}

@@ -23,7 +23,7 @@
 </div class="body">
     <h3 style="text-align: center">Tu ticket para el ingreso al evento {{$registro['title']}} fue enviado 😉<h3>
     <p style="text-align: center">que lo disfrutes y espero servirle en futuras ocaciones 😉</p>
-    <div class="Footer"></div>
+    <div class="Footer"></div>    
 </div>
 </body>
 </html>
