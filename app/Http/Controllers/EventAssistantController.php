@@ -536,4 +536,204 @@ class EventAssistantController extends Controller
         // Descargar el archivo Excel
         return Excel::download($export, 'plantilla_asistentes-'.$event->name.'.xlsx');
     }
+
+    public function specificSearch($idEvent){
+        $eventAssistant = EventAssistant::where('event_id', $idEvent)->get();
+        $event = Event::find($idEvent);
+        $additionalParameters = json_decode($event->additionalParameters, true) ?? [];
+        $departments = Departament::all();
+        $event = Event::findOrFail($idEvent);
+        $ticketTypes  = TicketType::where('event_id', $idEvent)->get();
+        return view('eventAssistant.specificSearch', compact('event', 'departments', 'ticketTypes', 'additionalParameters'));
+    }
+
+    public function specificSearchUploead(Request $request, $idEvent){
+        // Obtener los campos de búsqueda del request y eliminar aquellos con valores nulos
+        $input = array_filter($request->except('_token'), function($value) {
+            return !is_null($value); // Filtra inputs que no sean null
+        });
+
+        // Obtener los IDs de usuarios que ya están registrados como asistentes del evento
+        $eventAssistantUserIds = EventAssistant::where('event_id', $idEvent)->pluck('user_id');
+
+        // Buscar en la tabla Users, pero solo aquellos que estén asociados con el evento
+        $query = User::whereIn('id', $eventAssistantUserIds);
+        $query->where('id', -1);
+        foreach ($input as $key => $value) {
+            if ($value) {
+                $query->orWhere($key, 'LIKE', '%' . $value . '%');
+            }
+        }
+
+        // Ejecutar la búsqueda en la tabla Users
+        $users = $query->get();
+        // Si no se encontraron usuarios en la tabla User, buscar en UserEventParameter y AdditionalParameter
+        if ($users->isEmpty()) {
+            $additionalParameterMatches = [];
+
+            foreach ($input as $key => $value) {
+                if ($value) {
+                    // Encontrar los additional_parameters que coincidan con los nombres de los campos
+                    $parameters = AdditionalParameter::where('event_id', $idEvent)
+                        ->where('name', $key)
+                        ->get();
+
+                    foreach ($parameters as $parameter) {
+                        // Buscar en UserEventParameter por el valor correspondiente y usuarios relacionados con el evento
+                        $matches = UserEventParameter::where('event_id', $idEvent)
+                            ->whereIn('user_id', $eventAssistantUserIds)
+                            ->where('additional_parameter_id', $parameter->id)
+                            ->where('value', 'LIKE', '%' . $value . '%')
+                            ->pluck('user_id');
+
+                        // Agregar los matches al arreglo de resultados
+                        $additionalParameterMatches = array_merge($additionalParameterMatches, $matches->toArray());
+                    }
+                }
+            }
+
+            // Obtener los usuarios que coinciden en UserEventParameter y están relacionados con el evento
+            $users = User::whereIn('id', $additionalParameterMatches)->get();
+        }
+
+        // Retornar la vista con los resultados
+        $eventAssistant = EventAssistant::where('event_id', $idEvent)->get();
+        $event = Event::find($idEvent);
+        $additionalParameters = json_decode($event->additionalParameters, true) ?? [];
+        $departments = Departament::all();
+        $event = Event::findOrFail($idEvent);
+        $ticketTypes  = TicketType::where('event_id', $idEvent)->get();
+        // return view('eventAssistant.specificSearch', compact('users', 'event'));
+        return view('eventAssistant.specificSearch', compact('event', 'departments', 'ticketTypes', 'additionalParameters', 'users'));
+    }
+
+    public function exportExcel(Request $request, $idEvent)
+    {
+        $event = Event::find($idEvent);
+        // Obtener la búsqueda, campos seleccionados y parámetros adicionales desde el request
+        $search = $request->input('search');
+        $selectedFields = json_decode($event->registration_parameters, true) ?? [];
+        $additionalParameters = $event->additionalParameters;
+        // Exportar el archivo Excel usando los datos proporcionados
+        return Excel::download(
+            new EventAssistantsExport($idEvent, $selectedFields, $additionalParameters, $search),
+            'asistentes_de_'.$event->name.'_'.date('d-m-Y').'.xlsx'
+        );
+    }
+
+    public function sendMsg($idEvent){
+        $eventAssistants = EventAssistant::where('event_id', $idEvent)->get();
+        // Obtener todos los asistentes del evento
+        $eventAssistants = EventAssistant::where('event_id', $idEvent)->get();
+
+        foreach ($eventAssistants as $eventAssistant) {
+            // Generar la URL con la ruta nombrada 'eventAssistant.infoQr'
+            $url = route('eventAssistant.infoQr', ['id' => $eventAssistant->id, 'guid' => $eventAssistant->guid]);
+
+            // Construir el mensaje de texto
+            $message = "La URL para que puedas acceder al evento es la siguiente: $url";
+
+            // Aquí puedes utilizar un servicio de SMS para enviar el mensaje
+            // Ejemplo de uso de un servicio de SMS (Twilio, Nexmo, etc.)
+            // SmsService::send($assistant->user->phone, $message);
+
+            // Mostrar en consola o logs para depuración
+            info("Mensaje enviado a {$eventAssistant->user->phone}: $message");
+        }
+    }
+
+    public function sendEmail($id){
+        // Buscar el registro de EventAssistant por ID
+        $eventAssistant = EventAssistant::find($id);
+
+        // Asegúrate de que el asistente existe
+        if (!$eventAssistant || !$eventAssistant->user) {
+            return response()->json(['message' => 'No se ha encontrado el usuario respectivo'], 404);
+        }
+
+        // Obtener el correo electrónico del usuario relacionado
+        $email = $eventAssistant->user->email;
+        // return $email;
+
+        // Enviar el correo
+        Mail::send('emails.assistant',
+        ['eventAssistant' => $eventAssistant]
+        , function($message) use ($email) {
+            $message->to($email)
+                    ->subject('Información del evento');
+        });
+
+        return response()->json(['message' => 'Email enviado a ' . $email]);
+    }
+
+    public function eventoFinalizado ($idEvent){
+        return Event::find($idEvent)->status == 4 ? true : false;
+    }
+
+    public function payment($id){
+        $eventAssistant = EventAssistant::find($id);
+        return view('eventAssistant.payment', compact('eventAssistant'));
+    }
+
+    public function paymentStore(Request $request){
+
+        $request->validate([
+            'payer_name' => 'required|string|max:255',
+            'payer_document_type' => 'required|string|max:10',
+            'payer_document_number' => 'required|string|max:50',
+            'amount' => 'required|numeric',
+            'payment_method' => 'required|string',
+            'payment_proof' => 'nullable|image|max:2048', // Validación de la imagen
+        ]);
+
+        $paymentProofPath = null;
+        if ($request->hasFile('payment_proof')) {
+            $paymentProofPath = $request->file('payment_proof')->store('payment_proofs', 'public');
+        }
+
+        Payment::create([
+            'event_assistant_id' => $request->event_assistant_id,
+            'payer_name' => $request->payer_name,
+            'payer_document_type' => $request->payer_document_type,
+            'payer_document_number' => $request->payer_document_number,
+            'amount' => $request->amount,
+            'payment_method' => $request->payment_method,
+            'payment_proof' => $paymentProofPath,
+            'description' => 'Pago de Ticket',
+        ]);
+
+        $eventAsistant = EventAssistant::find($request->event_assistant_id);
+        if($eventAsistant->isFullyPaid()){
+            $eventAsistant->is_paid = true;
+            $eventAsistant->save();
+        }
+        return redirect()->back()->with('success', 'Pago registrado correctamente.');
+    }
+
+    public function sendEmailInfoPago($id){
+        // Buscar el registro de EventAssistant por ID
+        $eventAssistant = EventAssistant::find($id);
+
+        // Asegúrate de que el asistente existe
+        if (!$eventAssistant || !$eventAssistant->user) {
+            return response()->json(['message' => 'No se ha encontrado el usuario respectivo'], 404);
+        }
+
+        // Obtener el correo electrónico del usuario relacionado
+        $email = $eventAssistant->user->email;
+        // Asegúrate de que el email existe
+        if (!$email) {
+            return response()->json(['message' => 'No se ha encontrado el email respectivo'], 404);
+        }
+
+        // Enviar el correo
+        Mail::send('emails.infoPagoAssistant',
+        ['eventAssistant' => $eventAssistant]
+        , function($message) use ($email) {
+            $message->to($email)
+                    ->subject('Información del evento');
+        });
+
+        return response()->json(['message' => 'Email enviado a ' . $email]);
+    }
 }
