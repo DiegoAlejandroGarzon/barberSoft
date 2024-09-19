@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('event_assistants', function (Blueprint $table) {
             $table->unsignedBigInteger('guardian_id')->nullable()->after('user_id');
-            $table->foreign('guardian_id')->references('id')->on('users')->onDelete('cascade');
+            // $table->foreign('guardian_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

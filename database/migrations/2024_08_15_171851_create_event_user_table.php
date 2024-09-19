@@ -13,11 +13,15 @@ return new class extends Migration
     {
         Schema::create('event_assistants', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('event_id')->constrained()->onDelete('cascade');
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('ticket_type_id')->nullable()->constrained()->onDelete('cascade');
+            $table->unsignedBigInteger('event_id');
+            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('ticket_type_id')->nullable();
             $table->boolean('has_entered')->default(false);
             $table->timestamps();
+
+            $table->foreign('event_id')->references('id')->on('events')->onDelete('cascade');
+            // $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('ticket_type_id')->references('id')->on('ticket_types')->onDelete('cascade');
         });
     }
 

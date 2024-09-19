@@ -13,10 +13,15 @@ return new class extends Migration
     {
         Schema::create('user_event_parameters', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('event_id')->constrained()->onDelete('cascade');
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('additional_parameter_id')->constrained()->onDelete('cascade');
+
+            $table->unsignedBigInteger('event_id');
+            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('additional_parameter_id')->nullable();
             $table->text('value');
+
+            $table->foreign('event_id')->references('id')->on('events')->onDelete('cascade');
+            // $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('additional_parameter_id')->references('id')->on('additional_parameters')->onDelete('cascade');
             $table->timestamps();
         });
     }

@@ -3,6 +3,10 @@ import laravel from "laravel-vite-plugin";
 import path from "path";
 
 export default defineConfig({
+    base: '/',
+    hmr: {
+        host: process.env.NODE_ENV === 'development' ? 'localhost' : false,
+    },
     build: {
         commonjsOptions: {
             include: ["tailwind.config.js", "node_modules/**"],
