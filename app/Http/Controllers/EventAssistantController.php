@@ -796,4 +796,8 @@ class EventAssistantController extends Controller
 
 		return view('pdf.process1', compact('$id'));
 	}
+    public function showMassPayload($idEvent){
+        $event = Event::find($idEvent);
+        return view('eventAssistant.massPayload', compact('event'));
+    }
 }

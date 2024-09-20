@@ -20,7 +20,7 @@ return new class extends Migration
             $table->decimal('amount', 10, 2);
             $table->string('payment_method');
             $table->string('payment_proof')->nullable(); // Para almacenar la imagen de la transferencia
-            $table->string('description');
+            $table->string('description')->nullable();
             $table->timestamps();
         });
     }
