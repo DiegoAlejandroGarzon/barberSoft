@@ -148,8 +148,12 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/event-assistant/{id}/payment', [EventAssistantController::class, 'payment'])->name('eventAssistant.payment');
     Route::post('/event-assistant/payment', [EventAssistantController::class, 'paymentStore'])->name('eventAssistant.payment.store');
     Route::get('/event-assistant/{id}/sendEmailInfoPago', [EventAssistantController::class, 'sendEmailInfoPago'])->name('eventAssistant.sendEmailInfoPago');
+    Route::get('/assistants/{idEvent}/massPayload', [EventAssistantController::class, 'showMassPayload'])->name('eventAssistant.massPayload');
 
+    //Payloads
     Route::get('/payment/{id}', [PaymentController::class, 'generatePDF'])->name('payments.generatePDF');
+    Route::get('payment/{id}/download-template', [PaymentController::class, 'downloadTemplate'])->name('payments.downloadTemplate');
+    Route::post('/assistants/{idEvent}/massPayload', [PaymentController::class, 'uploadMassPayload'])->name('eventAssistant.massPayload.upload');
     //SELECTS
     Route::get('/cities/{department}', [CityController::class, 'getCitiesByDepartment']);
 });
