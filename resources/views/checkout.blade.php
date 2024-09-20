@@ -1,6 +1,13 @@
-import './bootstrap';
+@extends('../themes/' . $activeTheme . '/' . $activeLayout)
 
-window.paypal
+@section('subhead')
+
+<link rel="stylesheet" href="{{url('css/paypal.css')}}">
+<script src="https://www.paypal.com/sdk/js?client-id={{ env('PAYPAL_SANDBOX_CLIENT_ID') }}&buyer-country=US&currency=USD&components=buttons&enable-funding=venmo"
+            data-sdk-integration-source="developer-studio"
+></script>
+<script>
+    paypal
     .Buttons({
         style: {
             shape: "rect",
@@ -24,8 +31,8 @@ window.paypal
                     body: JSON.stringify({
                         cart: [
                             {
-                                id: "YOUR_PRODUCT_ID",
-                                quantity: "YOUR_PRODUCT_QUANTITY",
+                                id: productValue,
+                                quantity: productValue,
                             },
                         ],
                     }),
@@ -106,6 +113,30 @@ window.paypal
             }
         } ,
     })
-    .render("#paypal-button-container"); 
+    .render("#paypal-button-container");
 
-console.log('JavaScript is working!');
+
+    function handletclick(btnRadio){
+        productValue=btnRadio.value;
+        document.getElementById('paypal-button-container').style.display='Block';
+
+    }
+
+    </script>
+
+
+@endsection
+
+@section('subcontent')
+<p>Seleccione un Producto</p>
+<input type="radio" id="producto_1" name="producto" onclick="handletclick(this)" value="producto_1">
+<label for="producto_1">Producto 1=$1.00</label><br>
+<input type="radio" id="producto_2" name="producto" onclick="handletclick(this)" value="producto_2">
+<label for="producto_2">Producto 2=$2.00</label><br>
+<input type="radio" id="producto_3" name="producto" onclick="handletclick(this)" value="producto_3">
+<label for="producto_3">Producto 3=$3.00</label><br>
+<div id="paypal-button-container"></div>
+<p id="result-message"></p>
+@endsection
+
+

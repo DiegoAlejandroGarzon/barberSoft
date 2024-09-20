@@ -692,6 +692,10 @@ class EventAssistantController extends Controller
             $paymentProofPath = $request->file('payment_proof')->store('payment_proofs', 'public');
         }
 
+        if ($request->hasFile('payment_proof')) {
+            $paymentProofPath = $request->file('payment_proof')->store('payment_proofs', 'public');
+        }
+
         Payment::create([
             'event_assistant_id' => $request->event_assistant_id,
             'payer_name' => $request->payer_name,
@@ -702,6 +706,11 @@ class EventAssistantController extends Controller
             'payment_proof' => $paymentProofPath,
             'description' => 'Pago de Ticket',
         ]);
+
+        if($request->payment_method=='PayPal'){
+
+            $this->paypal($request->amount);
+        }
 
         $eventAsistant = EventAssistant::find($request->event_assistant_id);
         if($eventAsistant->isFullyPaid()){
@@ -782,4 +791,9 @@ class EventAssistantController extends Controller
 
         return response()->json(['message' => 'Email enviado a ' . $email]);
     }
+
+    public function paypal($id){
+
+		return view('pdf.process1', compact('$id'));
+	}
 }

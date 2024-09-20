@@ -1,5 +1,3 @@
-import './bootstrap';
-
 window.paypal
     .Buttons({
         style: {
@@ -107,5 +105,3 @@ window.paypal
         } ,
     })
     .render("#paypal-button-container"); 
-
-console.log('JavaScript is working!');

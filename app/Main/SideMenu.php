@@ -42,6 +42,17 @@ class SideMenu
                     ]
                 ]
             ],
+            'Pagos' => [
+                'icon' => 'file-text',
+                'title' => 'Pagos',
+                'sub_menu' => [
+                    'checkout.paypal' => [
+                        'icon' => 'file-text',
+                        'route_name' => 'checkout.paypal',
+                        'title' => 'Paypal'
+                    ]
+                ]
+            ],
             'Configuraciones' => [
                 'icon' => 'file-text',
                 'title' => 'Configuraciones',
