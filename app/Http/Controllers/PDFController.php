@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Notification;
 use App\Mail\EnvioNotificacionTickenGenerado;
 use App\Mail\PruebaEmail;
 use Pdf;
+use Srmklive\PayPal\Services\PayPal as PayPalClient;
 
 class PDFController extends Controller
 {
@@ -82,6 +83,13 @@ class PDFController extends Controller
 
 		
 		
+	}
+
+	public function paypal($id){
+        
+		$provider = new PayPalClient;
+		$infoPago['valor']=100.00;
+		return view('paypal.client.checkout',compact('infoPago'));
 	}
 	
 }
