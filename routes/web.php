@@ -29,6 +29,8 @@ use App\Http\Controllers\AjaxController;
 use App\Http\Controllers\PaymentController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\TicketFeatureController;
+use App\Http\Controllers\PDFController;
+use App\Http\Controllers\PaypalController;
 
 Route::get('theme-switcher/{activeTheme}', [ThemeController::class, 'switch'])->name('theme-switcher');
 Route::get('layout-switcher/{activeLayout}', [LayoutController::class, 'switch'])->name('layout-switcher');
@@ -88,6 +90,12 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/ticketFeatures/delete/{id}',[TicketFeatureController::class,'delete'])->name('ticketFeatures.delete');
 
 
+    //CRUD PDF
+    Route::get('/pdf/{id}',[PDFController::class,'buildPDF'])->name('pdf');
+    Route::get('/checkout/',[PaypalController::class,'Paypal'])->name('checkout.paypal');
+
+
+
     //CRUD AJAX
     Route::get('input-form', [AjaxController::class, 'index']);
     Route::get('search-Autocomplete', [AjaxController::class, 'searchAutocomplete']);
@@ -103,9 +111,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
     });
 
-
-
-    //EDITAR PERFIL
+      //EDITAR PERFIL
     Route::get('/profile/update/{id}', [UserController::class, 'profileEdit'])->name('profile.edit');
     Route::post('/profile/update', [UserController::class, 'profileUpdate'])->name('profile.update');
     Route::get('/profile/changeProfilePhoto', [UserController::class, 'changeProfilePhoto'])->name('profile.changeProfilePhoto');
@@ -152,6 +158,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
     //Payloads
     Route::get('/payment/{id}', [PaymentController::class, 'generatePDF'])->name('payments.generatePDF');
+    
+    
     Route::get('payment/{id}/download-template', [PaymentController::class, 'downloadTemplate'])->name('payments.downloadTemplate');
     Route::post('/assistants/{idEvent}/massPayload', [PaymentController::class, 'uploadMassPayload'])->name('eventAssistant.massPayload.upload');
     //SELECTS

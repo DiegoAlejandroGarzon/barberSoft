@@ -111,6 +111,7 @@
                         <option value="" disabled selected>Seleccione la forma de pago</option>
                         <option value="transferencia">Transferencia</option>
                         <option value="efectivo">Efectivo</option>
+                        <option value="PayPal">Paypal</option>
                     </select>
                 </div>
 

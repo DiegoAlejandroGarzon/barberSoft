@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Departament;
+use App\Models\City;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -76,12 +77,15 @@ class UserController extends Controller
         $user->document_number = $request->document_number; // Asignación del campo document_number
         $user->save();
 
+        //validar ciudades
+        
         // Asignar el rol
         $role = Role::find($request->role_id);
         $user->assignRole($role);
 
         // Redirigir con mensaje de éxito
         return redirect()->route('users.index')->with('success', 'Usuario creado con éxito.');
+        
     }
 
     public function edit($id){
@@ -251,9 +255,9 @@ class UserController extends Controller
             'email' => 'required|email|exists:users,email',
         ]);
         // Send the password reset link
-        $status = Password::sendResetLink(
-            $request->only('email')
-        );
+        
+        
+        $status = Password::sendResetLink($request->only('email'));
         return "prubea";
 
         // Check if the email was successfully sent
