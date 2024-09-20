@@ -36,7 +36,7 @@
         </div>
 
         <div class="intro-y col-span-12 mt-2 flex flex-wrap items-center sm:flex-nowrap">
-            <a href="{{ route('eventAssistant.massAssign', ['idEvent' => $idEvent]) }}">
+            {{-- <a href="{{ route('eventAssistant.massAssign', ['idEvent' => $idEvent]) }}">
                 <x-base.button class="mr-2 shadow-md" variant="primary">
                     Asignar Asistentes Masivamente
                 </x-base.button>
@@ -50,31 +50,42 @@
                 <x-base.button class="mr-2 shadow-md" variant="secondary">
                     Crear Asistente Manualmente
                 </x-base.button>
-            </a>
-            {{-- <x-base.menu>
-                <x-base.menu.button class="!box px-2" as="x-base.button">
-                    <span class="flex h-5 w-5 items-center justify-center">
-                        <x-base.lucide class="h-4 w-4" icon="Plus" />
+            </a> --}}
+            <x-base.menu>
+                <x-base.menu.button class="!box" as="x-base.button">
+                    <span class="flex items-center justify-center">
+                        <x-base.lucide class="h-4 w-4" icon="Plus" />Cargue Asistente
                     </span>
                 </x-base.menu.button>
                 <x-base.menu.items class="w-40">
                     <x-base.menu.item>
-                        <x-base.lucide class="mr-2 h-4 w-4" icon="Printer" /> Imprimir
-                    </x-base.menu.item>
-                    <x-base.menu.item>
-                        <a target="_blank" href="{{ route('eventAssistant.exportExcel', [
-                            'idEvent' => $idEvent,
-                            'search' => request()->input('search'),
-                            'additionalParameters' => request()->input('additionalParameters', [])
-                            ]) }}">
-                            <x-base.lucide class="mr-2 h-4 w-4" icon="FileText" /> Exportar a Excel
+                        <a href="{{ route('eventAssistant.massAssign', ['idEvent' => $idEvent]) }}">
+                            <x-base.button class="mr-2 shadow-md" variant="primary">
+                                Asignar Asistentes Masivamente
+                            </x-base.button>
                         </a>
                     </x-base.menu.item>
                     <x-base.menu.item>
-                        <x-base.lucide class="mr-2 h-4 w-4" icon="FileText" /> Exportar a PDF
+                        <a href="{{ route('eventAssistant.singleAssignForm', ['idEvent' => $idEvent]) }}">
+                            <x-base.button class="mr-2 shadow-md" variant="secondary">
+                                Asignar Asistente Manualmente
+                            </x-base.button>
+                        </a>
+                    </x-base.menu.item>
+                    <x-base.menu.item>
+                        <a href="{{ route('eventAssistant.singleCreateForm', ['idEvent' => $idEvent]) }}">
+                            <x-base.button class="mr-2 shadow-md" variant="secondary">
+                                Crear Asistente Manualmente
+                            </x-base.button>
+                        </a>
                     </x-base.menu.item>
                 </x-base.menu.items>
-            </x-base.menu> --}}
+            </x-base.menu>
+            <a href="{{ route('eventAssistant.massPayload', ['idEvent' => $idEvent]) }}">
+                <x-base.button class="mr-2 shadow-md" variant="primary">
+                    Asignar Pagos Masivamente
+                </x-base.button>
+            </a>
             <div class="mt-3 w-full sm:ml-auto sm:mt-0 sm:w-auto md:ml-0">
                 <form method="GET" action="{{ route('eventAssistant.index', ['idEvent' => $idEvent]) }}">
                     <div class="relative w-56 text-slate-500">

@@ -736,4 +736,9 @@ class EventAssistantController extends Controller
 
         return response()->json(['message' => 'Email enviado a ' . $email]);
     }
+
+    public function showMassPayload($idEvent){
+        $event = Event::find($idEvent);
+        return view('eventAssistant.massPayload', compact('event'));
+    }
 }
