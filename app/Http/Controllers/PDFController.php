@@ -55,9 +55,13 @@ class PDFController extends Controller
 
 	public function buildPDF($id)
 	{
+
+		
+
 	    $registros=$this->getPDFEventoQuery($id);
 		foreach ($registros as &$registro){
-		    $pdf = Pdf::loadView('pdf.PDF_TicketEvento', compact('registros'));
+			$qrCodeBase64 = 'data:image/png;base64,' . base64_encode($registro->qrCode);
+		    $pdf = Pdf::loadView('pdf.PDF_TicketEvento', compact('registros','qrCodeBase64'));
 		    $pdf->setPaper(array(0,0,170,450));
 		    $pdf->save(storage_path('app/public/'.$registro->evento_name.'.pdf'));
 			$meta['id'] = $registro->event_id;

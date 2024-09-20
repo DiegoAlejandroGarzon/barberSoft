@@ -163,7 +163,7 @@
                         @if($item->qrCode)
                             <div>
                                 <div class="mt-5">
-                                    {!! $item->qrCode !!}
+									<img src="{{ $qrCodeBase64 }}" alt="QR Code">
                                 </div>
                             </div>
                         @else
