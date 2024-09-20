@@ -14,7 +14,7 @@
 
 @section('subcontent')
 
-<x-base.form-label for="nombres">Nombres:{{env('PAYPAL_SANDBOX_CLIENT_ID')}}</x-base.form-label>
+<x-base.form-label for="nombres">Nombres:</x-base.form-label>
 
 <x-base.form-input  type="text" id="nombres" name="nombres"></x-base.form-input>
 

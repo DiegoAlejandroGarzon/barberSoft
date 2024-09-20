@@ -83,6 +83,8 @@
 		width:3.6cm;
 		hight:1cm;
 	}
+
+
 	 
 	.row_image_qr,.img{
 
@@ -163,7 +165,7 @@
                         @if($item->qrCode)
                             <div>
                                 <div class="mt-5">
-									<img src="{{ $qrCodeBase64 }}" alt="QR Code">
+									<img class="imagen_qr" src="{{ $qrCodeBase64 }}" alt="QR Code">
                                 </div>
                             </div>
                         @else
