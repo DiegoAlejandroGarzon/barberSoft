@@ -5,7 +5,12 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use srmklive\paypal\src\Service\PayPal;
 use App\Models\Order;
+use App\Models\User;
 use DB;
+use App\Notifications\invoicePaid;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Traits\HasRoles;
+
 
 class PaypalController extends Controller
 {
@@ -39,7 +44,7 @@ class PaypalController extends Controller
             ]
             ]);
         //save create order to database
-        Order::create([
+        $pedido=Order::create([
            'nombres'=>$data['name'],
            'apellidos'=>$data['lastName'],
            'cedula'=>$data['id'],
@@ -49,6 +54,8 @@ class PaypalController extends Controller
            'precio'=>$price,
            'status'=>$order['status'],
         ]);
+       
+        $this-> makeOrderNotifications($pedido);
 
         return response()->json($order);
     }
@@ -75,6 +82,21 @@ class PaypalController extends Controller
             ->update(['status'=>'COMPLETED','updated_at'=>\Carbon\Carbon::now()]);
         }
         return response()->json($result);
+    }
+
+
+    public function makeOrderNotifications($order){
+
+   
+     $user=User::whereHas('roles', function ($query) {
+        $query->where('name', 'Admin');
+    })->get();
+
+     $user->except($order->nombre);
+     $user->each(function(User $user) use ($order){
+        $user->notify(new invoicePaid($order));
+     });
+
     }
 
 
