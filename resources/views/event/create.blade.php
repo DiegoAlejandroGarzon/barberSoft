@@ -186,7 +186,6 @@
                             class="w-full {{ $errors->has('status') ? 'border-red-500' : '' }}"
                             id="status"
                             name="status"
-                            onchange="filterCities()"
                         >
                             <option></option>
                             @foreach (config('statusEvento') as $label => $valor)

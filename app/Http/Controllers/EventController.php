@@ -176,18 +176,20 @@ class EventController extends Controller
             });
 
             // Actualizar o crear nuevos ticketTypes
-            foreach ($request->ticketTypes as $ticketTypeData) {
-            $ticketType = TicketType::updateOrCreate(
-                ['id' => $ticketTypeData['id'] ?? null, 'event_id' => $event->id],
-                [
-                    'name' => $ticketTypeData['name'],
-                    'capacity' => $ticketTypeData['capacity'],
-                    'price' => $ticketTypeData['price'],
-                ]
-            );
+            if($request->ticketTypes){
+                foreach ($request->ticketTypes as $ticketTypeData) {
+                $ticketType = TicketType::updateOrCreate(
+                    ['id' => $ticketTypeData['id'] ?? null, 'event_id' => $event->id],
+                    [
+                        'name' => $ticketTypeData['name'],
+                        'capacity' => $ticketTypeData['capacity'],
+                        'price' => $ticketTypeData['price'],
+                    ]
+                );
 
-                // Asignar características
-                $ticketType->features()->sync($ticketTypeData['features']);
+                    // Asignar características
+                    $ticketType->features()->sync($ticketTypeData['features']);
+                }
             }
 
             return redirect()->route('event.index')->with('success', 'Evento actualizado exitosamente.');
@@ -321,26 +323,26 @@ class EventController extends Controller
             if (!in_array($existingParameter->name, $newParameterNames)) {
                 $existingParameter->delete();
             }
+        }
 
-            // Agregar o actualizar los parámetros adicionales
-            foreach ($additionalParameters as $param) {
-                if (!empty($param['name']) && !empty($param['type'])) {
-                    // Verificar si ya existe un parámetro adicional con el mismo 'name' y 'event_id'
-                    $existingParameter = AdditionalParameter::where('event_id', $event->id)
-                        ->where('name', $param['name'])
-                        ->first();
+        // Agregar o actualizar los parámetros adicionales
+        foreach ($additionalParameters as $param) {
+            if (!empty($param['name']) && !empty($param['type'])) {
+                // Verificar si ya existe un parámetro adicional con el mismo 'name' y 'event_id'
+                $existingParameter = AdditionalParameter::where('event_id', $event->id)
+                    ->where('name', $param['name'])
+                    ->first();
 
-                    if ($existingParameter) {
-                        $existingParameter->update([
-                            'type' => $param['type']
-                        ]);
-                    } else {
-                        AdditionalParameter::create([
-                            'event_id' => $event->id,
-                            'name' => $param['name'],
-                            'type' => $param['type']
-                        ]);
-                    }
+                if ($existingParameter) {
+                    $existingParameter->update([
+                        'type' => $param['type']
+                    ]);
+                } else {
+                    AdditionalParameter::create([
+                        'event_id' => $event->id,
+                        'name' => $param['name'],
+                        'type' => $param['type']
+                    ]);
                 }
             }
         }

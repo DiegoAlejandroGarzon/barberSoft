@@ -197,13 +197,18 @@
         @endforeach
 
         <!-- Campos adicionales dinámicos -->
-        @foreach ($userEventParameter as $parameter)
+        @foreach ($additionalParameters as $parameter)
             @php
-                $type = $parameter->additionalParameter['type'] ?? 'text';
-                $name = $parameter->additionalParameter['name'] ?? '';
-                $label = $parameter->additionalParameter['label'] ?? '';
-                $options = $parameter->additionalParameter['options'] ?? [];
-                $value = $parameter->value ?? '';
+                $type = $parameter['type'] ?? 'text';
+                $name = $parameter['name'] ?? '';
+                $label = $parameter['label'] ?? '';
+                $options = $parameter['options'] ?? [];
+                $value = '';
+                foreach($userEventParameter as $parameterUser){
+                    if($parameterUser->additional_parameter_id == $parameter['id']){
+                        $value = $parameterUser->value;
+                    }
+                }
             @endphp
 
             <div class="mt-3">
