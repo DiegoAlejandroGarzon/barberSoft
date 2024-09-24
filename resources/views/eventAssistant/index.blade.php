@@ -104,13 +104,42 @@
                 </x-base.button>
             </a>
 
-            <a class="mr-3" target="_blank" href="{{ route('eventAssistant.exportExcel', [
-                'idEvent' => $idEvent,
-                'search' => request()->input('search'),
-                'additionalParameters' => request()->input('additionalParameters', [])
-                ]) }}">
-                <x-base.lucide class="mr-2 h-4 w-4" icon="FileText" /> Exportar a Excel
-            </a>
+            <x-base.menu>
+                <x-base.menu.button class="!box" as="x-base.button">
+                    <span class="flex items-center justify-center">
+                        <x-base.lucide class="h-4 w-4" icon="Plus" />Reporte Asistentes
+                    </span>
+                </x-base.menu.button>
+                <x-base.menu.items class="w-40">
+                    <x-base.menu.item>
+                        <a class="mr-3" target="_blank" href="{{ route('eventAssistant.exportExcel', [
+                            'idEvent' => $idEvent,
+                            'search' => request()->input('search'),
+                            'additionalParameters' => request()->input('additionalParameters', [])
+                            ]) }}">
+                            <x-base.lucide class="mr-2 h-4 w-4" icon="FileText" /> Exportar a Excel
+                        </a>
+                    </x-base.menu.item>
+                </x-base.menu.items>
+            </x-base.menu>
+            <x-base.menu>
+                <x-base.menu.button class="!box" as="x-base.button">
+                    <span class="flex items-center justify-center">
+                        <x-base.lucide class="h-4 w-4" icon="Plus" />Reporte Pagos
+                    </span>
+                </x-base.menu.button>
+                <x-base.menu.items class="w-40">
+                    <x-base.menu.item>
+                        <a class="mr-3" target="_blank" href="{{ route('payment.exportExcel', [
+                            'idEvent' => $idEvent,
+                            'search' => request()->input('search'),
+                            'additionalParameters' => request()->input('additionalParameters', [])
+                            ]) }}">
+                            <x-base.lucide class="mr-2 h-4 w-4" icon="FileText" /> Reporte en Excel
+                        </a>
+                    </x-base.menu.item>
+                </x-base.menu.items>
+            </x-base.menu>
         </div>
 
         <!-- BEGIN: Data List -->
