@@ -262,6 +262,10 @@
                 citySelect.addOption({value: city.id, text: city.name});
             });
 
+            @if(old('city_id'))
+            console.log("se va a asiganr "+{{ old('city_id') }});
+            citySelect.setValue({{ old('city_id') }});
+            @endif
             // Refresca la lista de opciones para que se muestren correctamente en la interfaz
             citySelect.refreshOptions(false);
         }
@@ -287,6 +291,7 @@
                     .catch(error => console.error('Error fetching cities:', error));
             }
         }
+        filterCities();
 
     </script>
 @endsection
