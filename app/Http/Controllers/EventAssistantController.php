@@ -468,16 +468,30 @@ class EventAssistantController extends Controller
         $eventAssistant->save();
 
         $event = $eventAssistant->event;
-        $currentCount = EventAssistant::where('event_id', $event->id)
-        ->where('has_entered', true)
-        ->count();
+        $ticketType = $eventAssistant->ticketType; // Obtener el tipo de ticket
         $successMessage = 'Ingreso registrado correctamente.';
 
-        if ($currentCount >= $event->capacity) {
-            // Redirigir con una alerta si se ha superado el aforo
+        // Contar cuántas entradas han ingresado con este tipo de ticket
+        $currentTicketCount = EventAssistant::where('event_id', $event->id)
+            ->where('ticket_type_id', $ticketType->id)
+            ->where('has_entered', true)
+            ->count();
+
+        // Verificar el porcentaje de aforo del tipo de ticket
+        $ticketCapacityReached = $currentTicketCount >= $ticketType->capacity;
+        $ticketNearCapacity = $currentTicketCount >= ($ticketType->capacity * 0.9);
+
+        if ($ticketNearCapacity && !$ticketCapacityReached) {
+            // Avisar que se está cerca del aforo máximo para el tipo de ticket
             return redirect()->back()->with([
                 'success' => $successMessage,
-                'error' => 'Aforo máximo alcanzado o superado. Se han registrado '.$currentCount." entradas y la capacidad maximo es de ".$event->capacity,
+                'warning' => 'Atención: Se ha alcanzado el 90% de la capacidad para el tipo de ticket "' . $ticketType->name . '". Se han registrado ' . $currentTicketCount . " entradas y la capacidad máxima es de " . $ticketType->capacity . "."
+            ]);
+        } elseif ($ticketCapacityReached) {
+            // Redirigir con una alerta si se ha superado el aforo para el tipo de ticket
+            return redirect()->back()->with([
+                'success' => $successMessage,
+                'error' => 'Aforo máximo alcanzado o superado para el tipo de ticket "' . $ticketType->name . '". Se han registrado ' . $currentTicketCount . " entradas y la capacidad máxima es de " . $ticketType->capacity . "."
             ]);
         }else{
             return redirect()->back()->with('success', $successMessage);

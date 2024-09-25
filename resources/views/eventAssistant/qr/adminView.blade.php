@@ -24,6 +24,19 @@
         </x-base.alert>
     @endif
 
+    @if(session('warning'))
+        <x-base.alert
+        class="mb-2 flex items-center"
+        variant="warning"
+        >
+            <x-base.lucide
+                class="mr-2 h-6 w-6"
+                icon="AlertCircle"
+            />
+            {{ session('warning') }}
+        </x-base.alert>
+    @endif
+
 
     <div class="mt-5">
         <div class="">
@@ -115,7 +128,7 @@
             <br>
             <!-- Botón para Registrar Ingreso -->
 
-            @if(!$eventAssistant->has_entered && !$eventAssistant->rejected)
+            @if(!$eventAssistant->has_entered && !$eventAssistant->rejected || true)
             <form action="{{ route('eventAssistant.registerEntry', $eventAssistant->id) }}" method="POST">
                 @csrf
                 @method('PATCH')
