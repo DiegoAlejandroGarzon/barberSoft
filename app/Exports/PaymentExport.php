@@ -15,13 +15,15 @@ class PaymentExport implements FromCollection, WithHeadings
     protected $selectedFields;
     protected $additionalParameters;
     protected $search;
+    protected $paymentStatus;
 
-    public function __construct($eventId, $selectedFields, $additionalParameters, $search = null)
+    public function __construct($eventId, $selectedFields, $additionalParameters, $search = null, $paymentStatus = false)
     {
         $this->eventId = $eventId;
         $this->selectedFields = $selectedFields;
         $this->additionalParameters = $additionalParameters;
         $this->search = $search;
+        $this->paymentStatus = $paymentStatus;
     }
 
     public function collection()
@@ -42,9 +44,14 @@ class PaymentExport implements FromCollection, WithHeadings
             ->join('users', 'event_assistants.user_id', '=', 'users.id')
             ->join('events', 'event_assistants.event_id', '=', 'events.id')
             ->with('eventParameters')
-            ->join('payments', 'event_assistants.id', '=', 'payments.event_assistant_id')
-            ->whereHas('payments')
             ->where('event_assistants.event_id', $this->eventId);
+        if(!$this->paymentStatus){
+            $query
+            ->join('payments', 'event_assistants.id', '=', 'payments.event_assistant_id')
+            ->whereHas('payments');
+        }else{
+            $query->leftjoin('payments', 'event_assistants.id', '=', 'payments.event_assistant_id');
+        }
         if ($this->search) {
             $query->whereHas('user', function ($q) {
                 $q->where('name', 'like', '%' . $this->search . '%')
@@ -76,6 +83,7 @@ class PaymentExport implements FromCollection, WithHeadings
                 // $user->event_date,
                 // City::find($user->event_city_id)->name,
                 // $user->address,
+                $user->is_paid ? 'PAGADO' : ($user->totalPayments() == 0 ? 'NO PAGADO' : 'PENDIENTE'),
                 $user->payer_name,
                 $user->payer_document_type,
                 $user->payer_document_number,
@@ -110,6 +118,7 @@ class PaymentExport implements FromCollection, WithHeadings
             // 'Fecha Evento',
             // 'Ciudad Evento',
             // 'Direccion Evento',
+            'STATUS DE PAGO',
             'Nombre del pagador',
             'Tipo documento del pagador',
             'Numero documento del pagador',

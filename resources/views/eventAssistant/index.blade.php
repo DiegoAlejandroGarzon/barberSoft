@@ -191,7 +191,14 @@
                             'search' => request()->input('search'),
                             'additionalParameters' => request()->input('additionalParameters', [])
                             ]) }}">
-                            <x-base.lucide class="mr-2 h-4 w-4" icon="FileText" /> Reporte en Excel
+                            <x-base.lucide class="mr-2 h-4 w-4" icon="FileText" /> Pagos Realizados (EXCEL)
+                        </a>
+                        <a class="mr-3" target="_blank" href="{{ route('paymentStatus.exportExcel', [
+                            'idEvent' => $idEvent,
+                            'search' => request()->input('search'),
+                            'additionalParameters' => request()->input('additionalParameters', [])
+                            ]) }}">
+                            <x-base.lucide class="mr-2 h-4 w-4" icon="FileText" /> Status Pago (EXCEL)
                         </a>
                     </x-base.menu.item>
                 </x-base.menu.items>
