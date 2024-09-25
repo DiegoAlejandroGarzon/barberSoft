@@ -16,7 +16,7 @@ class EventAssistantObserver
         // Generar un GUID
         $guid = Str::uuid()->toString();
         // Generar el QR Code basado en el ID o alguna otra información del modelo
-        $qrContent = route('eventAssistant.qr', ['id' => $eventAssistant->id, 'guid' => $guid]);
+        $qrContent = route('eventAssistant.infoQr', ['id' => $eventAssistant->id, 'guid' => $guid]);
         $qrCode = QrCode::format('svg')->size(300)->generate($qrContent);
         // Actualizar el modelo con la ruta del QR Code
         $eventAssistant->update([
