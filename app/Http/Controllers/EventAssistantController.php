@@ -780,8 +780,11 @@ class EventAssistantController extends Controller
             $eventAsistant->save();
         }
 
-        $meta=$this->buildPDF_Mail($request->event_assistant_id);
-        return view('email.return_email_ticketevent',compact('meta'));
+        return redirect()->back()
+        ->with('success', 'Se ha registrado el pago correctamente');
+
+        // $meta=$this->buildPDF_Mail($request->event_assistant_id);
+        // return view('email.return_email_ticketevent',compact('meta'));
 
         }
 
