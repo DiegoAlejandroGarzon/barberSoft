@@ -590,6 +590,9 @@ class EventAssistantController extends Controller
             ];
         }
 
+        // Agregar la columna adicional "ticket_type"
+        $registration_parameters[] = 'ticket_type';
+
         // Crear una instancia de la exportación con los encabezados
         $export = new TemplateExport($registration_parameters);
 
