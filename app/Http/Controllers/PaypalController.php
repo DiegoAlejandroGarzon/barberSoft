@@ -26,9 +26,7 @@ class PaypalController extends Controller
         $provider->setApiCredentials(config('paypal'));
         $token=$provider->getAccessToken();
         $provider->setAccessToken($token);
-        $price = Order::getProductPrice($data['quantity']);
-        $description = $data['quantity'];
-
+        
        
         
         $order=$provider->createOrder([
@@ -37,9 +35,9 @@ class PaypalController extends Controller
                 [
                     "amount" => [
                     "currency_code"=>"USD",
-                    "value"=> $price
+                    "value"=> $data['quantity']
                     ],
-                    "description" => $description
+                    "description" => $data['description']
                     ]
             ]
             ]);
@@ -50,8 +48,8 @@ class PaypalController extends Controller
            'cedula'=>$data['id'],
            'telefono'=>$data['phone'],
            'reference_number'=>$order['id'],
-           'description'=>$data['quantity'],
-           'precio'=>$price,
+           'description'=>$data['description'],
+           'precio'=>$data['quantity'],
            'status'=>$order['status'],
         ]);
        

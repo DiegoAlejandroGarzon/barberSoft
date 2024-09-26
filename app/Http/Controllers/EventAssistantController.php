@@ -758,6 +758,20 @@ class EventAssistantController extends Controller
             $paymentProofPath = $request->file('payment_proof')->store('payment_proofs', 'public');
         }
 
+
+        if($request->payment_method=='PayPal'){
+            
+            $eventAssistant = EventAssistant::find($request->event_assistant_id);
+            $event=Event::find($eventAssistant->event_id);
+            $pago['event_assistant_id']=$request->event_assistant_id;
+            $pago['payer_name']=$request->payer_name;
+            $pago['payer_document_number']=$request->payer_document_number;
+            $pago['amount']=round($request->amount*0.000234);
+            $pago['evento']=$event->name;
+            return view('paypal.checkout', compact('pago'));
+
+        }
+
         Payment::create([
             'event_assistant_id' => $request->event_assistant_id,
             'payer_name' => $request->payer_name,
@@ -769,10 +783,7 @@ class EventAssistantController extends Controller
             'description' => 'Pago de Ticket',
         ]);
 
-        if($request->payment_method=='PayPal'){
-
-            $this->paypal($request->amount);
-        }
+      
 
         $eventAsistant = EventAssistant::find($request->event_assistant_id);
         if($eventAsistant->isFullyPaid()){
@@ -857,10 +868,8 @@ class EventAssistantController extends Controller
         return response()->json(['message' => 'Email enviado a ' . $email]);
     }
 
-    public function paypal($id){
+   
 
-		return view('pdf.process1', compact('$id'));
-	}
     public function showMassPayload($idEvent){
         $event = Event::find($idEvent);
         return view('eventAssistant.massPayload', compact('event'));
