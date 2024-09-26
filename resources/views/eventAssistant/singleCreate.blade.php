@@ -47,7 +47,7 @@
             @endif
 
             @if(in_array('lastname', $selectedFields))
-                <x-base.form-label for="lastname">Nombre</x-base.form-label>
+                <x-base.form-label for="lastname">Apellido</x-base.form-label>
                 <x-base.form-input id="lastname" class="intro-x block min-w-full px-4 py-3 xl:min-w-[350px]" type="text" name="lastname" placeholder="Apellidos" value="{{ old('lastname') }}" required />
                 @error('lastname')
                     <span class="invalid-feedback" role="alert">
@@ -345,6 +345,7 @@
                     .catch(error => console.error('Error fetching cities:', error));
             }
         }
+        filterCities();
     @endif
 </script>
 @endsection

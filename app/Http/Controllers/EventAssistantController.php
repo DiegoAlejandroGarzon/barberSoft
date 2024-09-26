@@ -221,23 +221,41 @@ class EventAssistantController extends Controller
         }
         $event = Event::find($idEvent);
 
-        // $request = $request->validate([
-        //     'name' => 'required|string|max:255',
-        //     'email' => 'required|email|max:255',
-        //     'type_document' => 'required|string|max:3',
-        //     'document_number' => 'required|string|max:20|unique:users,document_number',
-        // ]);
+        $registrationParameters = json_decode($event->registration_parameters, true) ?? [];
 
-        // Buscar el usuario por correo electrónico, o crear uno nuevo si no existe
-        // $user = User::create(
-        //     [
-        //         'name' => $request['name'],
-        //         'password' => Hash::make('12345678'), // Contraseña predeterminada
-        //         'status' => false,
-        //         'email' => $request['email'],
-        //         'type_document' => $request['type_document'],
-        //     ]
-        // );
+        // Construir reglas de validación dinámicas
+        $validationRules = [];
+        foreach ($registrationParameters as $param) {
+            switch ($param) {
+                case 'name':
+                case 'lastname':
+                    $validationRules[$param] = 'required|string|max:255';
+                    break;
+                case 'email':
+                    $validationRules[$param] = 'required|email|max:255|unique:users,email';
+                    break;
+                case 'type_document':
+                    $validationRules[$param] = 'required|string|max:3';
+                    break;
+                case 'document_number':
+                    $validationRules[$param] = 'required|string|max:20|unique:users,document_number';
+                    break;
+                case 'phone':
+                    $validationRules[$param] = 'nullable|string|max:15'; // Suponiendo que es opcional
+                    break;
+                case 'city_id':
+                    $validationRules[$param] = 'nullable|exists:cities,id'; // Asegúrate de que la ciudad exista
+                    break;
+                case 'birth_date':
+                    $validationRules[$param] = 'nullable|date'; // Opcional, formato de fecha
+                    break;
+                // Agrega más parámetros según sea necesario
+            }
+        }
+
+        // Validar el request
+        $validatedData = $request->validate($validationRules);
+
         // Obtener las columnas definidas en $fillable del modelo User
         $user = new User();
         $userFillableColumns = (new User())->getFillable();
