@@ -12,28 +12,84 @@
         </x-base.alert>
     @endif
     <h2 class="intro-y mt-10 text-lg font-medium">Lista de Asistentes</h2>
-    <div class="mt-5 grid grid-cols-12 gap-6">
+    <div class="">
         <script>
-            const chartData = @json($data);
+            const chartData = @json($dataGeneral);
+            const ticketData = @json($ticketsInfo); // Pasar información de tickets
         </script>
+            <!-- BEGIN: Multiple Item -->
+            <x-base.preview-component class="intro-y box mt-5">
+                <div
+                    class="flex flex-col items-center border-b border-slate-200/60 p-5 dark:border-darkmode-400 sm:flex-row">
+                    <h2 class="mr-auto text-base font-medium">
+                        Reporte de Asistencias
+                    </h2>
+                </div>
+                <div class="p-5">
+                    <x-base.preview>
+                        <div class="mx-6">
+                            <x-base.tiny-slider
+                                id="multiple-item-slider"
+                                config="multiple-items"
+                            >
+                                <div class="px-2">
+                                    <div class="h-full rounded-md bg-slate-100 dark:bg-darkmode-400">
+                                        <div>ASISTENCIA GENERAL</div>
+                                        <div class="intro-y box mt-5 p-5 col-span-12 items-center">
+                                            <div class="mt-3">
+                                                <x-chart-assistants />
+                                            </div>
+                                            <div class="mx-auto mt-8 w-52 sm:w-auto">
+                                                <div class="flex items-center">
+                                                    <div class="mr-3 h-2 w-2 rounded-full bg-primary"></div>
+                                                    <span class="truncate">Entradas registradas</span>
+                                                    <span class="ml-auto font-medium">{{ $dataGeneral['soldTickets'] }} ({{ round(($dataGeneral['soldTickets'] / $dataGeneral['capacity']) * 100, 2) }}%)</span>
+                                                </div>
+                                                <div class="mt-4 flex items-center">
+                                                    <div class="mr-3 h-2 w-2 rounded-full bg-pending"></div>
+                                                    <span class="truncate">Entradas Disponibles</span>
+                                                    <span class="ml-auto font-medium">{{ $dataGeneral['availableTickets'] }} ({{ round(($dataGeneral['availableTickets'] / $dataGeneral['capacity']) * 100, 2) }}%)</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                @foreach ($ticketsInfo as $ticketInfo)
+                                <div class="px-2">
+                                    <div class="h-full rounded-md bg-slate-100 dark:bg-darkmode-400">
+                                        <div>{{$ticketInfo['name']}}</div>
+                                        <div class="intro-y box mt-5 p-5 col-span-12 items-center">
+                                            <div class="mt-3">
+                                                {{-- <x-chart-assistants height="h-[213px]" /> --}}
+                                                <div class="chart-container">
+                                                    <x-base.chart
 
-        <div class="intro-y box mt-5 p-5 col-span-12 items-center">
-            <div class="mt-3">
-                <x-chart-assistants height="h-[213px]" />
-            </div>
-            <div class="mx-auto mt-8 w-52 sm:w-auto">
-                <div class="flex items-center">
-                    <div class="mr-3 h-2 w-2 rounded-full bg-primary"></div>
-                    <span class="truncate">Entradas registradas</span>
-                    <span class="ml-auto font-medium">{{ $data['soldTickets'] }} ({{ round(($data['soldTickets'] / $data['capacity']) * 100, 2) }}%)</span>
+                                                        id="report-pie-chart-{{ $ticketInfo['ticket_type_id'] }}"
+                                                        class="chart"
+                                                    ></x-base.chart>
+                                                </div>
+                                            </div>
+                                            <div class="mx-auto mt-8 w-52 sm:w-auto">
+                                                <div class="flex items-center">
+                                                    <div class="mr-3 h-2 w-2 rounded-full bg-primary"></div>
+                                                    <span class="truncate">Entradas registradas</span>
+                                                    <span class="ml-auto font-medium">{{ $ticketInfo['soldTickets'] }} ({{ round(($ticketInfo['soldTickets'] / $ticketInfo['capacity']) * 100, 2) }}%)</span>
+                                                </div>
+                                                <div class="mt-4 flex items-center">
+                                                    <div class="mr-3 h-2 w-2 rounded-full bg-pending"></div>
+                                                    <span class="truncate">Entradas Disponibles</span>
+                                                    <span class="ml-auto font-medium">{{ $ticketInfo['availableTickets'] }} ({{ round(($ticketInfo['availableTickets'] / $ticketInfo['capacity']) * 100, 2) }}%)</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                @endforeach
+                            </x-base.tiny-slider>
+                        </div>
+                    </x-base.preview>
                 </div>
-                <div class="mt-4 flex items-center">
-                    <div class="mr-3 h-2 w-2 rounded-full bg-pending"></div>
-                    <span class="truncate">Entradas Disponibles</span>
-                    <span class="ml-auto font-medium">{{ $data['availableTickets'] }} ({{ round(($data['availableTickets'] / $data['capacity']) * 100, 2) }}%)</span>
-                </div>
-            </div>
-        </div>
+            </x-base.preview-component>
 
         <div class="intro-y col-span-12 mt-2 flex flex-wrap items-center sm:flex-nowrap">
             {{-- <a href="{{ route('eventAssistant.massAssign', ['idEvent' => $idEvent]) }}">
@@ -104,13 +160,49 @@
                 </x-base.button>
             </a>
 
-            <a class="mr-3" target="_blank" href="{{ route('eventAssistant.exportExcel', [
-                'idEvent' => $idEvent,
-                'search' => request()->input('search'),
-                'additionalParameters' => request()->input('additionalParameters', [])
-                ]) }}">
-                <x-base.lucide class="mr-2 h-4 w-4" icon="FileText" /> Exportar a Excel
-            </a>
+            <x-base.menu>
+                <x-base.menu.button class="!box" as="x-base.button">
+                    <span class="flex items-center justify-center">
+                        <x-base.lucide class="h-4 w-4" icon="Plus" />Reporte Asistentes
+                    </span>
+                </x-base.menu.button>
+                <x-base.menu.items class="w-40">
+                    <x-base.menu.item>
+                        <a class="mr-3" target="_blank" href="{{ route('eventAssistant.exportExcel', [
+                            'idEvent' => $idEvent,
+                            'search' => request()->input('search'),
+                            'additionalParameters' => request()->input('additionalParameters', [])
+                            ]) }}">
+                            <x-base.lucide class="mr-2 h-4 w-4" icon="FileText" /> Exportar a Excel
+                        </a>
+                    </x-base.menu.item>
+                </x-base.menu.items>
+            </x-base.menu>
+            <x-base.menu>
+                <x-base.menu.button class="!box" as="x-base.button">
+                    <span class="flex items-center justify-center">
+                        <x-base.lucide class="h-4 w-4" icon="Plus" />Reporte Pagos
+                    </span>
+                </x-base.menu.button>
+                <x-base.menu.items class="w-40">
+                    <x-base.menu.item>
+                        <a class="mr-3" target="_blank" href="{{ route('payment.exportExcel', [
+                            'idEvent' => $idEvent,
+                            'search' => request()->input('search'),
+                            'additionalParameters' => request()->input('additionalParameters', [])
+                            ]) }}">
+                            <x-base.lucide class="mr-2 h-4 w-4" icon="FileText" /> Pagos Realizados (EXCEL)
+                        </a>
+                        <a class="mr-3" target="_blank" href="{{ route('paymentStatus.exportExcel', [
+                            'idEvent' => $idEvent,
+                            'search' => request()->input('search'),
+                            'additionalParameters' => request()->input('additionalParameters', [])
+                            ]) }}">
+                            <x-base.lucide class="mr-2 h-4 w-4" icon="FileText" /> Status Pago (EXCEL)
+                        </a>
+                    </x-base.menu.item>
+                </x-base.menu.items>
+            </x-base.menu>
         </div>
 
         <!-- BEGIN: Data List -->

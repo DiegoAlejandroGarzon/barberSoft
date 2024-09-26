@@ -38,12 +38,39 @@ class EventAssistantController extends Controller
 
         // Calcula los datos para el gráfico
         $availableTickets = $capacity - $totalTickets;
-        $data = [
+        $dataGeneral = [
             'soldTickets' => $totalTickets, // Entradas vendidas
             'availableTickets' => $availableTickets, // Entradas disponibles
             'capacity' => $capacity // Capacidad total
         ];
 
+
+        // Obtener todos los tipos de tickets para el evento
+        $ticketTypes = TicketType::where('event_id', $idEvent)->get();
+
+        // Inicializar el array para almacenar la información
+        $ticketsInfo = [];
+
+        foreach ($ticketTypes as $ticketType) {
+            // Contar cuántos usuarios han ingresado con este tipo de ticket
+            $totalEntered = EventAssistant::where('event_id', $idEvent)
+                ->where('ticket_type_id', $ticketType->id)
+                ->where('has_entered', true)
+                ->count();
+
+            // Calcular entradas disponibles
+            $availableTickets = $ticketType->capacity - $totalEntered;
+
+            // Guardar la información en el array
+            $ticketsInfo[] = [
+                'ticket_type_id' => $ticketType->id,
+                'name' => $ticketType->name,
+                'price' => $ticketType->price,
+                'capacity' => $ticketType->capacity,
+                'soldTickets' => $totalEntered,
+                'availableTickets' => $availableTickets,
+            ];
+        }
         // Aplicar búsqueda y paginación
         $query = EventAssistant::where('event_id', $idEvent);
 
@@ -74,7 +101,7 @@ class EventAssistantController extends Controller
 
         $asistentes = $query->paginate(10);
 
-        return view('eventAssistant.index', compact(['asistentes', 'idEvent', 'data', 'event']));
+        return view('eventAssistant.index', compact(['asistentes', 'idEvent', 'dataGeneral', 'event', 'ticketsInfo']));
     }
 
     // Muestra la vista para subir el archivo de Excel
@@ -194,23 +221,41 @@ class EventAssistantController extends Controller
         }
         $event = Event::find($idEvent);
 
-        // $request = $request->validate([
-        //     'name' => 'required|string|max:255',
-        //     'email' => 'required|email|max:255',
-        //     'type_document' => 'required|string|max:3',
-        //     'document_number' => 'required|string|max:20|unique:users,document_number',
-        // ]);
+        $registrationParameters = json_decode($event->registration_parameters, true) ?? [];
 
-        // Buscar el usuario por correo electrónico, o crear uno nuevo si no existe
-        // $user = User::create(
-        //     [
-        //         'name' => $request['name'],
-        //         'password' => Hash::make('12345678'), // Contraseña predeterminada
-        //         'status' => false,
-        //         'email' => $request['email'],
-        //         'type_document' => $request['type_document'],
-        //     ]
-        // );
+        // Construir reglas de validación dinámicas
+        $validationRules = [];
+        foreach ($registrationParameters as $param) {
+            switch ($param) {
+                case 'name':
+                case 'lastname':
+                    $validationRules[$param] = 'required|string|max:255';
+                    break;
+                case 'email':
+                    $validationRules[$param] = 'required|email|max:255|unique:users,email';
+                    break;
+                case 'type_document':
+                    $validationRules[$param] = 'required|string|max:3';
+                    break;
+                case 'document_number':
+                    $validationRules[$param] = 'required|string|max:20|unique:users,document_number';
+                    break;
+                case 'phone':
+                    $validationRules[$param] = 'nullable|string|max:15'; // Suponiendo que es opcional
+                    break;
+                case 'city_id':
+                    $validationRules[$param] = 'nullable|exists:cities,id'; // Asegúrate de que la ciudad exista
+                    break;
+                case 'birth_date':
+                    $validationRules[$param] = 'nullable|date'; // Opcional, formato de fecha
+                    break;
+                // Agrega más parámetros según sea necesario
+            }
+        }
+
+        // Validar el request
+        $validatedData = $request->validate($validationRules);
+
         // Obtener las columnas definidas en $fillable del modelo User
         $user = new User();
         $userFillableColumns = (new User())->getFillable();
@@ -441,16 +486,30 @@ class EventAssistantController extends Controller
         $eventAssistant->save();
 
         $event = $eventAssistant->event;
-        $currentCount = EventAssistant::where('event_id', $event->id)
-        ->where('has_entered', true)
-        ->count();
+        $ticketType = $eventAssistant->ticketType; // Obtener el tipo de ticket
         $successMessage = 'Ingreso registrado correctamente.';
 
-        if ($currentCount >= $event->capacity) {
-            // Redirigir con una alerta si se ha superado el aforo
+        // Contar cuántas entradas han ingresado con este tipo de ticket
+        $currentTicketCount = EventAssistant::where('event_id', $event->id)
+            ->where('ticket_type_id', $ticketType->id)
+            ->where('has_entered', true)
+            ->count();
+
+        // Verificar el porcentaje de aforo del tipo de ticket
+        $ticketCapacityReached = $currentTicketCount >= $ticketType->capacity;
+        $ticketNearCapacity = $currentTicketCount >= ($ticketType->capacity * 0.9);
+
+        if ($ticketNearCapacity && !$ticketCapacityReached) {
+            // Avisar que se está cerca del aforo máximo para el tipo de ticket
             return redirect()->back()->with([
                 'success' => $successMessage,
-                'error' => 'Aforo máximo alcanzado o superado. Se han registrado '.$currentCount." entradas y la capacidad maximo es de ".$event->capacity,
+                'warning' => 'Atención: Se ha alcanzado el 90% de la capacidad para el tipo de ticket "' . $ticketType->name . '". Se han registrado ' . $currentTicketCount . " entradas y la capacidad máxima es de " . $ticketType->capacity . "."
+            ]);
+        } elseif ($ticketCapacityReached) {
+            // Redirigir con una alerta si se ha superado el aforo para el tipo de ticket
+            return redirect()->back()->with([
+                'success' => $successMessage,
+                'error' => 'Aforo máximo alcanzado o superado para el tipo de ticket "' . $ticketType->name . '". Se han registrado ' . $currentTicketCount . " entradas y la capacidad máxima es de " . $ticketType->capacity . "."
             ]);
         }else{
             return redirect()->back()->with('success', $successMessage);
@@ -530,6 +589,9 @@ class EventAssistantController extends Controller
                 'birth_date',
             ];
         }
+
+        // Agregar la columna adicional "ticket_type"
+        $registration_parameters[] = 'ticket_type';
 
         // Crear una instancia de la exportación con los encabezados
         $export = new TemplateExport($registration_parameters);
@@ -718,14 +780,17 @@ class EventAssistantController extends Controller
             $eventAsistant->save();
         }
 
-        $meta=$this->buildPDF_Mail($request->event_assistant_id);
-        return view('email.return_email_ticketevent',compact('meta'));
-        
+        return redirect()->back()
+        ->with('success', 'Se ha registrado el pago correctamente');
+
+        // $meta=$this->buildPDF_Mail($request->event_assistant_id);
+        // return view('email.return_email_ticketevent',compact('meta'));
+
         }
 
 
     public function getPDFEventoQuery($id){
-        
+
 		$query=EventAssistant::select('events.id','events.name as evento_name','events.header_image_path',
 		'events.created_at','events.event_date','events.start_time','users.id','users.name',
 		'users.lastname','users.email','users.type_document','users.document_number','event_assistants.event_id','event_assistants.qrCode',
@@ -758,13 +823,13 @@ class EventAssistantController extends Controller
 
     public function enviarEmailticket($meta)
 	{
-	
+
 	   Mail::to($meta['email'])->send(new EnvioNotificacionTickenGenerado($meta));
 
-		
-		
+
+
 	}
-    
+
     public function sendEmailInfoPago($id){
         // Buscar el registro de EventAssistant por ID
         $eventAssistant = EventAssistant::find($id);

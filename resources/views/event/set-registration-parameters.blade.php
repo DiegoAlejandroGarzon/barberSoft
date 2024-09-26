@@ -61,11 +61,17 @@
                 <!-- Contenedor para los parámetros adicionales -->
                 <h4 class="text-lg font-medium mt-5">Agregar Parámetros Adicionales</h4>
                 <div id="additional-parameters-container" class="mt-3">
-                    <!-- Precargar campos existentes si hay parámetros adicionales -->
                     @foreach($additional_parameters as $index => $parameter)
                         <div class="flex items-center mt-3" id="additional-param-{{ $index }}">
                             <!-- Input para el nombre del campo -->
-                            <input type="text" name="additional_parameters[{{ $index }}][name]" value="{{ $parameter->name }}" placeholder="Nombre del campo" class="mr-2 form-input">
+                            <input
+                                type="text"
+                                name="additional_parameters[{{ $index }}][name]"
+                                value="{{ $parameter->name }}"
+                                placeholder="Nombre del campo"
+                                class="mr-2 form-input"
+                                oninput="replaceSpaceWithUnderscore(this)"
+                            >
 
                             <!-- Select para el tipo de campo -->
                             <select name="additional_parameters[{{ $index }}][type]" class="mr-2 form-select">
@@ -151,6 +157,10 @@
 
             // Añadir el div al contenedor
             container.appendChild(newParameterDiv);
+        }
+
+        function replaceSpaceWithUnderscore(input) {
+            input.value = input.value.replace(/\s+/g, '_');
         }
     </script>
 @endsection

@@ -16,8 +16,8 @@ return new class extends Migration
             $table->id();
             $table->string('nombres');
             $table->string('apellidos');
-            $table->int('cedula');
-            $table->bigint('telefono');
+            $table->integer('cedula');
+            $table->integer('telefono');
             $table->string('reference_number');
             $table->string('description');
             $table->double('precio');

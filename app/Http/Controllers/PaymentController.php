@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\PaymentExport;
 use App\Exports\TemplatePayloadExport;
 use App\Imports\PayloadImport;
+use App\Models\Event;
 use App\Models\Payment;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
@@ -66,4 +68,33 @@ class PaymentController extends Controller
                             ->with('error', 'Hubo un error al procesar el archivo: ' . $e->getMessage());
         }
     }
+
+    public function exportExcel(Request $request, $idEvent)
+    {
+        $event = Event::find($idEvent);
+        // Obtener la búsqueda, campos seleccionados y parámetros adicionales desde el request
+        $search = $request->input('search');
+        $selectedFields = json_decode($event->registration_parameters, true) ?? [];
+        $additionalParameters = $event->additionalParameters;
+        // Exportar el archivo Excel usando los datos proporcionados
+        return Excel::download(
+            new PaymentExport($idEvent, $selectedFields, $additionalParameters, $search),
+            'pagos_de_asistentes_del_evento_'.$event->name.'_'.date('d-m-Y').'.xlsx'
+        );
+    }
+
+    public function exportExcelPaymentStatus(Request $request, $idEvent)
+    {
+        $event = Event::find($idEvent);
+        // Obtener la búsqueda, campos seleccionados y parámetros adicionales desde el request
+        $search = $request->input('search');
+        $selectedFields = json_decode($event->registration_parameters, true) ?? [];
+        $additionalParameters = $event->additionalParameters;
+        // Exportar el archivo Excel usando los datos proporcionados
+        return Excel::download(
+            new PaymentExport($idEvent, $selectedFields, $additionalParameters, $search, $paymentStatus = true),
+            'pagos_de_asistentes_del_evento_'.$event->name.'_'.date('d-m-Y').'.xlsx'
+        );
+    }
+
 }

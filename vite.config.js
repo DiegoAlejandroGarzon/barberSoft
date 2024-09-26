@@ -156,6 +156,7 @@ export default defineConfig({
 
                 // JS General
                 "resources/js/app.js",
+                'resources/js/components/chart-assistant.js',
             ],
             refresh: true,
         }),

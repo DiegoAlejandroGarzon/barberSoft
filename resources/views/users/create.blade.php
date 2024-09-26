@@ -44,65 +44,6 @@
                     </div>
                 </div>
 
-                <!-- Correo Electrónico -->
-                <div class="mt-3">
-                    <x-base.form-label for="email">Correo Electrónico</x-base.form-label>
-                    <x-base.form-input
-                        class="w-full {{ $errors->has('email') ? 'border-red-500' : '' }}"
-                        id="email"
-                        name="email"
-                        type="email"
-                        placeholder="Email"
-                        value="{{ old('email') }}"
-                    />
-                    @error('email')
-                        <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
-                    @enderror
-                </div>
-
-                <!-- Contraseña -->
-                <div class="intro-y col-span-12 lg:col-span-6 mt-3">
-                    <x-base.form-label for="password">Contraseña</x-base.form-label>
-                    <div class="grid-cols-2 gap-2 sm:grid">
-                        <x-base.form-input
-                            class="w-full {{ $errors->has('password') ? 'border-red-500' : '' }}"
-                            id="password"
-                            name="password"
-                            type="password"
-                            placeholder="Contraseña"
-                        />
-                        @error('password')
-                            <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
-                        @enderror
-
-                        <x-base.form-input
-                            class="w-full {{ $errors->has('password_confirmation') ? 'border-red-500' : '' }}"
-                            id="password_confirmation"
-                            name="password_confirmation"
-                            type="password"
-                            placeholder="Confirmar Contraseña"
-                        />
-                        @error('password_confirmation')
-                            <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
-                        @enderror
-                    </div>
-                </div>
-
-                <!-- Phone -->
-                <div class="mt-3">
-                    <x-base.form-label for="phone">Teléfono</x-base.form-label>
-                    <x-base.form-input
-                        class="w-full {{ $errors->has('phone') ? 'border-red-500' : '' }}"
-                        id="phone"
-                        name="phone"
-                        type="text"
-                        placeholder="Teléfono"
-                        value="{{ old('phone') }}"
-                    />
-                    @error('phone')
-                        <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
-                    @enderror
-                </div>
 
                 <!-- Type Document -->
                 <div class="mt-3">
@@ -135,6 +76,71 @@
                         value="{{ old('document_number') }}"
                     />
                     @error('document_number')
+                        <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <!-- Fecha Cumpleaños -->
+                <div class="mt-3">
+                    <x-base.form-label for="birth_date">Fecha Nacimiento</x-base.form-label>
+                    <x-base.form-input
+                        class="w-full {{ $errors->has('birth_date') ? 'border-red-500' : '' }}"
+                        id="birth_date"
+                        name="birth_date"
+                        type="date"
+                        value="{{ old('birth_date') }}"
+                    />
+                    @error('birth_date')
+                        <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <!-- Phone -->
+                <div class="mt-3">
+                    <x-base.form-label for="phone">Teléfono</x-base.form-label>
+                    <x-base.form-input
+                        class="w-full {{ $errors->has('phone') ? 'border-red-500' : '' }}"
+                        id="phone"
+                        name="phone"
+                        type="text"
+                        placeholder="Teléfono"
+                        value="{{ old('phone') }}"
+                    />
+                    @error('phone')
+                        <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                    @enderror
+                </div>
+                <!-- Correo Electrónico -->
+                <div class="mt-3">
+                    <x-base.form-label for="email">Correo Electrónico</x-base.form-label>
+                    <x-base.form-input
+                        class="w-full {{ $errors->has('email') ? 'border-red-500' : '' }}"
+                        id="email"
+                        name="email"
+                        type="email"
+                        placeholder="Email"
+                        value="{{ old('email') }}"
+                    />
+                    @error('email')
+                        <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                    @enderror
+                </div>
+
+
+                <!-- Role -->
+                <div class="mt-3">
+                    <x-base.form-label for="role_id">Role</x-base.form-label>
+                    <x-base.tom-select
+                        class="w-full {{ $errors->has('role_id') ? 'border-red-500' : '' }}"
+                        id="role_id"
+                        name="role_id"
+                    >
+                        <option></option>
+                        @foreach ($roles as $rol)
+                            <option value="{{$rol->id}}" {{ old('role_id') == $rol->id ? 'selected' : '' }}>{{ $rol->name }}</option>
+                        @endforeach
+                    </x-base.tom-select>
+                    @error('role_id')
                         <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
                     @enderror
                 </div>
@@ -173,38 +179,34 @@
                     @enderror
                 </div>
 
-                <!-- Fecha Cumpleaños -->
-                <div class="mt-3">
-                    <x-base.form-label for="birth_date">Fecha Nacimiento</x-base.form-label>
-                    <x-base.form-input
-                        class="w-full {{ $errors->has('birth_date') ? 'border-red-500' : '' }}"
-                        id="birth_date"
-                        name="birth_date"
-                        type="date"
-                        value="{{ old('birth_date') }}"
-                    />
-                    @error('birth_date')
-                        <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
-                    @enderror
+                <!-- Contraseña -->
+                <div class="intro-y col-span-12 lg:col-span-6 mt-3">
+                    <x-base.form-label for="password">Contraseña</x-base.form-label>
+                    <div class="grid-cols-2 gap-2 sm:grid">
+                        <x-base.form-input
+                            class="w-full {{ $errors->has('password') ? 'border-red-500' : '' }}"
+                            id="password"
+                            name="password"
+                            type="password"
+                            placeholder="Contraseña"
+                        />
+                        @error('password')
+                            <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                        @enderror
+
+                        <x-base.form-input
+                            class="w-full {{ $errors->has('password_confirmation') ? 'border-red-500' : '' }}"
+                            id="password_confirmation"
+                            name="password_confirmation"
+                            type="password"
+                            placeholder="Confirmar Contraseña"
+                        />
+                        @error('password_confirmation')
+                            <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                        @enderror
+                    </div>
                 </div>
 
-                <!-- Role -->
-                <div class="mt-3">
-                    <x-base.form-label for="role_id">Role</x-base.form-label>
-                    <x-base.tom-select
-                        class="w-full {{ $errors->has('role_id') ? 'border-red-500' : '' }}"
-                        id="role_id"
-                        name="role_id"
-                    >
-                        <option></option>
-                        @foreach ($roles as $rol)
-                            <option value="{{$rol->id}}" {{ old('role_id') == $rol->id ? 'selected' : '' }}>{{ $rol->name }}</option>
-                        @endforeach
-                    </x-base.tom-select>
-                    @error('role_id')
-                        <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
-                    @enderror
-                </div>
 
                 <!-- Status -->
                 <div class="mt-3">
@@ -262,6 +264,10 @@
                 citySelect.addOption({value: city.id, text: city.name});
             });
 
+            @if(old('city_id'))
+            console.log("se va a asiganr "+{{ old('city_id') }});
+            citySelect.setValue({{ old('city_id') }});
+            @endif
             // Refresca la lista de opciones para que se muestren correctamente en la interfaz
             citySelect.refreshOptions(false);
         }
@@ -287,6 +293,7 @@
                     .catch(error => console.error('Error fetching cities:', error));
             }
         }
+        filterCities();
 
     </script>
 @endsection

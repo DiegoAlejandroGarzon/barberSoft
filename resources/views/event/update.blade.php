@@ -252,7 +252,6 @@
                             class="w-full {{ $errors->has('status') ? 'border-red-500' : '' }}"
                             id="status"
                             name="status"
-                            onchange="filterCities()"
                         >
                             <option></option>
                             @foreach (config('statusEvento') as $label => $valor)
@@ -363,6 +362,8 @@
         let ticketIndex = {{ $event->ticketTypes->count() }};
         @if (!is_null($event->additionalFields) && is_array(json_decode($event->additionalFields, true)))
         let fieldIndex = {{ count(json_decode($event->additionalFields, true)) }};
+        @else
+        let fieldIndex = 0;
         @endif
 
         function addTicketType() {

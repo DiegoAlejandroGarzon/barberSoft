@@ -136,6 +136,17 @@
     <div class="mt-5">
         <div class="box p-5">
             Actualmente el ticket ya está registrado como pagado
+            <div class="mt-5">
+                <div class="box p-5">
+
+                    @foreach($eventAssistant->payments as $payment)
+                    <div class="mb-4 box p-1">
+                        Pago por un valor de  <strong>{{$payment->amount}}</strong> por <strong>{{$payment->payer_name}}</strong>
+                        <a class="ml-1 underline" target="_blank" href="{{ route('payments.generatePDF', ['id' => $payment->id]) }}">Generar PDF</a>
+                    </div>
+                    @endforeach
+                </div>
+            </div>
 
             @foreach($eventAssistant->payments as $payment)
             @if ($payment->payment_proof)
