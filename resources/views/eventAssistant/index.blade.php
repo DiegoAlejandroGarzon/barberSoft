@@ -277,29 +277,41 @@
                                 </x-base.table.td>
                                 <x-base.table.td class="box w-56">
                                     <div class="flex items-center justify-center">
-                                        <!-- New QR Button -->
+                                        <x-base.tippy content="Mostrar Codigo QR" class="mr-1">
                                         <a class="text-info" href="{{ route('eventAssistant.qr', ['id' => $asistente->id]) }}">
-                                            <x-base.lucide icon="QrCode" /> QR
+                                            <x-base.lucide icon="QrCode" />
                                         </a>
-                                        <a class="text-info" href="{{ route('eventAssistant.pdf', ['id' => $asistente->id]) }}" target="_blank">
-                                            <x-base.lucide icon="FileText" /> PDF
-                                        </a>
+                                        </x-base.tippy>
+
+                                        <x-base.tippy content="Generar PDF" class="mr-1">
+                                            <a class="text-info" href="{{ route('eventAssistant.pdf', ['id' => $asistente->id]) }}" target="_blank">
+                                                <x-base.lucide icon="FileText" />
+                                            </a>
+                                        </x-base.tippy>
+                                        <x-base.tippy content="Enviar Correo" class="mr-1">
                                         <a class="text-info" href="{{ route('eventAssistant.sendEmail', ['id' => $asistente->id]) }}" target="_blank">
-                                            <x-base.lucide icon="send" /> Enviar Correo
+                                            <x-base.lucide icon="send" />
                                         </a>
-                                        <a class="text-warning" href="{{ route('eventAssistant.payment', ['id' => $asistente->id]) }}" target="_blank">
-                                            <x-base.lucide icon="credit-card" /> Pago
-                                        </a>
-                                        <a class="mr-3" href="{{ route('eventAssistant.singleUpdateForm', ['idEventAssistant' => $asistente->id]) }}">
-                                            <x-base.lucide icon="CheckSquare" /> Editar
-                                        </a>
-                                        <a class="text-danger"
-                                        data-tw-toggle="modal"
-                                        data-tw-target="#delete-confirmation-modal"
-                                        data-id="{{ $asistente->id }}"
-                                        onclick="setDeleteAction(this)">
-                                        <x-base.lucide icon="Trash" /> Borrar
-                                        </a>
+                                        </x-base.tippy>
+                                        <x-base.tippy content="Gestion de Pagos" class="mr-1">
+                                            <a class="text-warning" href="{{ route('eventAssistant.payment', ['id' => $asistente->id]) }}" target="_blank">
+                                                <x-base.lucide icon="credit-card" />
+                                            </a>
+                                        </x-base.tippy>
+                                        <x-base.tippy content="Editar" class="mr-1">
+                                            <a class="" href="{{ route('eventAssistant.singleUpdateForm', ['idEventAssistant' => $asistente->id]) }}">
+                                                <x-base.lucide icon="CheckSquare" />
+                                            </a>
+                                        </x-base.tippy>
+                                        <x-base.tippy content="Borrar" class="mr-1">
+                                            <a class="text-danger"
+                                            data-tw-toggle="modal"
+                                            data-tw-target="#delete-confirmation-modal"
+                                            data-id="{{ $asistente->id }}"
+                                            onclick="setDeleteAction(this)">
+                                            <x-base.lucide icon="Trash" />
+                                            </a>
+                                        </x-base.tippy>
                                     </div>
                                 </x-base.table.td>
                             </x-base.table.tr>
