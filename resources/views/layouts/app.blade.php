@@ -68,13 +68,6 @@
                                     Notificaciones
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                   @forelse($user->notifications as $notification)
-                                    <a class="dropdown-item">{{ $notification->data['name'] }}"
-                                  
-                                    
-                                   @endforelse
-                                    
-                                  
                                 </div>
                             </li>
                         @endguest
