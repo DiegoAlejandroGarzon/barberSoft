@@ -19,7 +19,7 @@ class Order extends Model
      'description',
      'precio',
      'status',
-     'created_at',
+     'created_at',     
     ];
 
     public static function getProductPrice($value){
