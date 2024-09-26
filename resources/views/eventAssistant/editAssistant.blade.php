@@ -296,5 +296,55 @@
                 });
             });
     }
+
+    @if(in_array('city_id', $selectedFields))
+
+    function updateCityOptions(cities) {
+            var citySelect = document.querySelector('#city_id').tomselect;
+
+            // Verifica si 'cities' es un array
+            if (!Array.isArray(cities)) {
+                console.error('Expected an array of cities but got:', cities);
+                return;
+            }
+
+            // Limpia todas las opciones actuales
+            citySelect.clearOptions();
+
+            // Agrega nuevas opciones dinámicamente
+            cities.forEach(city => {
+                citySelect.addOption({value: city.id, text: city.name});
+            });
+
+            @if(old('city_id'))
+            console.log("se va a asiganr "+{{ old('city_id') }});
+            citySelect.setValue({{ old('city_id') }});
+            @endif
+            // Refresca la lista de opciones para que se muestren correctamente en la interfaz
+            citySelect.refreshOptions(false);
+        }
+
+        function filterCities() {
+            var departmentId = document.getElementById('department_id').value;
+            var citySelect = document.getElementById('city_id');
+
+            // Limpia el select de ciudades
+            citySelect.innerHTML = '<option></option>';
+
+            if (departmentId) {
+                fetch('/cities/' + departmentId)
+                    .then(response => response.json())
+                    .then(data => {
+                        // Verifica si 'data.cities' existe y es un array
+                        if (Array.isArray(data.cities)) {
+                            updateCityOptions(data.cities);
+                        } else {
+                            console.error('Invalid data format:', data);
+                        }
+                    })
+                    .catch(error => console.error('Error fetching cities:', error));
+            }
+        }
+    @endif
 </script>
 @endsection
