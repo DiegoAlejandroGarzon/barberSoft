@@ -50,6 +50,25 @@
                                     $selectedFields = json_decode($event->registration_parameters, true) ?? [];
                                 @endphp
 
+
+                                <div class="mt-3">
+                                    <x-base.form-label for="id_ticket">Ticket</x-base.form-label>
+                                    <x-base.tom-select
+                                        class="w-full {{ $errors->has('id_ticket') ? 'border-red-500' : '' }}"
+                                        id="id_ticket"
+                                        name="id_ticket"
+                                        onchange="filterCities()"
+                                    >
+                                        <option></option>
+                                        @foreach ($ticketTypes as $ticket)
+                                            <option value="{{$ticket->id}}" {{ old('id_ticket') == $ticket->id ? 'selected' : '' }}>{{ $ticket->name }} - ${{$ticket->price}}</option>
+                                        @endforeach
+                                    </x-base.tom-select>
+                                    @error('id_ticket')
+                                        <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
                                 <!-- Renderizar campos dinámicamente -->
                                 @if(in_array('name', $selectedFields))
                                     <x-base.form-label for="name">Nombre</x-base.form-label>
@@ -262,6 +281,9 @@
             });
 
             // Refresca la lista de opciones para que se muestren correctamente en la interfaz
+            @if(old('city_id'))
+            citySelect.setValue({{ old('city_id') }});
+            @endif
             citySelect.refreshOptions(false);
         }
 
@@ -286,6 +308,7 @@
                     .catch(error => console.error('Error fetching cities:', error));
             }
         }
+        filterCities();
         @endif
     </script>
 @endsection
