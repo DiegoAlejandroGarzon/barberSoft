@@ -63,20 +63,6 @@
                                     </form>
                                 </div>
                             </li>
-                            <li class="nav-item dropdown">
-                                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                    Notificaciones
-                                </a>
-                                <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                   @forelse($user->notifications as $notification)
-                                    <a class="dropdown-item">{{ $notification->data['name'] }}"
-                                  
-                                    
-                                   @endforelse
-                                    
-                                  
-                                </div>
-                            </li>
                         @endguest
                     </ul>
                 </div>
