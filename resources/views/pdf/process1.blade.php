@@ -2,7 +2,7 @@
 
 @section('subhead')
 
-<script src="https://www.paypal.com/sdk/js?client-id={{ env('PAYPAL_CLIENT_ID') }}&buyer-country=US&currency=USD&components=buttons&enable-funding=venmo"
+<script src="https://www.paypal.com/sdk/js?client-id=AePvnYTClaeHx9gxJIxBHqVDDCYleUjz6qTqG7M9MBCWo9hQE4zEBpJpHxuQ-IDWCk9kPKApEtkjiwTK&buyer-country=US&currency=USD&components=buttons&enable-funding=venmo"
 data-sdk-integration-source="developer-studio"
 ></script>
 <script>
@@ -15,7 +15,7 @@ data-sdk-integration-source="developer-studio"
                 label: "paypal",
             },
             message: {
-                amount: 100,
+                amount: $pago['amount'],
             } ,
     
             async createOrder() {

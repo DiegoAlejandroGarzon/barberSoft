@@ -5,6 +5,7 @@ function handletclick(btnRadio){
     apellidos=document.getElementById('apellidos').value;;
     cedula=document.getElementById('cedula').value;;
     telefono=document.getElementById('telefono').value;
+    valor=document.getElementById('amount').value;
 }
 
 paypal.Buttons({
@@ -32,7 +33,8 @@ paypal.Buttons({
                             name:nombres,
                             lastName:apellidos,
                             phone:telefono,
-                            quantity: productValue,
+                            quantity: valor,
+                            description:productValue,
                 }),
             });
 
