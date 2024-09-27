@@ -39,8 +39,15 @@
             <h1 class="text-lg font-medium">Información del Asistente</h1>
 
             @foreach($selectedFields as $field)
-                <p class=""><strong>{{ config("traductorColumnasUsers.$field", ucfirst(str_replace('_', ' ', $field))) }}</strong>: {{ $payment->eventAssistant->user->$field }}</p>
-            @endforeach
+            <p class="">
+                <strong>{{ config("traductorColumnasUsers.$field", ucfirst(str_replace('_', ' ', $field))) }}</strong>:
+                @if($field === 'city_id')
+                    {{ $payment->eventAssistant->user->city ? $payment->eventAssistant->user->city->name : 'N/A' }}
+                @else
+                    {{ $payment->eventAssistant->user->$field }}
+                @endif
+            </p>
+        @endforeach
 
             @foreach($additionalParameters as $parameter)
 
