@@ -6,6 +6,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use App\Models\Order;
 
 class InvoicePaid extends Notification
 {
@@ -14,9 +15,10 @@ class InvoicePaid extends Notification
     /**
      * Create a new notification instance.
      */
-    public function __construct()
+    public function __construct(Order $order)
     {
         //
+      $this->order=$order;
     }
 
     /**
@@ -37,6 +39,18 @@ class InvoicePaid extends Notification
         return (new MailMessage)->markdown('mail.invoice.paid');
     }
 
+
+    /**
+     * Get the notification's database type.
+     *
+     * @return string
+     */
+    public function databaseType(object $notifiable): string
+    {
+        return 'invoice-paid';
+    }
+
+
     /**
      * Get the array representation of the notification.
      *
@@ -46,6 +60,16 @@ class InvoicePaid extends Notification
     {
         return [
             //
+                'Fecha Compra' => $this->order->created_at,
+                'nombres'=>$this->order->nombres,
+                'apellidos'=>$this->order->apellidos,
+                'cedula'=>$this->order->cedula,
+                'telefono'=>$this->order->telefono,
+                'reference_number'=>$this->order->reference_number,
+                'description'=>$this->order->description,
+                'precio'=>$this->order->precio,
+                'status'=>$this->order->status,
+           
         ];
     }
 }

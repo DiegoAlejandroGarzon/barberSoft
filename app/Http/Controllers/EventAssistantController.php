@@ -23,7 +23,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Mail;
-use App\Mail\EnvioNotificacionTickenGenerado;
+use App\Http\Controllers\PDFController;
 
 class EventAssistantController extends Controller
 {
@@ -761,6 +761,20 @@ class EventAssistantController extends Controller
             $paymentProofPath = $request->file('payment_proof')->store('payment_proofs', 'public');
         }
 
+
+        if($request->payment_method=='PayPal'){
+            
+            $eventAssistant = EventAssistant::find($request->event_assistant_id);
+            $event=Event::find($eventAssistant->event_id);
+            $pago['event_assistant_id']=$request->event_assistant_id;
+            $pago['payer_name']=$request->payer_name;
+            $pago['payer_document_number']=$request->payer_document_number;
+            $pago['amount']=round($request->amount*0.000234);
+            $pago['evento']=$event->name;
+            return view('paypal.checkout', compact('pago'));
+
+        }
+
         Payment::create([
             'event_assistant_id' => $request->event_assistant_id,
             'payer_name' => $request->payer_name,
@@ -772,10 +786,7 @@ class EventAssistantController extends Controller
             'description' => 'Pago de Ticket',
         ]);
 
-        if($request->payment_method=='PayPal'){
-
-            $this->paypal($request->amount);
-        }
+      
 
         $eventAsistant = EventAssistant::find($request->event_assistant_id);
         if($eventAsistant->isFullyPaid()){
@@ -783,55 +794,14 @@ class EventAssistantController extends Controller
             $eventAsistant->save();
         }
 
-        return redirect()->back()
-        ->with('success', 'Se ha registrado el pago correctamente');
-
-        // $meta=$this->buildPDF_Mail($request->event_assistant_id);
-        // return view('email.return_email_ticketevent',compact('meta'));
+        #return redirect()->back()
+        #->with('success', 'Se ha registrado el pago correctamente');
+        
+        $PDFController=new PDFController();
+        $meta=$PDFController->buildPDF_Mail($request->event_assistant_id);
+        return view('email.return_email_ticketevent',compact('meta'));
 
         }
-
-
-    public function getPDFEventoQuery($id){
-
-		$query=EventAssistant::select('events.id','events.name as evento_name','events.header_image_path',
-		'events.created_at','events.event_date','events.start_time','users.id','users.name',
-		'users.lastname','users.email','users.type_document','users.document_number','event_assistants.event_id','event_assistants.qrCode',
-		'event_assistants.guid','ticket_types.name as localidad','event_assistants.has_entered')
-		->join('events','events.id','=','event_assistants.event_id')
-		->join('users','users.id','=','event_assistants.user_id')
-		->join('ticket_types','ticket_types.id','=','event_assistants.ticket_type_id')
-		->where('event_assistants.id',$id);
-		return $query->get();
-	}
-
-	public function buildPDF_Mail($id)
-	{
-	    $registros=$this->getPDFEventoQuery($id);
-		foreach ($registros as &$registro){
-		    $pdf = Pdf::loadView('pdf.pdf_example', compact('registros'));
-		    $pdf->setPaper(array(0,0,170,450));
-		    $pdf->save(storage_path('app/public/'.$registro->evento_name.'.pdf'));
-			$meta['id'] = $registro->event_id;
-            $meta['user_id'] = $registro->user_id;
-			$meta['title'] = $registro->evento_name;
-			$meta['name'] = $registro->name;
-			$meta['email'] = $registro->email;
-			$meta['fileName'] = $registro->evento_name.'.pdf';
-			$this->enviarEmailticket($meta);
-            return $meta;
-        }
-    }
-
-
-    public function enviarEmailticket($meta)
-	{
-
-	   Mail::to($meta['email'])->send(new EnvioNotificacionTickenGenerado($meta));
-
-
-
-	}
 
     public function sendEmailInfoPago($id){
         // Buscar el registro de EventAssistant por ID
@@ -860,10 +830,8 @@ class EventAssistantController extends Controller
         return response()->json(['message' => 'Email enviado a ' . $email]);
     }
 
-    public function paypal($id){
+   
 
-		return view('pdf.process1', compact('$id'));
-	}
     public function showMassPayload($idEvent){
         $event = Event::find($idEvent);
         return view('eventAssistant.massPayload', compact('event'));

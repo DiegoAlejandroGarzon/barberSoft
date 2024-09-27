@@ -5,6 +5,7 @@
 @endsection
 
 @section('subcontent')
+    <a href="{{ route('eventAssistant.index', ['idEvent' => $eventAssistant->event_id]) }}">volver</a>
     <h2 class="intro-y mt-10 text-lg font-medium">Informacion del Pago</h2>
     <div class="mt-5 flex justify-center">
         <a class="text-info box p-3" href="{{ route('eventAssistant.sendEmailInfoPago', ['id' => $eventAssistant->id]) }}" target="_blank">
@@ -22,7 +23,9 @@
             <h3 class="text-lg font-medium">Información del Asistente</h3>
 
             @foreach($selectedFields as $field)
-                <p class=""><strong>{{ ucfirst(str_replace('_', ' ', $field)) }} </strong>: {{ $eventAssistant->user->$field }}</p>
+                <p class=""><strong>
+                    {{ config("traductorColumnasUsers.$field", ucfirst(str_replace('_', ' ', $field))) }}
+                </strong>: {{ $eventAssistant->user->$field }}</p>
             @endforeach
 
             @foreach($additionalParameters as $parameter)
@@ -49,7 +52,7 @@
                         {{ $feature->name }},
                 @endforeach
                 <br>
-                <strong>Precio:</strong> {{ $eventAssistant->ticketType?->price }}
+                <strong>Precio:</strong> ${{ $eventAssistant->ticketType?->formattedPrice() }}
             </ul>
             <br>
         </div>

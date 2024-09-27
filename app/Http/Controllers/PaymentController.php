@@ -32,7 +32,7 @@ class PaymentController extends Controller
             'Nombre del pagador',
             'Tipo Documento',
             'Numero Documento',
-            'Cantidad Pagada',
+            'Valor a Pagada',
             'Formato de pago (transferencia, efectivo)',
         ];
 
