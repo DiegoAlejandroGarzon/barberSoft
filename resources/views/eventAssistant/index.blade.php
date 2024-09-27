@@ -218,7 +218,9 @@
                         <x-base.table.tr>
                             <!-- Carga dinámica de columnas -->
                             @foreach($selectedFields as $field)
-                                <x-base.table.th class="whitespace-nowrap border-b-0 text-center">{{ ucfirst(str_replace('_', ' ', $field)) }}</x-base.table.th>
+                                <x-base.table.th class="whitespace-nowrap border-b-0 text-center">
+                                    {{ config("traductorColumnasUsers.$field", ucfirst(str_replace('_', ' ', $field))) }}
+                                </x-base.table.th>
                             @endforeach
                             @foreach($additionalParameters as $parameter)
                                 <x-base.table.th class="whitespace-nowrap border-b-0 text-center">{{ ucfirst(str_replace('_', ' ', $parameter['name'])) }}</x-base.table.th>

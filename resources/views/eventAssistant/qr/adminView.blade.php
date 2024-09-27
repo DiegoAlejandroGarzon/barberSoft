@@ -72,7 +72,7 @@
                 $additionalParameters = json_decode($eventAssistant->event->additionalParameters, true) ?? [];
             @endphp
             @foreach($selectedFields as $field)
-                <p class=""><strong>{{ ucfirst(str_replace('_', ' ', $field)) }} </strong>: {{ $eventAssistant->user->$field }}</p>
+                <p class=""><strong>{{ config("traductorColumnasUsers.$field", ucfirst(str_replace('_', ' ', $field))) }}</strong>: {{ $eventAssistant->user->$field }}</p>
             @endforeach
             @foreach($additionalParameters as $parameter)
             @php

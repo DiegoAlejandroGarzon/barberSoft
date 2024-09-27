@@ -39,7 +39,7 @@
             <h1 class="text-lg font-medium">Información del Asistente</h1>
 
             @foreach($selectedFields as $field)
-                <p class=""><strong>{{ ucfirst(str_replace('_', ' ', $field)) }} </strong>: {{ $payment->eventAssistant->user->$field }}</p>
+                <p class=""><strong>{{ config("traductorColumnasUsers.$field", ucfirst(str_replace('_', ' ', $field))) }}</strong>: {{ $payment->eventAssistant->user->$field }}</p>
             @endforeach
 
             @foreach($additionalParameters as $parameter)
