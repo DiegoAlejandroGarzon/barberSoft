@@ -407,7 +407,10 @@ class EventAssistantController extends Controller
             }
         }
 
-        return redirect()->route('eventAssistant.singleUpdateForm', [$idEventAssistant])->with('success', 'Actualización exitosa.');
+
+        return redirect()->route('eventAssistant.index', $idEvent)
+        ->with('success', 'Actualización exitosa.');
+        // return redirect()->route('eventAssistant.singleUpdateForm', [$idEventAssistant])->with('success', 'Actualización exitosa.');
     }
 
     public function singleDelete($idEventAssistant)

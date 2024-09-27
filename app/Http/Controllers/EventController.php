@@ -220,48 +220,86 @@ class EventController extends Controller
         $event = Event::where('public_link', $public_link)->firstOrFail();
         $additionalParameters = json_decode($event->additionalParameters, true) ?? [];
         $departments = Departament::all();
+        $ticketTypes  = TicketType::where('event_id', $event->id)->get();
 
         // Retorna la vista de registro, pasando el evento
-        return view('event.public_registration', compact('event', 'departments', 'additionalParameters'));
+        return view('event.public_registration', compact('event', 'departments', 'additionalParameters', 'ticketTypes'));
     }
 
     public function submitPublicRegistration(Request $request, $public_link)
     {
         $event = Event::where('public_link', $public_link)->firstOrFail();
+        $eventAssistantController = new EventAssistantController();
+        if($eventAssistantController->eventoFinalizado($event->id)){
+            return redirect()->back()
+            ->with('success', 'No se puede realizar está acción porque el evento ya ha sido finalizado.');
+        }
 
-        // $request = $request->validate([
-        //     'name' => 'required|string|max:255',
-        //     'email' => 'required|email|max:255',
-        //     'type_document' => 'required|string|max:3',
-        //     'document_number' => 'required|string|max:20|unique:users,document_number',
-        // ]);
+        $registrationParameters = json_decode($event->registration_parameters, true) ?? [];
 
-        // Buscar el usuario por correo electrónico, o crear uno nuevo si no existe
-        $user = User::create(
-            [
-                'name' => $request['name'],
-                'password' => Hash::make('12345678'), // Contraseña predeterminada
-                'status' => false,
-                'email' => $request['email'],
-                'type_document' => $request['type_document'],
-            ]
-        );
+        // Construir reglas de validación dinámicas
+        $validationRules = [];
+        foreach ($registrationParameters as $param) {
+            switch ($param) {
+                case 'name':
+                case 'lastname':
+                    $validationRules[$param] = 'required|string|max:255';
+                    break;
+                case 'email':
+                    $validationRules[$param] = 'required|email|max:255|unique:users,email';
+                    break;
+                case 'type_document':
+                    $validationRules[$param] = 'required|string|max:3';
+                    break;
+                case 'document_number':
+                    $validationRules[$param] = 'required|string|max:20|unique:users,document_number';
+                    break;
+                case 'phone':
+                    $validationRules[$param] = 'nullable|string|max:15'; // Suponiendo que es opcional
+                    break;
+                case 'city_id':
+                    $validationRules[$param] = 'nullable|exists:cities,id'; // Asegúrate de que la ciudad exista
+                    break;
+                case 'birth_date':
+                    $validationRules[$param] = 'nullable|date'; // Opcional, formato de fecha
+                    break;
+                // Agrega más parámetros según sea necesario
+            }
+        }
+
+        // Validar el request
+        $validatedData = $request->validate($validationRules);
+
+        // Obtener las columnas definidas en $fillable del modelo User
+        $user = new User();
+        $userFillableColumns = (new User())->getFillable();
+        $createData = []; // Inicializar el array para los datos de creación
+        // Recorrer las columnas permitidas y verificar si están presentes en el request
+        foreach ($userFillableColumns as $column) {
+            if ($request->has($column)) {
+                $createData[$column] = $request[$column];
+            }
+        }
+        $createData['status'] = false;
+        $user = User::create($createData);
 
         // Verificar si el usuario tiene el rol de 'assistant', si no, asignarlo
         if (!$user->hasRole('assistant')) {
             $assistantRole = Role::firstOrCreate(['name' => 'assistant']); // Crear el rol si no existe
             $user->assignRole($assistantRole);
         }
+        $guardianId = $request->input('guardian_id') ?? null; // Asegúrate de que tu formulario tenga este campo
 
         // Crear el registro en la tabla `event_assistant` si no existe
-        EventAssistant::firstOrCreate(
+        $eventAssistant = EventAssistant::firstOrCreate(
             [
                 'event_id' => $event->id,
                 'user_id' => $user->id,
             ],
             [
-                'ticket_type_id' => null,
+                'ticket_type_id' => $request['id_ticket'] ?? null,
                 'has_entered' => false,
+                'guardian_id' => $guardianId,
             ]
         );
 
@@ -282,6 +320,7 @@ class EventController extends Controller
                 ]);
             }
         }
+
 
         return redirect()->route('event.register', $public_link)->with('success', 'Inscripción exitosa.');
     }

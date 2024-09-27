@@ -2,12 +2,15 @@
 
 namespace App\Imports;
 
+use App\Models\Event;
 use App\Models\User;
 use App\Models\EventAssistant;
 use App\Models\TicketType;
 use Exception;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
+use Illuminate\Support\Facades\Validator;
+use PhpOffice\PhpSpreadsheet\Shared\Date; // Asegúrate de incluir esto
 
 class AssistantsImport implements ToModel, WithHeadingRow
 {
@@ -23,22 +26,61 @@ class AssistantsImport implements ToModel, WithHeadingRow
     public function model(array $row)
     {
         try {
+            // Obtener el evento y los parámetros de inscripción
+            $event = Event::findOrFail($this->eventId);
+            $registrationParameters = json_decode($event->registration_parameters, true) ?? [];
+
+            // Construir reglas de validación dinámicas
+            $validationRules = [];
+            foreach ($registrationParameters as $param) {
+                switch ($param) {
+                    case 'name':
+                    case 'lastname':
+                        $validationRules[$param] = 'required|string|max:255';
+                        break;
+                    case 'email':
+                        $validationRules[$param] = 'required|email|max:255|unique:users,email';
+                        break;
+                    case 'type_document':
+                        $validationRules[$param] = 'required|string|max:3';
+                        break;
+                    case 'document_number':
+                        $validationRules[$param] = 'required|max:20|unique:users,document_number';
+                        break;
+                    case 'phone':
+                        $validationRules[$param] = 'nullable|max:15';
+                        break;
+                    case 'city_id':
+                        $validationRules[$param] = 'nullable|exists:cities,id';
+                        break;
+                    case 'birth_date':
+                        $validationRules[$param] = 'nullable|date';
+                        break;
+                    // Agrega más parámetros según sea necesario
+                }
+            }
+
+            // Convertir birth_date de Excel a una fecha válida
+            if (isset($row['birth_date'])) {
+                $birthDate = Date::excelToDateTimeObject($row['birth_date']);
+                $row['birth_date'] = $birthDate ? $birthDate->format('Y-m-d') : null; // Formato deseado
+            }
+
+            // Validar el row (se podría hacer esto fuera de la función para optimizar)
+            Validator::make($row, $validationRules)->validate();
+
+            // Crear o encontrar el usuario
             $user = User::firstOrCreate(
                 ['email' => $row['email']],
-                [
-                    'name' => $row['name'],
-                    'lastname' => $row['lastname'] ?? null,
+                array_intersect_key($row, array_flip($registrationParameters)) + [
                     'password' => bcrypt('12345678'),
                     'status' => true,
-                    'phone' => $row['phone'] ?? null,
-                    'type_document' => $row['type_document'] ?? null,
-                    'document_number' => $row['document_number'] ?? null,
                 ]
             );
 
             // Asignar el rol "Assistant" al usuario
-            if (!$user->hasRole('Assistant')) {
-                $user->assignRole('Assistant');
+            if (!$user->hasRole('assistant')) {
+                $user->assignRole('assistant');
             }
 
             // Buscar el tipo de ticket por nombre y event_id
@@ -50,26 +92,17 @@ class AssistantsImport implements ToModel, WithHeadingRow
                 throw new Exception("Ticket type '{$row['ticket_type']}' not found for event ID {$this->eventId}");
             }
 
-            // Verificar si ya existe una asignación para este usuario y este tipo de ticket
-            $eventAssistant = EventAssistant::where('event_id', $this->eventId)
-            ->where('user_id', $user->id)
-            ->first();
-
-            if ($eventAssistant) {
-                // Si ya existe, actualiza la información del EventAssistant si es necesario
-                $eventAssistant->update([
-                    'ticket_type_id' => $ticketType->id,
-                ]);
-            } else {
-                // Si no existe, crea un nuevo registro
-                $eventAssistant = EventAssistant::create([
+            // Crear o actualizar el registro en la tabla `event_assistant`
+            $eventAssistant = EventAssistant::updateOrCreate(
+                [
                     'event_id' => $this->eventId,
                     'user_id' => $user->id,
+                ],
+                [
                     'ticket_type_id' => $ticketType->id,
-                ]);
-            }
-
-            $eventAssistant->save();
+                    'has_entered' => false, // O cualquier valor predeterminado que necesites
+                ]
+            );
 
             // Añadir usuario a la lista de importados
             $this->importedUsers[] = [

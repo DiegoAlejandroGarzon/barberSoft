@@ -56,16 +56,6 @@
                 @enderror
             @endif
 
-            @if(in_array('email', $selectedFields))
-                <x-base.form-label for="email">Email</x-base.form-label>
-                <x-base.form-input id="email" class="intro-x mt-4 block min-w-full px-4 py-3 xl:min-w-[350px]" type="email" name="email" placeholder="Correo Electrónico" value="{{ old('email') }}" required />
-                @error('email')
-                    <span class="invalid-feedback" role="alert">
-                        <strong>{{ $message }}</strong>
-                    </span>
-                @enderror
-            @endif
-
             @if(in_array('type_document', $selectedFields))
                 <!-- Type Document -->
                 <div class="mt-3">
@@ -100,58 +90,6 @@
                         value="{{ old('document_number') }}"
                     />
                     @error('document_number')
-                        <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
-                    @enderror
-                </div>
-            @endif
-
-            @if(in_array('phone', $selectedFields))
-                <div class="mt-3">
-                    <x-base.form-label for="phone">Teléfono</x-base.form-label>
-                    <x-base.form-input
-                        class="w-full {{ $errors->has('phone') ? 'border-red-500' : '' }}"
-                        id="phone"
-                        name="phone"
-                        type="text"
-                        placeholder="Teléfono"
-                        value="{{ old('phone') }}"
-                    />
-                    @error('phone')
-                        <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
-                    @enderror
-                </div>
-            @endif
-
-            @if(in_array('city_id', $selectedFields))
-                <div class="mt-3">
-                    <x-base.form-label for="department_id">Departamento</x-base.form-label>
-                    <x-base.tom-select
-                        class="w-full {{ $errors->has('department_id') ? 'border-red-500' : '' }}"
-                        id="department_id"
-                        name="department_id"
-                        onchange="filterCities()"
-                    >
-                        <option></option>
-                        @foreach ($departments as $department)
-                            <option value="{{$department->id}}" {{ old('department_id') == $department->id ? 'selected' : '' }}>{{ $department->code_dane }} - {{ $department->name }}</option>
-                        @endforeach
-                    </x-base.tom-select>
-                    @error('department_id')
-                        <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
-                    @enderror
-                </div>
-
-                <!-- Ciudad -->
-                <div class="mt-3">
-                    <x-base.form-label for="city_id">Ciudad</x-base.form-label>
-                    <x-base.tom-select
-                        class="w-full {{ $errors->has('city_id') ? 'border-red-500' : '' }}"
-                        id="city_id"
-                        name="city_id"
-                    >
-                        <option></option>
-                    </x-base.tom-select>
-                    @error('city_id')
                         <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
                     @enderror
                 </div>
@@ -201,6 +139,70 @@
                     @enderror
                 </div>
             @endif
+
+            @if(in_array('phone', $selectedFields))
+                <div class="mt-3">
+                    <x-base.form-label for="phone">Teléfono</x-base.form-label>
+                    <x-base.form-input
+                        class="w-full {{ $errors->has('phone') ? 'border-red-500' : '' }}"
+                        id="phone"
+                        name="phone"
+                        type="text"
+                        placeholder="Teléfono"
+                        value="{{ old('phone') }}"
+                    />
+                    @error('phone')
+                        <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                    @enderror
+                </div>
+            @endif
+
+            @if(in_array('email', $selectedFields))
+                <x-base.form-label for="email">Email</x-base.form-label>
+                <x-base.form-input id="email" class="intro-x mt-4 block min-w-full px-4 py-3 xl:min-w-[350px]" type="email" name="email" placeholder="Correo Electrónico" value="{{ old('email') }}" required />
+                @error('email')
+                    <span class="invalid-feedback" role="alert">
+                        <strong>{{ $message }}</strong>
+                    </span>
+                @enderror
+            @endif
+
+
+            @if(in_array('city_id', $selectedFields))
+                <div class="mt-3">
+                    <x-base.form-label for="department_id">Departamento</x-base.form-label>
+                    <x-base.tom-select
+                        class="w-full {{ $errors->has('department_id') ? 'border-red-500' : '' }}"
+                        id="department_id"
+                        name="department_id"
+                        onchange="filterCities()"
+                    >
+                        <option></option>
+                        @foreach ($departments as $department)
+                            <option value="{{$department->id}}" {{ old('department_id') == $department->id ? 'selected' : '' }}>{{ $department->code_dane }} - {{ $department->name }}</option>
+                        @endforeach
+                    </x-base.tom-select>
+                    @error('department_id')
+                        <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <!-- Ciudad -->
+                <div class="mt-3">
+                    <x-base.form-label for="city_id">Ciudad</x-base.form-label>
+                    <x-base.tom-select
+                        class="w-full {{ $errors->has('city_id') ? 'border-red-500' : '' }}"
+                        id="city_id"
+                        name="city_id"
+                    >
+                        <option></option>
+                    </x-base.tom-select>
+                    @error('city_id')
+                        <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                    @enderror
+                </div>
+            @endif
+
 
             <!-- Renderizar campos adicionales dinámicamente -->
             @foreach ($additionalParameters as $parameter)
@@ -317,7 +319,6 @@
             });
 
             @if(old('city_id'))
-            console.log("se va a asiganr "+{{ old('city_id') }});
             citySelect.setValue({{ old('city_id') }});
             @endif
             // Refresca la lista de opciones para que se muestren correctamente en la interfaz

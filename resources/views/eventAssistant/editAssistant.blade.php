@@ -48,11 +48,6 @@
                 <x-base.form-input id="lastname" class="intro-x block min-w-full px-4 py-3 xl:min-w-[350px]" type="text" name="lastname" placeholder="Apellido" value="{{ old('lastname', $eventAssistant->user->lastname) }}" required />
                 @break
 
-            @case('email')
-                <x-base.form-label for="email">Email</x-base.form-label>
-                <x-base.form-input id="email" class="intro-x mt-4 block min-w-full px-4 py-3 xl:min-w-[350px]" type="email" name="email" placeholder="Correo Electrónico" value="{{ old('email', $eventAssistant->user->email) }}" required />
-                @break
-
             @case('type_document')
                 <!-- Type Document -->
                 <div class="mt-3">
@@ -90,60 +85,6 @@
                         <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
                     @enderror
                 </div>
-                @break
-
-                @case('phone')
-                <div class="mt-3">
-                    <x-base.form-label for="phone">Teléfono</x-base.form-label>
-                    <x-base.form-input
-                        class="w-full {{ $errors->has('phone') ? 'border-red-500' : '' }}"
-                        id="phone"
-                        name="phone"
-                        type="text"
-                        placeholder="Teléfono"
-                        value="{{ $eventAssistant->user->phone }}"
-                    />
-                    @error('phone')
-                        <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
-                    @enderror
-                </div>
-
-                @break
-
-                @case('city_id')
-                <div class="mt-3">
-                    <x-base.form-label for="department_id">Departamento</x-base.form-label>
-                    <x-base.tom-select
-                        class="w-full {{ $errors->has('department_id') ? 'border-red-500' : '' }}"
-                        id="department_id"
-                        name="department_id"
-                        onchange="filterCities()"
-                    >
-                        <option></option>
-                        @foreach ($departments as $department)
-                            <option value="{{$department->id}}" {{ $eventAssistant->user->department_id == $department->id ? 'selected' : '' }}>{{ $department->code_dane }} - {{ $department->name }}</option>
-                        @endforeach
-                    </x-base.tom-select>
-                    @error('department_id')
-                        <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
-                    @enderror
-                </div>
-
-                <!-- Ciudad -->
-                <div class="mt-3">
-                    <x-base.form-label for="city_id">Ciudad</x-base.form-label>
-                    <x-base.tom-select
-                        class="w-full {{ $errors->has('city_id') ? 'border-red-500' : '' }}"
-                        id="city_id"
-                        name="city_id"
-                    >
-                        <option></option>
-                    </x-base.tom-select>
-                    @error('city_id')
-                        <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
-                    @enderror
-                </div>
-
                 @break
 
                 @case('birth_date')
@@ -188,6 +129,66 @@
                     @enderror
                 </div>
                 @break
+
+                @case('phone')
+                <div class="mt-3">
+                    <x-base.form-label for="phone">Teléfono</x-base.form-label>
+                    <x-base.form-input
+                        class="w-full {{ $errors->has('phone') ? 'border-red-500' : '' }}"
+                        id="phone"
+                        name="phone"
+                        type="text"
+                        placeholder="Teléfono"
+                        value="{{ $eventAssistant->user->phone }}"
+                    />
+                    @error('phone')
+                        <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                @break
+
+                @case('email')
+                    <x-base.form-label for="email">Email</x-base.form-label>
+                    <x-base.form-input id="email" class="intro-x mt-4 block min-w-full px-4 py-3 xl:min-w-[350px]" type="email" name="email" placeholder="Correo Electrónico" value="{{ old('email', $eventAssistant->user->email) }}" required />
+                    @break
+
+                @case('city_id')
+                <div class="mt-3">
+                    <x-base.form-label for="department_id">Departamento</x-base.form-label>
+                    <x-base.tom-select
+                        class="w-full {{ $errors->has('department_id') ? 'border-red-500' : '' }}"
+                        id="department_id"
+                        name="department_id"
+                        onchange="filterCities()"
+                    >
+                        <option></option>
+                        @foreach ($departments as $department)
+                            <option value="{{$department->id}}" {{ $eventAssistant->user->department_id == $department->id ? 'selected' : '' }}>{{ $department->code_dane }} - {{ $department->name }}</option>
+                        @endforeach
+                    </x-base.tom-select>
+                    @error('department_id')
+                        <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <!-- Ciudad -->
+                <div class="mt-3">
+                    <x-base.form-label for="city_id">Ciudad</x-base.form-label>
+                    <x-base.tom-select
+                        class="w-full {{ $errors->has('city_id') ? 'border-red-500' : '' }}"
+                        id="city_id"
+                        name="city_id"
+                    >
+                        <option></option>
+                    </x-base.tom-select>
+                    @error('city_id')
+                        <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                @break
+
             <!-- Continúa con los demás campos de manera similar -->
         @endswitch
 
