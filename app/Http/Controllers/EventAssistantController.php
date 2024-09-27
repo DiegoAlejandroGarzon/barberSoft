@@ -763,7 +763,7 @@ class EventAssistantController extends Controller
 
 
         if($request->payment_method=='PayPal'){
-            
+
             $eventAssistant = EventAssistant::find($request->event_assistant_id);
             $event=Event::find($eventAssistant->event_id);
             $pago['event_assistant_id']=$request->event_assistant_id;
@@ -786,7 +786,7 @@ class EventAssistantController extends Controller
             'description' => 'Pago de Ticket',
         ]);
 
-      
+
 
         $eventAsistant = EventAssistant::find($request->event_assistant_id);
         if($eventAsistant->isFullyPaid()){
@@ -796,7 +796,7 @@ class EventAssistantController extends Controller
 
         #return redirect()->back()
         #->with('success', 'Se ha registrado el pago correctamente');
-        
+
         $PDFController=new PDFController();
         $meta=$PDFController->buildPDF_Mail($request->event_assistant_id);
         return view('email.return_email_ticketevent',compact('meta'));
@@ -830,10 +830,15 @@ class EventAssistantController extends Controller
         return response()->json(['message' => 'Email enviado a ' . $email]);
     }
 
-   
+
 
     public function showMassPayload($idEvent){
         $event = Event::find($idEvent);
         return view('eventAssistant.massPayload', compact('event'));
+    }
+
+    public function courtesyCode($idEvent){
+        $event = Event::find($idEvent);
+        return view('eventAssistant.courtesyCode', compact('event'));
     }
 }
