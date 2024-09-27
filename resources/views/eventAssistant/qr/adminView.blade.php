@@ -131,7 +131,7 @@
             <br>
             <!-- Botón para Registrar Ingreso -->
 
-            @if(!$eventAssistant->has_entered && !$eventAssistant->rejected || true)
+            @if(!$eventAssistant->has_entered && !$eventAssistant->rejected)
             <form action="{{ route('eventAssistant.registerEntry', $eventAssistant->id) }}" method="POST">
                 @csrf
                 @method('PATCH')
