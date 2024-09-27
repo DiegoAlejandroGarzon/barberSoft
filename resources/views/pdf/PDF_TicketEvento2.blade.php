@@ -10,10 +10,11 @@
             font-family: Arial, Helvetica, sans-serif;
             background-color: beige;
             text-align: center;
+            font-size: 9px; /* Reducción del tamaño de fuente */
         }
         .content {
             width: 100%;
-            padding: 20px;
+            padding: 10px; /* Menor padding para ajustar el contenido */
         }
         .card {
             margin: 0 auto;
@@ -21,37 +22,37 @@
             max-width: 800px;
             background-color: white;
             border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
             overflow: hidden;
+            padding: 10px; /* Agregado padding interno */
         }
         .header, .footer {
             background-color: #008083;
             color: white;
-            padding: 10px;
+            padding: 5px; /* Menor padding */
         }
         .section {
-            margin: 20px 0;
+            margin: 10px 0; /* Menor margen entre secciones */
         }
         h1, h2, h3 {
-            margin: 10px 0;
+            margin: 5px 0; /* Menor margen en encabezados */
         }
         p {
-            font-size: 10px;
-            margin: 5px 0;
+            margin: 3px 0; /* Menor margen en párrafos */
         }
         .image-fit {
             width: 100%;
-            max-width: 200px;
+            max-width: 180px; /* Reducir el tamaño máximo de la imagen */
             height: auto;
             margin: 0 auto;
         }
         .qr-code {
-            margin-top: 20px;
+            margin-top: 10px; /* Menor margen superior */
         }
         .status-alert {
-            padding: 10px;
+            padding: 5px; /* Menor padding */
             border-radius: 5px;
-            margin-top: 10px;
+            margin-top: 5px; /* Menor margen superior */
         }
         .bg-success { background-color: #28a745; color: white; }
         .bg-warning { background-color: #ffc107; color: black; }
@@ -68,7 +69,6 @@
                 <img class="image-fit" src="{{ storage_path('app/public/'. $eventAssistant->event->header_image_path) }}" alt="{{ $eventAssistant->event->name }}">
                 <h2>Información del evento</h2>
                 <p><strong>Nombre:</strong> {{ $eventAssistant->event->name }}</p>
-                <p><strong>Descripción:</strong> {{ $eventAssistant->event->description }}</p>
                 <p><strong>Fecha:</strong> {{ $eventAssistant->event->event_date }}</p>
                 <p><strong>Hora de Inicio:</strong> {{ $eventAssistant->event->start_time }}</p>
                 <p><strong>Ciudad:</strong> {{ $eventAssistant->event->city->name ?? 'N/A' }}</p>
@@ -107,7 +107,7 @@
                     </ul>
                 @endif
                 <div class="status-alert {{ $eventAssistant->is_paid ? 'bg-success' : ($eventAssistant->totalPayments() == 0 ? 'bg-danger' : 'bg-warning') }}">
-                    <h3>ESTADO DEL PAGO DEL TICKET: </h3>
+                    <h3>ESTADO DEL PAGO DEL TICKET:</h3>
                     <p>{{ $eventAssistant->is_paid ? 'Pagado' : ($eventAssistant->totalPayments() == 0 ? 'No Pagado' : 'Pendiente') }}</p>
                 </div>
             </div>
@@ -119,7 +119,6 @@
                     <p>Este asistente no tiene un código QR asociado.</p>
                 @endif
             </div>
-            <br>
             <div class="footer">
                 <h3>Credencial Virtual</h3>
             </div>
