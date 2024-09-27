@@ -70,7 +70,7 @@ class EventAssistantsExport implements FromCollection, WithHeadings
                 $user->has_entered == false ? 'No entrada' : 'Entrada',
                 $user->event_name,
                 $user->event_date,
-                City::find($user->event_city_id)->name,
+                City::find($user->event_city_id)?->name,
                 $user->address,
             ]);
             $rows[] = $row;

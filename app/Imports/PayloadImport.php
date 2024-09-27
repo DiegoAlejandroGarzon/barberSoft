@@ -35,8 +35,9 @@ class PayloadImport implements ToModel, WithHeadingRow
                     'payer_name' => $row['nombre_del_pagador'],
                     'payer_document_type' => $row['tipo_documento'],
                     'payer_document_number' => $row['numero_documento'],
-                    'amount' => $row['cantidad_pagada'],
-                    'payment_method' => $row['formato_de_pago_transferenciaefectivo'],
+                    'amount' => $row['valor_a_pagada'],
+                    'payment_method' => $row['formato_de_pago_transferencia_efectivo'],
+                    'description' => 'Pago de Ticket',
                 ]
             );
 
