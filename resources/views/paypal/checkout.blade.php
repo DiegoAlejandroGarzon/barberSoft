@@ -14,6 +14,9 @@
 
 @section('subcontent')
 
+
+<x-base.form-input  type="hidden" id="event_assistant_id" name="event_assistant_id" value="{{ old('event_assistant_id', $pago['event_assistant_id']) }}"></x-base.form-input>
+
 <x-base.form-label for="nombres">Nombre del Pagador:</x-base.form-label>
 <x-base.form-input  type="text" id="nombres" name="nombres" value="{{ old('payer_name', $pago['payer_name']) }}"></x-base.form-input>
 

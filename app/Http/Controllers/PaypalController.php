@@ -10,6 +10,7 @@ use DB;
 use App\Notifications\invoicePaid;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Traits\HasRoles;
+use App\Http\Controllers\PDFController;
 
 
 class PaypalController extends Controller
@@ -75,12 +76,24 @@ class PaypalController extends Controller
         $result=$provider->capturePaymentOrder($orderId);
 
         //update database
-            if($result['status'=='COMPLETED']){
+        if($result['status'=='COMPLETED']){
             DB:table('orders')
             ->where('reference_number',$result['id'])
             ->update(['status'=>'COMPLETED','updated_at'=>\Carbon\Carbon::now()]);
+
+            $eventAsistant = EventAssistant::find($data['event_assistant_id']);
+            if($eventAsistant->isFullyPaid()){
+                $eventAsistant->is_paid = true;
+                $eventAsistant->save();
+            }
+            
+            $PDFController=new PDFController();
+            $meta=$PDFController->buildPDF_Mail($request->event_assistant_id);
+            return view('email.return_email_ticketevent',compact('meta'));
+
         }
-        return response()->json($result);
+
+        #return response()->json($result);
     }
 
 
@@ -101,7 +114,6 @@ class PaypalController extends Controller
 
     public function Paypal(){
       return view('paypal.checkout');
-
     }
 
 
