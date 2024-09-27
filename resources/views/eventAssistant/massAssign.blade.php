@@ -5,6 +5,7 @@
 @endsection
 
 @section('subcontent')
+<a href="{{ route('eventAssistant.index', ['idEvent' => $event->id]) }}">volver</a>
 <div class="container mx-auto mt-5">
     <h1 class="text-2xl font-bold mb-4">Asignar Asistentes de Forma Masiva para el Evento: {{ $event->name }}</h1>
 

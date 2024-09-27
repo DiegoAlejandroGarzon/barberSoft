@@ -5,6 +5,7 @@
 @endsection
 
 @section('subcontent')
+    <a href="{{ route('eventAssistant.index', ['idEvent' => $asistente->event_id]) }}">volver</a>
     <h2 class="intro-y mt-10 text-lg font-medium">Código QR del Asistente</h2>
     <div class="mt-5 flex justify-center">
         @if($asistente->qrCode)
