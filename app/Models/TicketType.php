@@ -35,4 +35,9 @@ class TicketType extends Model
     {
         return $this->hasMany(EventAssistant::class, 'ticket_type_id');
     }
+
+    public function formattedPrice()
+    {
+        return number_format($this->price, 0, ',', '.');
+    }
 }

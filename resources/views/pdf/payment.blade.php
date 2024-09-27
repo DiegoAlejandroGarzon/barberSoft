@@ -67,7 +67,7 @@
                         {{ $feature->name }},
                 @endforeach
                 <br>
-                <strong>Precio:</strong> {{ $payment->eventAssistant->ticketType?->price }}
+                <strong>Precio:</strong> ${{ $payment->eventAssistant->ticketType?->formattedPrice() }}
             </ul>
             <br>
             @if ($payment->payment_proof)
