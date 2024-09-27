@@ -235,8 +235,26 @@
                         @foreach ($asistentes as $asistente)
                             <x-base.table.tr class="intro-x">
                                 <!-- Carga dinámica de contenido de las filas -->
-                                @foreach($selectedFields as $field)
-                                    <x-base.table.td class="box text-center">{{ $asistente->user->$field }}</x-base.table.td>
+                                @foreach($selectedFields as $key => $field)
+                                    @if($key == 0 && $asistente->guardian_id != null)
+                                    <x-base.table.td class="box text-center">
+                                        <x-base.tippy content="Acudiente: {{$asistente->guardian->name}} - {{$asistente->guardian->document_number}}" class="mr-1">
+
+                                            <x-base.alert
+                                            class="flex items-center"
+                                            variant="soft-pending"
+                                        >
+                                            <x-base.lucide
+                                                class="mr-2"
+                                                icon="AlertTriangle"
+                                            />
+                                            {{ $asistente->user->$field }}
+                                        </x-base.alert>
+                                        </x-base.tippy>
+                                    </x-base.table.td>
+                                    @else
+                                    <x-base.table.td class="box text-center ">{{ $asistente->user->$field }}</x-base.table.td>
+                                    @endif
                                 @endforeach
 
                                 @foreach ($additionalParameters as $parameter)

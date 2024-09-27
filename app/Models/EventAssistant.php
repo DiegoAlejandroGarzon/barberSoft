@@ -65,4 +65,9 @@ class EventAssistant extends Model
         // Verifica si el total de pagos es mayor o igual al precio del ticket
         return $this->totalPayments() >= $this->ticketType->price;
     }
+
+    public function guardian()
+    {
+        return $this->belongsTo(User::class, 'guardian_id');
+    }
 }
