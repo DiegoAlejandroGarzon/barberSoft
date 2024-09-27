@@ -1,9 +1,10 @@
 function handletclick(btnRadio){
     productValue=btnRadio.value;
     document.getElementById('paypal-button-container').style.display='Block';
-    nombres=document.getElementById('nombres').value;;
-    apellidos=document.getElementById('apellidos').value;;
-    cedula=document.getElementById('cedula').value;;
+    assistant_id=getElementById('event_assistant_id').value;
+    nombres=document.getElementById('nombres').value;
+    apellidos=document.getElementById('apellidos').value;
+    cedula=document.getElementById('cedula').value;
     telefono=document.getElementById('telefono').value;
     valor=document.getElementById('amount').value;
 }
@@ -35,6 +36,7 @@ paypal.Buttons({
                             phone:telefono,
                             quantity: valor,
                             description:productValue,
+                            event_assistant_id:assistant_id,
                 }),
             });
 
@@ -65,6 +67,7 @@ paypal.Buttons({
                     body: JSON.stringify({
 
                         orderId: data.orderID,
+                        event_assistant_id:assistant_id,
                     
                      }),
                 }
