@@ -54,7 +54,7 @@
 		justify-content:center;
 		align-items:center;
 		text-align: center;
-		background-color: #008083;
+		background-color: #008083;		
 	}
 
 

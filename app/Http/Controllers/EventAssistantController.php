@@ -791,11 +791,11 @@ class EventAssistantController extends Controller
             $eventAsistant->save();
         }
 
-        return redirect()->back()
-        ->with('success', 'Se ha registrado el pago correctamente');
+        #return redirect()->back()
+        #->with('success', 'Se ha registrado el pago correctamente');
 
-        // $meta=$this->buildPDF_Mail($request->event_assistant_id);
-        // return view('email.return_email_ticketevent',compact('meta'));
+        $meta=$this->buildPDF_Mail($request->event_assistant_id);
+        return view('email.return_email_ticketevent',compact('meta'));
 
         }
 
@@ -817,8 +817,9 @@ class EventAssistantController extends Controller
 	{
 	    $registros=$this->getPDFEventoQuery($id);
 		foreach ($registros as &$registro){
-		    $pdf = Pdf::loadView('pdf.pdf_example', compact('registros'));
-		    $pdf->setPaper(array(0,0,170,450));
+            $qrCodeBase64 = 'data:image/png;base64,' . base64_encode($registro->qrCode);
+		    $pdf = Pdf::loadView('pdf.PDF_TicketEvento', compact('registros','qrCodeBase64'));
+		    $pdf->setPaper(array(0,0,170,500));
 		    $pdf->save(storage_path('app/public/'.$registro->evento_name.'.pdf'));
 			$meta['id'] = $registro->event_id;
             $meta['user_id'] = $registro->user_id;
