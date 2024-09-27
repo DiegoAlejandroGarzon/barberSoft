@@ -5,6 +5,9 @@
 @endsection
 
 @section('subcontent')
+    <div class="box">
+        <a class="m-3" href="{{ route('eventAssistant.index', ['idEvent' => $eventAssistant->event_id]) }}">Cargar Listado Asistentes</a>
+    </div>
     <h2 class="intro-y mt-10 text-lg font-medium">Detalles del Asistente y del Evento</h2>
     @if(session('success'))
         <div class="alert alert-success">
@@ -133,19 +136,17 @@
                 @csrf
                 @method('PATCH')
                 <x-base.button
-                class="w-24"
                 type="submit"
                 variant="primary"
                 >
                 Registrar Ingreso
                 </x-base.button>
             </form>
-
-            <form action="{{ route('eventAssistant.rejectEntry', $eventAssistant->id) }}" method="POST" class="inline-block ml-2">
+            <br>
+            <form action="{{ route('eventAssistant.rejectEntry', $eventAssistant->id) }}" method="POST" class="inline-block">
                 @csrf
                 @method('PATCH')
                 <x-base.button
-                class="w-24"
                 type="submit"
                 variant="danger"
                 >
@@ -182,11 +183,11 @@
                 </x-base.alert>
 
                 @if(!$eventAssistant->has_entered)
+                <br>
                 <form action="{{ route('eventAssistant.registerEntry', $eventAssistant->id) }}" method="POST">
                     @csrf
                     @method('PATCH')
                     <x-base.button
-                    class="w-24"
                     type="submit"
                     variant="primary"
                     >
