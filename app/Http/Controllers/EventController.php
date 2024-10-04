@@ -322,7 +322,10 @@ class EventController extends Controller
         }
 
 
-        return redirect()->route('event.register', $public_link)->with('success', 'Inscripción exitosa.');
+        return redirect()->route('event.register', $public_link)
+        ->with('success', 'Inscripción exitosa.')
+        ->with('qrCode', $eventAssistant->qrCode);
+        ;
     }
 
     public function setRegistrationParameters($id)

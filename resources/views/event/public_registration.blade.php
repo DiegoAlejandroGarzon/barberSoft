@@ -42,6 +42,14 @@
                                 {{ session('success') }}
                             </div>
                         @endif
+
+                        @if (session('qrCode'))
+                            <p><strong>Recuerda Guardar el codigo QR para poder acceder al evento:</strong></p>
+                            <p><strong>Código QR:</strong></p>
+                            <div class="mt-2">
+                                {{ session('qrCode') }}
+                            </div>
+                        @endif
                         <div class="intro-x mt-8">
                             <form action="{{ route('event.register.submit', $event->public_link) }}" method="POST">
                                 @csrf
