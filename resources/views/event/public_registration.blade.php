@@ -17,7 +17,11 @@
                     <img class="w-6" src="{{ Vite::asset('resources/images/logo.svg') }}" alt="" />
                     <span class="ml-3 text-lg text-white"> SSISET </span>
                     <div class="my-auto">
+                        @if ($event->header_image_path)
+                        <img class="-intro-x -mt-16 w-1/2" src="{{ asset('storage/' . $event->header_image_path) }}" alt="Imagen del evento" />
+                        @else
                         <img class="-intro-x -mt-16 w-1/2" src="{{ Vite::asset('resources/images/illustration.svg') }}" alt="" />
+                        @endif
                         <div class="-intro-x mt-10 text-4xl font-medium leading-tight text-white">
                             PROYECTO EVENTOS
                         </div>
