@@ -24,6 +24,7 @@ use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Mail;
 use App\Http\Controllers\PDFController;
+use App\Models\Coupon;
 
 class EventAssistantController extends Controller
 {
@@ -32,6 +33,7 @@ class EventAssistantController extends Controller
 
         // Número de asistentes registrados para el evento
         $totalTickets = EventAssistant::where('event_id', $idEvent)->where('has_entered', true)->count();
+        $tickets = TicketType::where('event_id', $idEvent)->get();
 
         // Capacidad total del evento
         $capacity = $event->capacity;
@@ -101,7 +103,7 @@ class EventAssistantController extends Controller
 
         $asistentes = $query->paginate(10);
 
-        return view('eventAssistant.index', compact(['asistentes', 'idEvent', 'dataGeneral', 'event', 'ticketsInfo']));
+        return view('eventAssistant.index', compact(['asistentes', 'idEvent', 'dataGeneral', 'event', 'ticketsInfo', 'tickets']));
     }
 
     // Muestra la vista para subir el archivo de Excel
@@ -748,9 +750,36 @@ class EventAssistantController extends Controller
             'payer_document_type' => 'required|string|max:10',
             'payer_document_number' => 'required|string|max:50',
             'amount' => 'required|numeric',
-            'payment_method' => 'required|string',
+            'payment_method' => 'nullable|string',
             'payment_proof' => 'nullable|image|max:2048', // Validación de la imagen
+            'courtesy_code' => 'nullable|string|max:50', // Código de cortesía opcional
         ]);
+        // Si tiene código de cortesía, verificarlo
+        if ($request->has('courtesy_code')) {
+            $eventAssistant = EventAssistant::find($request->event_assistant_id);
+            $courtesyCode = Coupon::where('numeric_code', $request->courtesy_code)
+                                        ->where('is_consumed', false)
+                                        ->where('event_id', $eventAssistant->event_id)
+                                        ->first();
+
+            if (!$courtesyCode) {
+                return redirect()->back()->withErrors(['error' => 'El código de cortesía no es válido o ya ha sido utilizado.']);
+            }
+
+            // Si el código es válido, marcarlo como usado y registrar el asistente como pagado
+            $courtesyCode->is_consumed = true;
+            $courtesyCode->eventAssistant_id = $eventAssistant->id;
+            $courtesyCode->save();
+
+            $eventAssistant->is_paid = true;
+            $eventAssistant->save();
+
+            // Generar el PDF y enviar correo si es necesario
+            $PDFController = new PDFController();
+            $meta = $PDFController->buildPDF_Mail($request->event_assistant_id);
+
+            return view('email.return_email_ticketevent', compact('meta'));
+        }
 
         $paymentProofPath = null;
         if ($request->hasFile('payment_proof')) {
@@ -840,5 +869,25 @@ class EventAssistantController extends Controller
     public function courtesyCode($idEvent){
         $event = Event::find($idEvent);
         return view('eventAssistant.courtesyCode', compact('event'));
+    }
+    public function generateCoupons(Request $request)
+    {
+        $eventId = $request->event_id; // Asegúrate de pasar el ID del evento
+        $numberOfCoupons = $request->number_of_coupons; // Número de cupones a generar
+
+        for ($i = 0; $i < $numberOfCoupons; $i++) {
+            Coupon::create([
+                'event_id' => $eventId,
+                'is_consumed' => false,
+                'ticket_type_id' => $request->ticket_type_id,
+            ]);
+        }
+
+        return response()->json(['message' => 'Cupones generados correctamente']);
+    }
+    public function getCoupons($eventId)
+    {
+        $coupons = Coupon::where('event_id', $eventId)->with('ticketType')->get();
+        return response()->json($coupons);
     }
 }

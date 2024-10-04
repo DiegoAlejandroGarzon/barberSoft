@@ -5,6 +5,11 @@
 @endsection
 
 @section('subcontent')
+    @if (session('error'))
+        <div class="intro-x mt-4 alert alert-danger">
+            {{ session('error') }}
+        </div>
+    @endif
     <a href="{{ route('eventAssistant.index', ['idEvent' => $eventAssistant->event_id]) }}">volver</a>
     <h2 class="intro-y mt-10 text-lg font-medium">Informacion del Pago</h2>
     <div class="mt-5 flex justify-center">
@@ -101,14 +106,24 @@
                     <input type="text" id="payer_document_number" name="payer_document_number" class="form-control" required>
                 </div>
 
-                <!-- Cantidad a Pagar -->
                 <div class="mt-3">
+                    <label for="courtesy_code_checkbox" class="form-label">¿Tienes un código de cortesía?</label>
+                    <input type="checkbox" id="courtesy_code_checkbox" name="courtesy_code_checkbox" onchange="toggleCourtesyCode()">
+                </div>
+
+                <!-- Campo del Código de Cortesía, oculto inicialmente -->
+                <div class="mt-3" id="courtesy_code_div" style="display: none;">
+                    <label for="courtesy_code" class="form-label">Código de Cortesía</label>
+                    <input type="text" id="courtesy_code" name="courtesy_code" class="form-control">
+                </div>
+                <!-- Cantidad a Pagar -->
+                <div class="mt-3" id="amountDiv">
                     <label for="amount" class="form-label">Cantidad a Pagar</label>
                     <input type="number" id="amount" name="amount" class="form-control" value="{{ $eventAssistant->ticketType?->price - $eventAssistant->totalPayments() }}" required>
                 </div>
 
                 <!-- Forma de Pago -->
-                <div class="mt-3">
+                <div class="mt-3" id="paymentMethodDiv">
                     <label for="payment_method" class="form-label">Forma de Pago</label>
                     <select id="payment_method" name="payment_method" class="form-control" required onchange="togglePaymentProof()">
                         <option value="" disabled selected>Seleccione la forma de pago</option>
@@ -172,6 +187,26 @@
             transferProof.style.display = 'block';
         } else {
             transferProof.style.display = 'none';
+        }
+    }
+
+    function toggleCourtesyCode() {
+        var checkBox = document.getElementById('courtesy_code_checkbox');
+        var courtesyCodeDiv = document.getElementById('courtesy_code_div');
+        var paymentMethod = document.getElementById('paymentMethodDiv');
+        var amount = document.getElementById('amountDiv');
+        var paymentMethodSelect = document.getElementById('payment_method');
+
+        if (checkBox.checked) {
+            courtesyCodeDiv.style.display = 'block';
+            paymentMethod.style.display = 'none';
+            amount.style.display = 'none';
+            paymentMethodSelect.removeAttribute('required');  // Eliminar el atributo required
+        } else {
+            courtesyCodeDiv.style.display = 'none';
+            paymentMethod.style.display = 'block';
+            amount.style.display = 'block';
+            paymentMethodSelect.setAttribute('required', 'required');  // Agregar el atributo required
         }
     }
 </script>

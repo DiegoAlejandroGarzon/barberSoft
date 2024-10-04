@@ -26,6 +26,7 @@ use App\Http\Controllers\EventController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\AjaxController;
+use App\Http\Controllers\CouponController;
 use App\Http\Controllers\PaymentController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\TicketFeatureController;
@@ -53,6 +54,8 @@ Route::post('password/reset', [ResetPasswordController::class, 'reset'])->name('
 Route::get('/event/register/{public_link}', [EventController::class, 'showPublicRegistrationForm'])->name('event.register');
 Route::post('/event/register/{public_link}', [EventController::class, 'submitPublicRegistration'])->name('event.register.submit');
 Route::get('/event-assistant/infoQr/{id}/{guid}', [EventAssistantController::class, 'infoQr'])->name('eventAssistant.infoQr');
+Route::get('/event-assistant/infoQrCoupon/{id}/{guid}', [CouponController::class, 'infoQrCoupon'])->name('coupon.infoQr');
+Route::post('/cuopon/register/{public_link}', [CouponController::class, 'submitPublicRegistration'])->name('coupon.register.submit');
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
@@ -155,7 +158,10 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post('/event-assistant/payment', [EventAssistantController::class, 'paymentStore'])->name('eventAssistant.payment.store');
     Route::get('/event-assistant/{id}/sendEmailInfoPago', [EventAssistantController::class, 'sendEmailInfoPago'])->name('eventAssistant.sendEmailInfoPago');
     Route::get('/assistants/{idEvent}/massPayload', [EventAssistantController::class, 'showMassPayload'])->name('eventAssistant.massPayload');
+    Route::get('/assistants/{idEvent}/courtesyCode', [EventAssistantController::class, 'courtesyCode'])->name('eventAssistant.courtesyCode');
     Route::get('/event-assistant/{id}/pdfTicket', [PDFController::class, 'getPDFEvento'])->name('eventAssistant.getPDFTicket');
+    Route::post('/generate-coupons', [EventAssistantController::class, 'generateCoupons'])->name('generateCoupons');
+    Route::get('/get-coupons/{eventId}', [EventAssistantController::class, 'getCoupons']);
 
     //Payloads
     Route::get('/payment/{id}', [PaymentController::class, 'generatePDF'])->name('payments.generatePDF');
@@ -163,6 +169,12 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/event-assistant/paymentStatus/{idEvent}/export-excel', [PaymentController::class, 'exportExcelPaymentStatus'])->name('paymentStatus.exportExcel');
     Route::get('payment/{id}/download-template', [PaymentController::class, 'downloadTemplate'])->name('payments.downloadTemplate');
     Route::post('/assistants/{idEvent}/massPayload', [PaymentController::class, 'uploadMassPayload'])->name('eventAssistant.massPayload.upload');
+
+    //COUPON
+    Route::get('/coupon/{idEvent}', [CouponController::class, 'index'])->name('coupons.index');
+    Route::get('/coupon/{id}/pdf', [CouponController::class, 'generatePDF'])->name('coupon.pdf');
+    Route::get('/coupons/{idEvent}/pdf', [CouponController::class, 'generatePDFMasivo'])->name('coupons.pdf');
+
     //SELECTS
     Route::get('/cities/{department}', [CityController::class, 'getCitiesByDepartment']);
 });

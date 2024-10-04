@@ -338,7 +338,7 @@ class EventController extends Controller
 
         // Validar la entrada de los campos seleccionados
         $request->validate([
-            'fields' => 'required|array',
+            'fields' => 'array',
             'fields.*' => 'in:name,lastname,email,type_document,document_number,phone,status,profile_photo_path,city_id,birth_date',
         ]);
 
