@@ -56,6 +56,8 @@ Route::post('/event/register/{public_link}', [EventController::class, 'submitPub
 Route::get('/event-assistant/infoQr/{id}/{guid}', [EventAssistantController::class, 'infoQr'])->name('eventAssistant.infoQr');
 Route::get('/event-assistant/infoQrCoupon/{id}/{guid}', [CouponController::class, 'infoQrCoupon'])->name('coupon.infoQr');
 Route::post('/cuopon/register/{public_link}', [CouponController::class, 'submitPublicRegistration'])->name('coupon.register.submit');
+Route::get('/check-courtesy-code/{eventId}/{code}', [CouponController::class, 'checkCourtesyCode'])->name('check.courtesy.code');
+
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
