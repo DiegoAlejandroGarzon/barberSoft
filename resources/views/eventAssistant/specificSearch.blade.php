@@ -169,11 +169,12 @@
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead>
                         @foreach($selectedFields as $field)
-                            <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ ucfirst(str_replace('_', ' ', $field)) }}</th>
+                            <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ config("traductorColumnasUsers.$field", ucfirst(str_replace('_', ' ', $field))) }}</th>
                         @endforeach
                         @foreach ($additionalParameters as $parameter)
                             <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ ucfirst(str_replace('_', ' ', $parameter['name'])) }}</th>
                         @endforeach
+                        <th>ACCIONES</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -194,6 +195,18 @@
                                         {{ $userParameter ? $userParameter->value : '-' }}
                                     </td>
                                 @endforeach
+                                <td>
+                                    <form action="{{ route('eventAssistant.registerEntry', $user->eventAssistantForEvent($event->id)->id) }}" method="POST">
+                                        @csrf
+                                        @method('PATCH')
+                                        <x-base.button
+                                        type="submit"
+                                        variant="primary"
+                                        >
+                                        Registrar Ingreso
+                                        </x-base.button>
+                                    </form>
+                                </td>
                             </tr>
                         @endforeach
                     </tbody>
