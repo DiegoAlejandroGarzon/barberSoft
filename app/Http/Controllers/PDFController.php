@@ -21,23 +21,18 @@ class PDFController extends Controller
 {
     public function getPDF(){
 
-		
+
 		$name = 'Juanito Perez';
 		$pdf = Pdf::loadView('pdf.PDF_TicketEvento', compact('name'));
 		return $pdf->stream('prueba.pdf');
 	}
 
 	public function getPDFEvento($id){
-        
-		$assistant=EventAssistant::find($id);
-		$user=User::find($assistant->user_id);
-		$event=event::find($assistant->event_id);
-		$pdf = Pdf::loadView('pdf.PDF_TicketEvento', compact('user','event'));
-		$pdf->setPaper(array(0,0,170,450));
-		$pdf->save(storage_path('app/public/' . $event->name.'.pdf'));
-		return $pdf->stream($event->name.'.pdf');
-		
-		
+
+        $eventAssistant = EventAssistant::find($id);
+        $qrCodeBase64 = 'data:image/png;base64,' . base64_encode($eventAssistant->qrCode);
+        $pdf = Pdf::loadView('pdf.PDF_TicketEvento2', compact('eventAssistant','qrCodeBase64'));
+        return $pdf->stream('ticket'.$id.'.pdf');
 	}
 
 	public function getPDFEventoQuery($id){
@@ -86,18 +81,18 @@ class PDFController extends Controller
 
 	public function return_email($id)
 	{
-	
+
 	   return view(event.index);
 
-		
-		
+
+
 	}
 
 	public function paypal($id){
-        
+
 		$provider = new PayPalClient;
 		$infoPago['valor']=100.00;
 		return view('paypal.client.checkout',compact('infoPago'));
 	}
-	
+
 }

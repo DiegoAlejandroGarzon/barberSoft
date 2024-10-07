@@ -17,11 +17,7 @@
                     <img class="w-6" src="{{ Vite::asset('resources/images/logo.svg') }}" alt="" />
                     <span class="ml-3 text-lg text-white"> SSISET </span>
                     <div class="my-auto">
-                        @if ($event->header_image_path)
-                        <img class="-intro-x -mt-16 w-1/2" src="{{ asset('storage/' . $event->header_image_path) }}" alt="Imagen del evento" />
-                        @else
                         <img class="-intro-x -mt-16 w-1/2" src="{{ Vite::asset('resources/images/illustration.svg') }}" alt="" />
-                        @endif
                         <div class="-intro-x mt-10 text-4xl font-medium leading-tight text-white">
                             PROYECTO EVENTOS
                         </div>
@@ -36,51 +32,50 @@
                 <div class="my-10 flex h-screen py-5 xl:my-0 xl:h-auto xl:py-0">
                     <div class="mx-auto my-auto w-full rounded-md bg-white px-5 py-8 shadow-md dark:bg-darkmode-600 sm:w-3/4 sm:px-8 lg:w-2/4 xl:ml-20 xl:w-auto xl:bg-transparent xl:p-0 xl:shadow-none">
                         <h2 class="intro-x text-center text-2xl font-bold xl:text-left xl:text-3xl">
-                            Inscripción para el evento: {{ $event->name }}
+                            FELICIDADES TIENES UN CUPON VALIDO PARA ENTRAR AL EVENTO: {{ $coupon->event->name }}
                         </h2>
                         <p class="intro-x mt-2 text-center text-slate-400 xl:hidden">
-                            {{ $event->description }}
+                            {{ $coupon->event->description }}
                         </p>
                         @if (session('success'))
                             <div class="intro-x mt-4 alert alert-success">
                                 {{ session('success') }}
                             </div>
                         @endif
-
-                        @if (session('qrCode'))
-                            <p><strong>Recuerda Guardar el codigo QR para poder acceder al evento:</strong></p>
-                            <p><strong>Código QR:</strong></p>
-                            <div class="mt-2">
-                                {{ session('qrCode') }}
+                        @if (session('error'))
+                            <div class="intro-x mt-4 alert alert-danger">
+                                {{ session('error') }}
                             </div>
                         @endif
+
+                        <div class="section box mt-2">
+                            <div class="m-3">
+                                <h1>Información del ticket</h1>
+                                @if($coupon?->ticketType)
+                                    <p><strong>Tipo de Ticket:</strong> {{ $coupon->ticketType->name ?? 'N/A' }}</p>
+                                    <ul>
+                                        @foreach ($coupon->ticketType->features as $feature)
+                                            <li>
+                                                <strong>{{ $feature->name }}:</strong>
+                                                <span>{{ $feature->consumable ? 'Consumible' : 'Acceso' }}</span>
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                @endif
+                                <div class="status-alert {{ $coupon->is_consumed ? 'bg-danger' : 'bg-success' }}">
+                                    <h3>ESTADO DEL CUPON:</h3>
+                                    <p>{{ $coupon->is_consumed ? 'CONSUMIDO' : 'NO CONSUMIDO' }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <h2>Para terminar de hacer valido el cupon completa el registro</h2>
                         <div class="intro-x mt-8">
-                            <form action="{{ route('event.register.submit', $event->public_link) }}" method="POST">
+                            <form action="{{ route('coupon.register.submit', $coupon->guid) }}" method="POST">
                                 @csrf
                                 @php
                                     // Obtener los parámetros guardados en registration_parameters
-                                    $selectedFields = json_decode($event->registration_parameters, true) ?? [];
+                                    $selectedFields = json_decode($coupon->event->registration_parameters, true) ?? [];
                                 @endphp
-
-
-                                <div class="mt-3">
-                                    <x-base.form-label for="id_ticket">Ticket</x-base.form-label>
-                                    <x-base.tom-select
-                                        class="w-full {{ $errors->has('id_ticket') ? 'border-red-500' : '' }}"
-                                        id="id_ticket"
-                                        name="id_ticket"
-                                        onchange="filterCities()"
-                                    >
-                                        <option></option>
-                                        @foreach ($ticketTypes as $ticket)
-                                            <option value="{{$ticket->id}}" {{ old('id_ticket') == $ticket->id ? 'selected' : '' }}>{{ $ticket->name }} - ${{$ticket->price}}</option>
-                                        @endforeach
-                                    </x-base.tom-select>
-                                    @error('id_ticket')
-                                        <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
-                                    @enderror
-                                </div>
-
                                 <!-- Renderizar campos dinámicamente -->
                                 @if(in_array('name', $selectedFields))
                                     <x-base.form-label for="name">Nombre</x-base.form-label>

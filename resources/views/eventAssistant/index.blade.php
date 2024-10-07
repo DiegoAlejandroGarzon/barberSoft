@@ -142,6 +142,16 @@
                     Asignar Pagos Masivamente
                 </x-base.button>
             </a>
+            <x-base.button
+                class="mb-2 mr-1"
+                data-tw-toggle="modal"
+                data-tw-target="#superlarge-slide-over-size-preview"
+                href="#"
+                as="a"
+                variant="primary"
+            >
+                Codigos de cortesia
+            </x-base.button>
             <div class="mt-3 w-full sm:ml-auto sm:mt-0 sm:w-auto md:ml-0">
                 <form method="GET" action="{{ route('eventAssistant.index', ['idEvent' => $idEvent]) }}">
                     <div class="relative w-56 text-slate-500">
@@ -303,8 +313,13 @@
                                         </a>
                                         </x-base.tippy>
 
-                                        <x-base.tippy content="Generar PDF" class="mr-1">
+                                        <x-base.tippy content="Generar PDF Informativo" class="mr-1">
                                             <a class="text-info" href="{{ route('eventAssistant.pdf', ['id' => $asistente->id]) }}" target="_blank">
+                                                <x-base.lucide icon="FileText" />
+                                            </a>
+                                        </x-base.tippy>
+                                        <x-base.tippy content="Generar Ticket PDF" class="mr-1">
+                                            <a class="text-info" href="{{ route('eventAssistant.getPDFTicket', ['id' => $asistente->id]) }}" target="_blank">
                                                 <x-base.lucide icon="FileText" />
                                             </a>
                                         </x-base.tippy>
@@ -382,6 +397,54 @@
         </x-base.dialog.panel>
     </x-base.dialog>
 
+    <x-base.slideover id="superlarge-slide-over-size-preview" size="xl">
+        <x-base.slideover.panel>
+            <x-base.slideover.title class="p-5">
+                <h2 class="mr-auto text-base font-medium">
+                    Códigos de cortesía
+                </h2>
+            </x-base.slideover.title>
+            <x-base.slideover.description>
+                <div class="flex justify-between mb-4">
+                    <!-- Select para elegir el tipo de ticket -->
+                    <div class="w-full">
+                        <label for="ticketType" class="block text-sm font-medium text-gray-700">Seleccionar Ticket</label>
+                        <select id="ticketType" name="ticketType" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                            @foreach($tickets as $ticket)
+                                <option value="{{ $ticket->id }}">{{ $ticket->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="w-full">
+                        <label for="numberOfCoupons" class="block text-sm font-medium text-gray-700">N cupones</label>
+                        <input type="number" id="numberOfCoupons">
+                    </div>
+                    <!-- Botón para generar nuevos códigos -->
+                    <button id="generateCouponsButton" class="btn btn-primary ml-4 mt-4">
+                        Generar nuevos códigos
+                    </button>
+                </div>
+
+                <!-- Tabla para mostrar los cupones -->
+                <div class="overflow-auto">
+                    <table class="table-auto w-full text-center">
+                        <thead>
+                            <tr>
+                                <th class="px-4 py-2">N°</th>
+                                <th class="px-4 py-2">Código</th>
+                                <th class="px-4 py-2">Ticket</th>
+                                <th class="px-4 py-2">Consumido</th>
+                            </tr>
+                        </thead>
+                        <tbody id="couponsTableBody">
+                            <!-- Aquí se cargan dinámicamente los cupones -->
+                        </tbody>
+                    </table>
+                </div>
+            </x-base.slideover.description>
+        </x-base.slideover.panel>
+    </x-base.slideover>
+
     <script>
         function setDeleteAction(element) {
             // Obtener el ID desde el atributo data-id
@@ -390,6 +453,53 @@
             const form = document.getElementById('delete-form');
             form.action = `/assistants/delete/${id}`;
         }
+        document.getElementById('generateCouponsButton').addEventListener('click', function () {
+            const eventId = {{$idEvent}}; // ID del evento (modificar dinámicamente si es necesario)
+            const numberOfCoupons = document.getElementById('ticketType').value;; // Número de cupones que quieres generar
+            const ticketTypeId = document.getElementById('ticketType').value; // Obtener el ticket seleccionado
+
+            fetch("{{ route('generateCoupons') }}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({
+                    event_id: eventId,
+                    number_of_coupons: numberOfCoupons,
+                    ticket_type_id: ticketTypeId // Enviar el ID del ticket
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Aquí puedes recargar los cupones y actualizar la tabla
+                loadCoupons(eventId);
+            })
+            .catch(error => console.error('Error:', error));
+        });
+
+        // Función para cargar los cupones y actualizar la tabla
+        function loadCoupons(eventId) {
+            fetch(`/get-coupons/${eventId}`)
+                .then(response => response.json())
+                .then(coupons => {
+                    let tableBody = document.getElementById('couponsTableBody');
+                    tableBody.innerHTML = ''; // Limpiar la tabla
+
+                    coupons.forEach((coupon, index) => {
+                        let row = `
+                            <tr>
+                                <td class="px-4 py-2">${index + 1}</td>
+                                <td class="px-4 py-2">${coupon.numeric_code}</td>
+                                <td class="px-4 py-2">${coupon.ticket_type.name}</td>
+                                <td class="px-4 py-2">${coupon.is_consumed ? 'Sí' : 'No'}</td>
+                            </tr>
+                        `;
+                        tableBody.insertAdjacentHTML('beforeend', row);
+                    });
+                });
+        }
+        loadCoupons({{$idEvent}});
     </script>
 
     <!-- END: Delete Confirmation Modal -->

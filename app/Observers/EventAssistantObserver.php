@@ -3,6 +3,7 @@
 namespace App\Observers;
 
 use App\Models\EventAssistant;
+use App\Models\TicketType;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Support\Str;
 
@@ -18,11 +19,18 @@ class EventAssistantObserver
         // Generar el QR Code basado en el ID o alguna otra información del modelo
         $qrContent = route('eventAssistant.infoQr', ['id' => $eventAssistant->id, 'guid' => $guid]);
         $qrCode = QrCode::format('svg')->size(300)->generate($qrContent);
-        // Actualizar el modelo con la ruta del QR Code
-        $eventAssistant->update([
+        // Inicializar el array para los valores que se actualizarán
+        $updateData = [
             'qrCode' => $qrCode,
             'guid' => $guid,
-        ]);
+        ];
+        // Verificar si el ticket_type_id está relacionado con un TicketType cuyo precio sea 0
+        $ticketType = TicketType::find($eventAssistant->ticket_type_id);
+        if ($ticketType && $ticketType->price == 0) {
+            $updateData['is_paid'] = true;
+        }
+        // Actualizar el modelo con los valores generados
+        $eventAssistant->update($updateData);
     }
 
     /**

@@ -173,12 +173,32 @@
                                             />
                                         </a>
                                     </x-base.tippy>
-
+                                    @if($evento->registration_parameters == "null" || $evento->registration_parameters == null|| $evento->registration_parameters == "[]")
+                                    <x-base.tippy content="Registro Parametros (Sin Parametros)" class="mr-1">
+                                            <a class="mr-3 flex items-center" href="{{ route('events.setRegistrationParameters',  $evento->id) }}">
+                                                <x-base.alert class="flex items-center" variant="soft-pending">
+                                                <x-base.lucide
+                                                    class="mx-auto block"
+                                                    icon="Book"
+                                                />
+                                                </x-base.alert>
+                                            </a>
+                                    </x-base.tippy>
+                                    @else
                                     <x-base.tippy content="Registro Parametros" class="mr-1">
                                         <a class="mr-3 flex items-center" href="{{ route('events.setRegistrationParameters',  $evento->id) }}">
                                             <x-base.lucide
                                                 class="mx-auto block"
                                                 icon="Book"
+                                            />
+                                        </a>
+                                    </x-base.tippy>
+                                    @endif
+                                    <x-base.tippy content="Generar codigos cortesía" class="mr-1">
+                                        <a class="mr-3 flex items-center" href="{{ route('coupons.index',  $evento->id) }}">
+                                            <x-base.lucide
+                                                class="mx-auto block"
+                                                icon="Tag"
                                             />
                                         </a>
                                     </x-base.tippy>

@@ -322,7 +322,10 @@ class EventController extends Controller
         }
 
 
-        return redirect()->route('event.register', $public_link)->with('success', 'Inscripción exitosa.');
+        return redirect()->route('event.register', $public_link)
+        ->with('success', 'Inscripción exitosa.')
+        ->with('qrCode', $eventAssistant->qrCode);
+        ;
     }
 
     public function setRegistrationParameters($id)
@@ -338,7 +341,7 @@ class EventController extends Controller
 
         // Validar la entrada de los campos seleccionados
         $request->validate([
-            'fields' => 'required|array',
+            'fields' => 'array',
             'fields.*' => 'in:name,lastname,email,type_document,document_number,phone,status,profile_photo_path,city_id,birth_date',
         ]);
 

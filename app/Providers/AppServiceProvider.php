@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Models\Coupon;
 use App\Models\EventAssistant;
+use App\Observers\CouponObserver;
 use App\Observers\EventAssistantObserver;
 use Illuminate\Support\ServiceProvider;
 
@@ -22,5 +24,6 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         EventAssistant::observe(EventAssistantObserver::class);
+        Coupon::observe(CouponObserver::class);
     }
 }

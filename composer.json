@@ -18,6 +18,8 @@
         "livewire/livewire": "^3.5",
         "maatwebsite/excel": "^3.1",
         "mailersend/laravel-driver": "^2.7",
+        "setasign/fpdf": "^1.8",
+        "setasign/fpdi": "^2.6",
         "simplesoftwareio/simple-qrcode": "^4.2",
         "spatie/laravel-html": "^3.11",
         "spatie/laravel-permission": "^6.9",
