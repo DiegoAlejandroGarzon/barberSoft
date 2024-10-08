@@ -73,4 +73,11 @@ class User extends Authenticatable
     {
         return $this->hasMany(UserEventParameter::class, 'user_id', 'id');
     }
+
+    public function eventAssistantForEvent($eventId)
+    {
+        return $this->hasOne(EventAssistant::class)
+                    ->where('event_id', $eventId)
+                    ->first();
+    }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\AdditionalParameter;
+use App\Models\Coupon;
 use App\Models\Departament;
 use App\Models\Event;
 use App\Models\EventAssistant;
@@ -229,6 +230,18 @@ class EventController extends Controller
     public function submitPublicRegistration(Request $request, $public_link)
     {
         $event = Event::where('public_link', $public_link)->firstOrFail();
+
+        if($request->courtesy_code){
+            $coupon = Coupon::where('numeric_code', $request->courtesy_code)
+                ->where('event_id', $event->id)
+                ->where('is_consumed', false)
+                ->with('ticketType') // Asegura la relación con ticketType
+                ->first();
+                if(!$coupon){
+                    return redirect()->back()
+                    ->with('error', 'Inscripción NO exitosa. CUPON INVALIDO');
+                }
+        }
         $eventAssistantController = new EventAssistantController();
         if($eventAssistantController->eventoFinalizado($event->id)){
             return redirect()->back()
@@ -300,8 +313,14 @@ class EventController extends Controller
                 'ticket_type_id' => $request['id_ticket'] ?? null,
                 'has_entered' => false,
                 'guardian_id' => $guardianId,
+                'is_paid' => true,
             ]
         );
+        if(isset($coupon)){
+            $coupon->is_consumed = true;
+            $coupon->event_assistant_id = $eventAssistant->id;
+            $coupon->save();
+        }
 
         // Obtener los parámetros adicionales definidos para el evento
         $definedParameters = AdditionalParameter::where('event_id', $event->id)->get();

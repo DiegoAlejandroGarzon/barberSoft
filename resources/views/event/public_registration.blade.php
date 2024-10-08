@@ -42,8 +42,13 @@
                             {{ $event->description }}
                         </p>
                         @if (session('success'))
-                            <div class="intro-x mt-4 alert alert-success">
+                            <div class="intro-x mt-4 alert alert-success text-green-500">
                                 {{ session('success') }}
+                            </div>
+                        @endif
+                        @if (session('error'))
+                            <div class="intro-x mt-4 alert alert-danger text-red-500">
+                                {{ session('error') }}
                             </div>
                         @endif
 
@@ -62,6 +67,30 @@
                                     $selectedFields = json_decode($event->registration_parameters, true) ?? [];
                                 @endphp
 
+                                <!-- Checkbox para mostrar el input de código de cortesía -->
+                                <div class="mt-3">
+                                    <x-base.form-label for="courtesy_code_checkbox">¿Tienes un código de cortesía?</x-base.form-label>
+                                    <input
+                                        type="checkbox"
+                                        id="courtesy_code_checkbox"
+                                        onclick="toggleCourtesyCodeInput()"
+                                    />
+                                </div>
+
+                                <!-- Input para ingresar el código de cortesía (oculto por defecto) -->
+                                <div class="mt-3" id="courtesy_code_container" style="display: none;">
+                                    <x-base.form-label for="courtesy_code">Código de cortesía</x-base.form-label>
+                                    <x-base.form-input
+                                        id="courtesy_code"
+                                        class="w-full"
+                                        type="text"
+                                        maxlength="6"
+                                        name="courtesy_code"
+                                        placeholder="Ingresa el código de cortesía"
+                                        oninput="checkCourtesyCode()"
+                                    />
+                                    <div id="courtesy_code_message" class="text-red-500 text-sm mt-1"></div>
+                                </div>
 
                                 <div class="mt-3">
                                     <x-base.form-label for="id_ticket">Ticket</x-base.form-label>
@@ -323,5 +352,54 @@
         }
         filterCities();
         @endif
+
+        function toggleCourtesyCodeInput() {
+            var checkbox = document.getElementById('courtesy_code_checkbox');
+            var container = document.getElementById('courtesy_code_container');
+            if (checkbox.checked) {
+                container.style.display = 'block';
+            } else {
+                container.style.display = 'none';
+            }
+        }
+
+        function checkCourtesyCode() {
+            var code = document.getElementById('courtesy_code').value;
+
+            // Solo realiza la petición si el código tiene 6 dígitos
+            if (code.length === 6) {
+                fetch(`/check-courtesy-code/{{$event->id}}/${code}`, {
+                    method: 'GET',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    var messageElement = document.getElementById('courtesy_code_message');
+                    var selectTicket = document.querySelector('#id_ticket').tomselect;
+                    if (data.exists) {
+                        messageElement.textContent = '¡Código válido!';
+                        messageElement.classList.remove('text-red-500');
+                        messageElement.classList.add('text-green-500');
+                        // Cambiar el valor del select
+                        selectTicket.setValue(data.ticket_type.id);
+                        selectTicket.refreshOptions(false);
+                        // Bloquea el select
+                        selectTicket.disable();
+                    } else {
+                        // Código no válido: muestra mensaje de error
+                        messageElement.textContent = 'Código no válido.';
+                        messageElement.classList.remove('text-green-500');
+                        messageElement.classList.add('text-red-500');
+                        // Habilita el select si estaba deshabilitado
+                        selectTicket.enable();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error al verificar el código:', error);
+                });
+            }
+        }
     </script>
 @endsection

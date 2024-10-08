@@ -213,4 +213,21 @@ class CouponController extends Controller
         return redirect()->back()
         ->with('success', 'Inscripción exitosa.');
     }
+
+    public function checkCourtesyCode($eventId, $code)
+    {
+        // Busca si el código de cortesía existe en la base de datos
+        $coupon = Coupon::where('numeric_code', $code)
+            ->where('event_id', $eventId)
+            ->where('is_consumed', false)
+            ->with('ticketType') // Asegura la relación con ticketType
+            ->first();
+
+        // Retorna solo la información del ticketType si el cupón existe
+        if ($coupon && $coupon->ticketType) {
+            return response()->json(['exists' => true, 'ticket_type' => $coupon->ticketType]);
+        } else {
+            return response()->json(['exists' => false, 'message' => 'CUPON NO VALIDO']);
+        }
+    }
 }
