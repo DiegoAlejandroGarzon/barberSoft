@@ -1,0 +1,108 @@
+.rol {
+    width: 100%;
+    display: flex;
+    
+  }
+
+  .Col{
+    width: 25%;
+    display:block
+  }
+
+  .row_identificacion{
+    width: 75%;
+    display: flex;
+    margin-top: 1rem;
+  }
+
+  .col_identificacion{
+    width: 50%;
+    display: flex;
+  
+  }
+
+  .row_typedocumento{
+    width: 100%;
+    display: flex;
+    
+  }
+
+  .col_typedocumento_name{
+    width: 40%;
+    display: block;
+    font-size: 0.9rem;
+   
+
+  }
+
+  .col_typedocumento_value{
+    width: 31%;
+    display: block;
+    justify-content: left;
+    justify-items:left;
+    margin-left: -2.65rem;    
+  }
+
+  .col_iddocumento_name{
+    width: 40%;
+    display: block;
+    font-size: 0.9rem;
+    
+    
+  }
+
+  .col_iddocumento_value{
+    width: 31%;
+    display: block;
+    justify-content: left;
+    justify-items: left;
+    margin-left: -1.0rem;
+    
+  }
+
+  .row_payer_name{
+
+    max-width: 100%;
+  }
+
+  .row_amountDiv{
+    display: flex;
+    width:100% ;
+    margin-top: 1rem;
+  }
+
+  .col_amountDiv_name{
+    display: block;
+    width: 11.5%;
+  }
+
+  .col_amountDiv_value{
+    display: block;
+    width: 88.5%;
+    justify-content: left;
+    justify-items: left;
+  }
+
+  .row_paymentMethodDiv{
+    display: flex;
+    width: 100%;
+    margin-top: 1rem;
+  }
+
+  .col_paymentMethodDiv_name{
+    display:block;
+    width: 11.5%;
+
+
+  }
+
+  .col_paymentMethodDiv_value{
+    display:block;
+    width: 88.5%;
+    justify-content: left;
+    justify-items: left;
+
+  }
+
+
+ 

@@ -2,6 +2,8 @@
 
 @section('subhead')
     <title>Pagar Ticket</title>
+    <link rel="stylesheet" href="{{url('css/blade.css')}}">
+   
 @endsection
 
 @section('subcontent')
@@ -84,28 +86,41 @@
             <form action="{{ route('eventAssistant.payment.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <!-- Nombre del Pagador -->
-                <div class="mt-3">
+                <div class="row_payer_name">
                     <label for="payer_name" class="form-label">Nombre del Pagador</label>
                     <input type="text" id="payer_name" name="payer_name" class="form-control" required>
                 </div>
 
                 <!-- Tipo de Documento del Pagador -->
-                <div class="mt-3">
-                    <label for="payer_document_type" class="form-label">Tipo de Documento</label>
-                    <select id="payer_document_type" name="payer_document_type" class="form-control" required>
-                        <option value="" disabled selected>Seleccione el tipo de documento</option>
-                        <option value="CC">Cédula de Ciudadanía</option>
-                        <option value="TI">Tarjeta de Identidad</option>
-                        <option value="PP">Pasaporte</option>
-                    </select>
-                </div>
+                <div class="row row_identificacion">
+                    <div class="col col_identificacion">
+                        <div class="row row_typedocumento">
+                            <div class="col col_typedocumento_name">
+                                <label for="payer_document_type" class="form-label">Tipo de Documento</label>
+                            </div>
+                            <div class="col col_typedocumento_value">
+                                <select id="payer_document_type" name="payer_document_type" class="form-control" required>
+                                    <option value="" disabled selected>Seleccione el tipo de documento</option>
+                                    <option value="CC">Cédula de Ciudadanía</option>
+                                    <option value="TI">Tarjeta de Identidad</option>
+                                    <option value="PP">Pasaporte</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
 
-                <!-- Número de Documento del Pagador -->
-                <div class="mt-3">
-                    <label for="payer_document_number" class="form-label">Número de Documento</label>
-                    <input type="text" id="payer_document_number" name="payer_document_number" class="form-control" required>
+                    <!-- Número de Documento del Pagador -->
+                    <div class="col col_identificacion">
+                        <div class="row row_typedocumento">
+                            <div class="col col_iddocumento_name">
+                                <label for="payer_document_number" class="form-label">Número de Documento</label>
+                            </div>
+                             <div class="col col_iddocumento_value">
+                                <input type="text" id="payer_document_number" name="payer_document_number" class="form-control" required>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-
                 <div class="mt-3">
                     <label for="courtesy_code_checkbox" class="form-label">¿Tienes un código de cortesía?</label>
                     <input type="checkbox" id="courtesy_code_checkbox" name="courtesy_code_checkbox" onchange="toggleCourtesyCode()">
@@ -117,20 +132,28 @@
                     <input type="text" id="courtesy_code" name="courtesy_code" class="form-control">
                 </div>
                 <!-- Cantidad a Pagar -->
-                <div class="mt-3" id="amountDiv">
-                    <label for="amount" class="form-label">Cantidad a Pagar</label>
-                    <input type="number" id="amount" name="amount" class="form-control" value="{{ $eventAssistant->ticketType?->price - $eventAssistant->totalPayments() }}" required>
+                <div class="row row_amountDiv" id="amountDiv">
+                    <div class="col col_amountDiv_name">
+                        <label for="amount" class="form-label">Cantidad a Pagar</label>
+                    </div>
+                    <div class="col col_amountDiv_value">
+                        <input type="number" id="amount" name="amount" class="form-control" value="{{ $eventAssistant->ticketType?->price - $eventAssistant->totalPayments() }}" required>
+                    </div>
                 </div>
 
                 <!-- Forma de Pago -->
-                <div class="mt-3" id="paymentMethodDiv">
+                <div class="row row_paymentMethodDiv" id="paymentMethodDiv">
+                    <div class="col col_paymentMethodDiv_name">
                     <label for="payment_method" class="form-label">Forma de Pago</label>
+                    </div>
+                    <div class="col col_paymentMethodDiv_value">
                     <select id="payment_method" name="payment_method" class="form-control" required onchange="togglePaymentProof()">
                         <option value="" disabled selected>Seleccione la forma de pago</option>
                         <option value="transferencia">Transferencia</option>
                         <option value="efectivo">Efectivo</option>
                         <option value="PayPal">Paypal</option>
                     </select>
+                    </div>
                 </div>
 
                 <!-- Imagen de la Transferencia -->
