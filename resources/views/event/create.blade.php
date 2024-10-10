@@ -2,6 +2,7 @@
 
 @section('subhead')
     <title>Eventos - Crear</title>
+    <link rel="stylesheet" href="{{url('css/blade.css')}}">
 @endsection
 
 @section('subcontent')
@@ -45,41 +46,7 @@
                             <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
                         @enderror
                     </div>
-
-                    <!-- Departamento -->
-                    <div class="mt-3">
-                        <x-base.form-label for="department_id">Departamento</x-base.form-label>
-                        <x-base.tom-select
-                            class="w-full {{ $errors->has('department_id') ? 'border-red-500' : '' }}"
-                            id="department_id"
-                            name="department_id"
-                            onchange="filterCities()"
-                        >
-                            <option></option>
-                            @foreach ($departments as $department)
-                                <option value="{{$department->id}}" {{ old('department_id') == $department->id ? 'selected' : '' }}>{{ $department->code_dane }} - {{ $department->name }}</option>
-                            @endforeach
-                        </x-base.tom-select>
-                        @error('department_id')
-                            <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
-                        @enderror
-                    </div>
-
-                    <!-- Ciudad -->
-                    <div class="mt-3">
-                        <x-base.form-label for="city_id">Ciudad</x-base.form-label>
-                        <x-base.tom-select
-                            class="w-full {{ $errors->has('city_id') ? 'border-red-500' : '' }}"
-                            id="city_id"
-                            name="city_id"
-                        >
-                            <option></option>
-                        </x-base.tom-select>
-                        @error('city_id')
-                            <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
-                        @enderror
-                    </div>
-
+                    
                     <!-- Fecha del Evento -->
                     <div class="mt-3">
                         <x-base.form-label for="event_date">Fecha del Evento</x-base.form-label>
@@ -94,35 +61,71 @@
                             <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
                         @enderror
                     </div>
+                    <div class="row row_horaIni-Fin">
+                        <!-- Hora de Inicio -->
+                        <div class="col mt-3 col_horaIni">
+                            <x-base.form-label for="start_time">Hora de Inicio</x-base.form-label>
+                            <x-base.form-input
+                                class="w-full {{ $errors->has('start_time') ? 'border-red-500' : '' }}"
+                                id="start_time"
+                                name="start_time"
+                                type="time"
+                                value="{{ old('start_time') }}"
+                            />
+                            @error('start_time')
+                                <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                            @enderror
+                        </div>
 
-                    <!-- Hora de Inicio -->
-                    <div class="mt-3">
-                        <x-base.form-label for="start_time">Hora de Inicio</x-base.form-label>
-                        <x-base.form-input
-                            class="w-full {{ $errors->has('start_time') ? 'border-red-500' : '' }}"
-                            id="start_time"
-                            name="start_time"
-                            type="time"
-                            value="{{ old('start_time') }}"
-                        />
-                        @error('start_time')
-                            <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
-                        @enderror
+                        <!-- Hora de Fin -->
+                        <div class="col mt-3 col_horaFin">
+                            <x-base.form-label for="end_time">Hora de Fin</x-base.form-label>
+                            <x-base.form-input
+                                class="w-full {{ $errors->has('end_time') ? 'border-red-500' : '' }}"
+                                id="end_time"
+                                name="end_time"
+                                type="time"
+                                value="{{ old('end_time') }}"
+                            />
+                            @error('end_time')
+                                <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                            @enderror
+                        </div>
                     </div>
-
-                    <!-- Hora de Fin -->
-                    <div class="mt-3">
-                        <x-base.form-label for="end_time">Hora de Fin</x-base.form-label>
-                        <x-base.form-input
-                            class="w-full {{ $errors->has('end_time') ? 'border-red-500' : '' }}"
-                            id="end_time"
-                            name="end_time"
-                            type="time"
-                            value="{{ old('end_time') }}"
-                        />
-                        @error('end_time')
-                            <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
-                        @enderror
+                    <div  class="row row_dptocity">
+                        <!-- Departamento -->
+                        <div class="col mt-3 col_depto">
+                            <x-base.form-label for="department_id">Departamento</x-base.form-label>
+                            <x-base.tom-select
+                                class="w-full {{ $errors->has('department_id') ? 'border-red-500' : '' }}"
+                                id="department_id"
+                                name="department_id"
+                                onchange="filterCities()"
+                            >
+                                <option></option>
+                                @foreach ($departments as $department)
+                                    <option value="{{$department->id}}" {{ old('department_id') == $department->id ? 'selected' : '' }}>{{ $department->code_dane }} - {{ $department->name }}</option>
+                                @endforeach
+                            </x-base.tom-select>
+                            @error('department_id')
+                                <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                            @enderror
+                        </div>
+    
+                        <!-- Ciudad -->
+                        <div class="col mt-3 col_city">
+                            <x-base.form-label for="city_id">Ciudad</x-base.form-label>
+                            <x-base.tom-select
+                                class="w-full {{ $errors->has('city_id') ? 'border-red-500' : '' }}"
+                                id="city_id"
+                                name="city_id"
+                            >
+                                <option></option>
+                            </x-base.tom-select>
+                            @error('city_id')
+                                <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                            @enderror
+                        </div>
                     </div>
 
                     <!-- Tipos de entradas -->
