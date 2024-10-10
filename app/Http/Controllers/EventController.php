@@ -56,9 +56,12 @@ class EventController extends Controller
             'capacity' => 'required|integer|min:1',
             'city_id' => 'required|integer|exists:cities,id',
             'event_date' => 'required|date',
+            'event_date_end' => 'required|date',
             'start_time' => 'required|date_format:H:i',
             'end_time' => 'required|date_format:H:i|after:start_time',
             'header_image_path' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'color_one' => 'nullable|string|max:7', // HEX color format
+            'color_two' => 'nullable|string|max:7', // HEX color format
             'ticketTypes.*.name' => 'required|string|max:255',
             'ticketTypes.*.capacity' => 'required|integer|min:1',
             'ticketTypes.*.price' => 'required|numeric',
@@ -81,11 +84,14 @@ class EventController extends Controller
         $event->capacity = $request->capacity;
         $event->city_id = $request->city_id;
         $event->event_date = $request->event_date;
+        $event->event_date_end = $request->event_date_end;
         $event->start_time = $request->start_time;
         $event->end_time = $request->end_time;
         $event->address = $request->address;
         $event->header_image_path = $imagePath;
         $event->status = $request->status;
+        $event->color_one = $request->color_one;
+        $event->color_two = $request->color_two;
         // Convertir los campos adicionales a JSON
         if($request->input('additionalFields')){
             $event->additionalFields = json_encode($request->input('additionalFields', []));
@@ -130,7 +136,11 @@ class EventController extends Controller
                 'name' => 'required|string|max:255',
                 'description' => 'required|string',
                 'capacity' => 'required|integer|min:1',
+                'event_date' => 'required|date',
+                'event_date_end' => 'required|date',
                 'header_image_path' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+                'color_one' => 'nullable|string|max:7', // HEX color format
+                'color_two' => 'nullable|string|max:7', // HEX color format
                 'ticketTypes.*.name' => 'required|string|max:255',
                 'ticketTypes.*.capacity' => 'required|integer|min:1',
                 'ticketTypes.*.price' => 'required|numeric',
@@ -153,10 +163,13 @@ class EventController extends Controller
             $event->capacity = $request->capacity;
             $event->city_id = $request->city_id;
             $event->event_date = $request->event_date;
+            $event->event_date_end = $request->event_date_end;
             $event->start_time = $request->start_time;
             $event->end_time = $request->end_time;
             $event->address = $request->address;
             $event->status = $request->status;
+            $event->color_one = $request->color_one;
+            $event->color_two = $request->color_two;
 
             // Convertir los campos adicionales a JSON
             if($request->input('additionalFields')){
@@ -245,7 +258,7 @@ class EventController extends Controller
         $eventAssistantController = new EventAssistantController();
         if($eventAssistantController->eventoFinalizado($event->id)){
             return redirect()->back()
-            ->with('success', 'No se puede realizar está acción porque el evento ya ha sido finalizado.');
+            ->with('error', 'No se puede realizar está acción porque el evento ya ha sido finalizado.');
         }
 
         $registrationParameters = json_decode($event->registration_parameters, true) ?? [];
@@ -313,13 +326,15 @@ class EventController extends Controller
                 'ticket_type_id' => $request['id_ticket'] ?? null,
                 'has_entered' => false,
                 'guardian_id' => $guardianId,
-                'is_paid' => true,
             ]
         );
         if(isset($coupon)){
             $coupon->is_consumed = true;
             $coupon->event_assistant_id = $eventAssistant->id;
             $coupon->save();
+            $eventAssistant->is_paid = true;
+            $eventAssistant->ticket_type_id = $coupon->ticket_type_id;
+            $eventAssistant->save();
         }
 
         // Obtener los parámetros adicionales definidos para el evento
@@ -339,11 +354,9 @@ class EventController extends Controller
                 ]);
             }
         }
-
-
-        return redirect()->route('event.register', $public_link)
-        ->with('success', 'Inscripción exitosa.')
-        ->with('qrCode', $eventAssistant->qrCode);
+        $qrcode = $eventAssistant->qrCode;
+        $message = 'Inscripción exitosa.';
+        return view('event.public_registrated', compact('event', 'qrcode', 'message'));
         ;
     }
 

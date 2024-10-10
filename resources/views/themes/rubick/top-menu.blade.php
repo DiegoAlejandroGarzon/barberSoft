@@ -23,7 +23,7 @@
                         src="{{ Vite::asset('resources/images/logo.svg') }}"
                         alt="Midone - Tailwind Admin Dashboard Template"
                     />
-                    <span class="ml-3 text-lg text-white"> Rubick </span>
+                    <span class="ml-3 text-lg text-white"> SuBoleta </span>
                 </a>
                 <!-- END: Logo -->
                 <!-- BEGIN: Breadcrumb -->

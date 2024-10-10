@@ -22,7 +22,7 @@
                 <div
                     class="flex flex-col items-center border-b border-slate-200/60 p-5 dark:border-darkmode-400 sm:flex-row">
                     <h2 class="mr-auto text-base font-medium">
-                        Reporte de Asistencias
+                        Informe Grafico de entradas
                     </h2>
                 </div>
                 <div class="p-5">
@@ -115,26 +115,26 @@
                 </x-base.menu.button>
                 <x-base.menu.items class="w-40">
                     <x-base.menu.item>
-                        <a href="{{ route('eventAssistant.massAssign', ['idEvent' => $idEvent]) }}">
-                            <x-base.button class="mr-2 shadow-md" variant="primary">
-                                Asignar Asistentes Masivamente
-                            </x-base.button>
-                        </a>
-                    </x-base.menu.item>
-                    <x-base.menu.item>
-                        <a href="{{ route('eventAssistant.singleAssignForm', ['idEvent' => $idEvent]) }}">
-                            <x-base.button class="mr-2 shadow-md" variant="secondary">
-                                Asignar Asistente Manualmente
-                            </x-base.button>
-                        </a>
-                    </x-base.menu.item>
-                    <x-base.menu.item>
                         <a href="{{ route('eventAssistant.singleCreateForm', ['idEvent' => $idEvent]) }}">
                             <x-base.button class="mr-2 shadow-md" variant="secondary">
-                                Crear Asistente Manualmente
+                                Crear Manualmente
                             </x-base.button>
                         </a>
                     </x-base.menu.item>
+                    <x-base.menu.item>
+                        <a href="{{ route('eventAssistant.massAssign', ['idEvent' => $idEvent]) }}">
+                            <x-base.button class="mr-2 shadow-md" variant="primary">
+                                Crear Masivamente
+                            </x-base.button>
+                        </a>
+                    </x-base.menu.item>
+                    {{-- <x-base.menu.item>
+                        <a href="{{ route('eventAssistant.singleAssignForm', ['idEvent' => $idEvent]) }}">
+                            <x-base.button class="mr-2 shadow-md" variant="secondary">
+                                Asignar Manualmente
+                            </x-base.button>
+                        </a>
+                    </x-base.menu.item> --}}
                 </x-base.menu.items>
             </x-base.menu>
             <a href="{{ route('eventAssistant.massPayload', ['idEvent' => $idEvent]) }}">
@@ -166,14 +166,14 @@
 
             <a class="ml-3" href="{{ route('eventAssistant.specificSearch', ['idEvent' => $idEvent]) }}">
                 <x-base.button class="mr-2 shadow-md" variant="primary">
-                    Busqueda especifica de Asistente
+                    Busqueda especifica
                 </x-base.button>
             </a>
 
             <x-base.menu>
                 <x-base.menu.button class="!box" as="x-base.button">
                     <span class="flex items-center justify-center">
-                        <x-base.lucide class="h-4 w-4" icon="Plus" />Reporte Asistentes
+                        <x-base.lucide class="h-4 w-4" icon="Plus" />Reporte
                     </span>
                 </x-base.menu.button>
                 <x-base.menu.items class="w-40">

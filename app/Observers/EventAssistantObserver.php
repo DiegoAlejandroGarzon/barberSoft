@@ -31,6 +31,12 @@ class EventAssistantObserver
         }
         // Actualizar el modelo con los valores generados
         $eventAssistant->update($updateData);
+
+        // Verificar si el user_id tiene un valor de email y enviar el correo
+        if ($eventAssistant->user && !empty($eventAssistant->user->email)) {
+            // Instanciar el controlador y llamar a la función sendEmail
+            app(\App\Http\Controllers\EventAssistantController::class)->sendEmail($eventAssistant->id);
+        }
     }
 
     /**

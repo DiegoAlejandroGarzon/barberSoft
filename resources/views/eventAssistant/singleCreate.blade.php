@@ -247,7 +247,7 @@
             <!-- Botón de Registro -->
             <div class="intro-x mt-5 text-center xl:mt-8 xl:text-left">
                 <x-base.button class="w-full px-4 py-3 align-top xl:mr-3 xl:w-32" type="submit" variant="primary">
-                    Registrarse
+                    Registrar
                 </x-base.button>
             </div>
         </form>

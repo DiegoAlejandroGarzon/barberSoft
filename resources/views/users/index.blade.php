@@ -50,7 +50,7 @@
                                 {{ $usuario->phone }}
                             </x-base.table.td>
                             <x-base.table.td class="box rounded-l-none rounded-r-none border-x-0 text-center shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600">
-                                {{ $usuario->roles[0]->name }}
+                                {{ isset($usuario->roles[0]) ? $usuario->roles[0]->name : "SIN REGISTRO" }}
                             </x-base.table.td>
                             <x-base.table.td class="box w-40 rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600">
                                 <div class="flex items-center justify-center {{ $usuario->status ? 'text-success' : 'text-danger' }}">

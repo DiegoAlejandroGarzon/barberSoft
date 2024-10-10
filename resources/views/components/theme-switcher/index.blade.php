@@ -138,14 +138,14 @@
             </x-base.slideover.description>
         </x-base.slideover.panel>
     </x-base.slideover>
-    <div
+    {{-- <div
         class="fixed bottom-0 right-0 z-50 mb-5 mr-5 flex h-14 w-14 cursor-pointer items-center justify-center rounded-full bg-theme-1 text-white shadow-lg"
         data-tw-toggle="modal"
         data-tw-target="#theme-switcher"
-    >
+     >
         <x-base.lucide
             class="h-5 w-5 animate-spin"
             icon="Settings"
         />
-    </div>
+    </div> --}}
 </div>

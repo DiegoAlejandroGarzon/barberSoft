@@ -72,6 +72,9 @@
             <x-base.table class="-mt-2 border-separate border-spacing-y-[10px]">
                 <x-base.table.thead>
                     <x-base.table.tr>
+                        <x-base.table.th class="whitespace-nowrap border-b-0 text-center">
+                            Acciones
+                        </x-base.table.th>
                         <x-base.table.th class="whitespace-nowrap border-b-0">
                             Imagen
                         </x-base.table.th>
@@ -82,19 +85,105 @@
                             Descripción
                         </x-base.table.th>
                         <x-base.table.th class="whitespace-nowrap border-b-0 text-center">
-                            Fecha Creación
+                            Fecha Evento
                         </x-base.table.th>
                         <x-base.table.th class="whitespace-nowrap border-b-0 text-center">
                             Status
-                        </x-base.table.th>
-                        <x-base.table.th class="whitespace-nowrap border-b-0 text-center">
-                            Acciones
                         </x-base.table.th>
                     </x-base.table.tr>
                 </x-base.table.thead>
                 <x-base.table.tbody>
                     @foreach ($eventos as $evento)
                         <x-base.table.tr class="intro-x">
+
+                            <x-base.table.td @class([
+                                'box w-56 rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600',
+                                'before:absolute before:inset-y-0 before:left-0 before:my-auto before:block before:h-8 before:w-px before:bg-slate-200 before:dark:bg-darkmode-400',
+                            ])>
+                                <div class="flex items-center justify-center">
+
+                                    <x-base.tippy content="Editar" class="mr-1">
+                                        <a class="mr-3 flex items-center" href="{{ route('event.edit', ['id' => $evento->id]) }}">
+                                            <x-base.lucide
+                                                class="mx-auto block"
+                                                icon="edit"
+                                            />
+                                        </a>
+                                    </x-base.tippy>
+
+                                    @if($evento->registration_parameters == "null" || $evento->registration_parameters == null|| $evento->registration_parameters == "[]")
+                                    <x-base.tippy content="Registro Parametros (Sin Parametros)" class="mr-1">
+                                            <a class="mr-3 flex items-center" href="{{ route('events.setRegistrationParameters',  $evento->id) }}">
+                                                <x-base.alert class="flex items-center" variant="soft-pending">
+                                                <x-base.lucide
+                                                    class="mx-auto block"
+                                                    icon="Book"
+                                                />
+                                                </x-base.alert>
+                                            </a>
+                                    </x-base.tippy>
+                                    @else
+                                    <x-base.tippy content="Registro Parametros" class="mr-1">
+                                        <a class="mr-3 flex items-center" href="{{ route('events.setRegistrationParameters',  $evento->id) }}">
+                                            <x-base.lucide
+                                                class="mx-auto block"
+                                                icon="Book"
+                                            />
+                                        </a>
+                                    </x-base.tippy>
+                                    @endif
+
+                                    <x-base.tippy content="Generar codigos cortesía" class="mr-1">
+                                        <a class="mr-3 flex items-center" href="{{ route('coupons.index',  $evento->id) }}">
+                                            <x-base.lucide
+                                                class="mx-auto block"
+                                                icon="Tag"
+                                            />
+                                        </a>
+                                    </x-base.tippy>
+                                    @if ($evento->public_link)
+                                        <x-base.tippy content="Ver enlace" class="mr-2">
+                                            <a class="mr-3" href="{{ route('event.register', $evento->public_link) }}" target="_blank">
+                                                <x-base.lucide
+                                                    class="mx-auto block"
+                                                    icon="ExternalLink"
+                                                />
+                                            </a>
+                                        </x-base.tippy>
+                                    @else
+                                    <x-base.tippy content="Generar Enlace Público" class="mr-2">
+                                        <form action="{{ route('event.generatePublicLink', $evento->id) }}" method="POST">
+                                            @csrf
+                                            <button type="submit" class="btn btn-primary ">
+                                                <x-base.lucide
+                                                class="mx-auto block"
+                                                icon="Link"
+                                            />
+                                            </button>
+                                        </form>
+                                    </x-base.tippy>
+                                    @endif
+
+                                    <x-base.tippy content="Lista Asistentes" class="mr-1">
+                                        <a class="mr-3 flex items-center" href="{{ route('eventAssistant.index', ['idEvent' => $evento->id]) }}">
+                                            <x-base.lucide
+                                                class="mx-auto block"
+                                                icon="Users"
+                                            />
+                                        </a>
+                                    </x-base.tippy>
+
+                                    {{-- <x-base.tippy content="Mensaje Celular" class="mr-1">
+                                        <a class="mr-3 flex items-center" href="{{ route('eventAssistant.sendMsg', ['idEvent' => $evento->id]) }}">
+                                            <x-base.lucide
+                                                class="mx-auto block"
+                                                icon="MessageSquare"
+                                            />
+                                        </a>
+                                    </x-base.tippy> --}}
+
+                                </div>
+                            </x-base.table.td>
                             <x-base.table.td
                                 class="box w-40 rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
                             >
@@ -107,7 +196,7 @@
                                                     src="{{ asset('storage/' . $evento->header_image_path) }}"
                                                     alt="{{ $evento->name }}"
                                                     as="img"
-                                                    content="Subido el {{ $evento->created_at }}"
+                                                    content="Evento Creado el {{ $evento->created_at }}"
                                                 />
                                             </div>
                                         @else
@@ -131,13 +220,15 @@
                             </x-base.table.td>
                             <x-base.table.td
                                 class="box rounded-l-none rounded-r-none border-x-0 text-center shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
+                                onclick="showDescriptionModal('{{ $evento->description }}')"
+                                style="cursor: pointer;"
                             >
-                                {{ $evento->description }}
+                                {{ Str::limit($evento->description, 30) }}
                             </x-base.table.td>
                             <x-base.table.td
                                 class="box rounded-l-none rounded-r-none border-x-0 text-center shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
                             >
-                                {{ $evento->created_at->format('Y-m-d') }}
+                                {{ $evento->event_date }}
                             </x-base.table.td>
                             <x-base.table.td
                                 class="
@@ -149,91 +240,6 @@
                                 "
                             >
                                 {{ array_search($evento->status, config('statusEvento')) }}
-                            </x-base.table.td>
-                            <x-base.table.td @class([
-                                'box w-56 rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600',
-                                'before:absolute before:inset-y-0 before:left-0 before:my-auto before:block before:h-8 before:w-px before:bg-slate-200 before:dark:bg-darkmode-400',
-                            ])>
-                                <div class="flex items-center justify-center">
-
-                                    <x-base.tippy content="Lista Asistentes" class="mr-1">
-                                        <a class="mr-3 flex items-center" href="{{ route('eventAssistant.index', ['idEvent' => $evento->id]) }}">
-                                            <x-base.lucide
-                                                class="mr-1 h-4 w-4"
-                                                icon="file-text"
-                                            />
-                                        </a>
-                                    </x-base.tippy>
-
-                                    <x-base.tippy content="Mensaje Celular" class="mr-1">
-                                        <a class="mr-3 flex items-center" href="{{ route('eventAssistant.sendMsg', ['idEvent' => $evento->id]) }}">
-                                            <x-base.lucide
-                                                class="mx-auto block"
-                                                icon="MessageSquare"
-                                            />
-                                        </a>
-                                    </x-base.tippy>
-                                    @if($evento->registration_parameters == "null" || $evento->registration_parameters == null|| $evento->registration_parameters == "[]")
-                                    <x-base.tippy content="Registro Parametros (Sin Parametros)" class="mr-1">
-                                            <a class="mr-3 flex items-center" href="{{ route('events.setRegistrationParameters',  $evento->id) }}">
-                                                <x-base.alert class="flex items-center" variant="soft-pending">
-                                                <x-base.lucide
-                                                    class="mx-auto block"
-                                                    icon="Book"
-                                                />
-                                                </x-base.alert>
-                                            </a>
-                                    </x-base.tippy>
-                                    @else
-                                    <x-base.tippy content="Registro Parametros" class="mr-1">
-                                        <a class="mr-3 flex items-center" href="{{ route('events.setRegistrationParameters',  $evento->id) }}">
-                                            <x-base.lucide
-                                                class="mx-auto block"
-                                                icon="Book"
-                                            />
-                                        </a>
-                                    </x-base.tippy>
-                                    @endif
-                                    <x-base.tippy content="Generar codigos cortesía" class="mr-1">
-                                        <a class="mr-3 flex items-center" href="{{ route('coupons.index',  $evento->id) }}">
-                                            <x-base.lucide
-                                                class="mx-auto block"
-                                                icon="Tag"
-                                            />
-                                        </a>
-                                    </x-base.tippy>
-                                    @if ($evento->public_link)
-                                        <x-base.tippy content="Ver enlace" class="mr-1">
-                                            <a class="mr-3" href="{{ route('event.register', $evento->public_link) }}" target="_blank">
-                                                <x-base.lucide
-                                                    class="mx-auto block"
-                                                    icon="ExternalLink"
-                                                />
-                                            </a>
-                                        </x-base.tippy>
-                                    @else
-                                    <x-base.tippy content="Generar Enlace Público" class="mr-1">
-                                        <form action="{{ route('event.generatePublicLink', $evento->id) }}" method="POST">
-                                            @csrf
-                                            <button type="submit" class="btn btn-primary ">
-                                                <x-base.lucide
-                                                class="mx-auto block"
-                                                icon="Link"
-                                            />
-                                            </button>
-                                        </form>
-                                    </x-base.tippy>
-                                    @endif
-
-                                    <x-base.tippy content="Editar" class="mr-1">
-                                        <a class="mr-3 flex items-center" href="{{ route('event.edit', ['id' => $evento->id]) }}">
-                                            <x-base.lucide
-                                                class="mx-auto block"
-                                                icon="edit"
-                                            />
-                                        </a>
-                                    </x-base.tippy>
-                                </div>
                             </x-base.table.td>
                         </x-base.table.tr>
                     @endforeach
@@ -247,6 +253,24 @@
 
             {{ $eventos->withQueryString()->links() }}
         </div>
+        <!-- Modal -->
+        <div id="descriptionModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-75">
+            <div class="bg-white p-5 rounded-lg shadow-lg w-1/2">
+                <h2 class="text-xl font-bold mb-4">Descripción Completa</h2>
+                <p id="descriptionContent" class="mb-4"></p>
+                <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onclick="closeModal()">Cerrar</button>
+            </div>
+        </div>
         <!-- END: Pagination -->
     </div>
+    <script>
+        function showDescriptionModal(description) {
+            document.getElementById('descriptionContent').textContent = description;
+            document.getElementById('descriptionModal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('descriptionModal').classList.add('hidden');
+        }
+    </script>
 @endsection

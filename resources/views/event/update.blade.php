@@ -93,19 +93,39 @@
                         @enderror
                     </div>
 
-                    <!-- Fecha del Evento -->
-                    <div class="mt-3">
-                        <x-base.form-label for="event_date">Fecha del Evento</x-base.form-label>
-                        <x-base.form-input
-                            class="w-full {{ $errors->has('event_date') ? 'border-red-500' : '' }}"
-                            id="event_date"
-                            name="event_date"
-                            type="date"
-                            value="{{ old('event_date', $event->event_date) }}"
-                        />
-                        @error('event_date')
-                            <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
-                        @enderror
+                    <div class="mt-3 box">
+                        <x-base.form-label class="m-2">Fechas Evento</x-base.form-label>
+                        <div class="grid-cols-2 gap-2 sm:grid">
+                            <!-- Fecha del Evento -->
+                            <div class="m-2">
+                                <x-base.form-label for="event_date">Fecha Inicial del Evento</x-base.form-label>
+                                <x-base.form-input
+                                    class="w-full {{ $errors->has('event_date') ? 'border-red-500' : '' }}"
+                                    id="event_date"
+                                    name="event_date"
+                                    type="date"
+                                    value="{{ old('event_date', $event->event_date) }}"
+                                />
+                                @error('event_date')
+                                    <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <!-- Fecha Final del Evento -->
+                            <div class="m-2">
+                                <x-base.form-label for="event_date_end">Fecha Final del Evento</x-base.form-label>
+                                <x-base.form-input
+                                    class="w-full {{ $errors->has('event_date_end') ? 'border-red-500' : '' }}"
+                                    id="event_date_end"
+                                    name="event_date_end"
+                                    type="date"
+                                    value="{{ old('event_date_end', $event->event_date_end) }}"
+                                />
+                                @error('event_date_end')
+                                    <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Hora de Inicio -->
@@ -282,6 +302,43 @@
                         @endif
                     </div>
 
+                    <div class="mt-3 box">
+                        <x-base.form-label class="m-2">Colores Representativos</x-base.form-label>
+                        <div class="grid-cols-2 gap-2 sm:grid">
+                            <!-- color_one -->
+                            <div class="m-2">
+                                <x-base.form-label for="color_one">Color Primario</x-base.form-label>
+                                <x-base.form-input
+                                    class="w-full {{ $errors->has('color_one') ? 'border-red-500' : '' }}"
+                                    id="color_one"
+                                    name="color_one"
+                                    type="color"
+                                    placeholder="Direccion del evento"
+                                    value="{{ old('color_one', $event->color_one ?? '#FFFFFF') }}"
+                                />
+                                @error('color_one')
+                                    <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <!-- two -->
+                            <div class="m-2">
+                                <x-base.form-label for="color_two">Color Secundario</x-base.form-label>
+                                <x-base.form-input
+                                    class="w-full {{ $errors->has('color_two') ? 'border-red-500' : '' }}"
+                                    id="color_two"
+                                    name="color_two"
+                                    type="color"
+                                    placeholder="Direccion del evento"
+                                    value="{{ old('color_one', $event->color_two ?? '#FFFFFF') }}"
+                                />
+                                @error('color_two')
+                                    <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Campos Adicionales -->
                     <div class="mt-3">
                         <x-base.form-label>Campos Adicionales</x-base.form-label>
@@ -400,7 +457,7 @@
                         class="tom-select w-full mt-2"
                     >
                         @foreach($features as $feature)
-                            <option value="{{ $feature->id }}">{{ $feature->name }}</option>
+                            <option value="{{ $feature->id }}" >{{ $feature->name }} {{ $feature->consumable ? '- (CONSUMIBLE)' : '' }}</option>
                         @endforeach
                     </select>
                     <x-base.button

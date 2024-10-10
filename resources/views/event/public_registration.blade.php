@@ -69,7 +69,7 @@
 
                                 <!-- Checkbox para mostrar el input de código de cortesía -->
                                 <div class="mt-3">
-                                    <x-base.form-label for="courtesy_code_checkbox">¿Tienes un código de cortesía?</x-base.form-label>
+                                    <x-base.form-label for="courtesy_code_checkbox">¿Tienes un Cupon de cortesía?</x-base.form-label>
                                     <input
                                         type="checkbox"
                                         id="courtesy_code_checkbox"
@@ -79,7 +79,7 @@
 
                                 <!-- Input para ingresar el código de cortesía (oculto por defecto) -->
                                 <div class="mt-3" id="courtesy_code_container" style="display: none;">
-                                    <x-base.form-label for="courtesy_code">Código de cortesía</x-base.form-label>
+                                    <x-base.form-label for="courtesy_code">Cupon de cortesía</x-base.form-label>
                                     <x-base.form-input
                                         id="courtesy_code"
                                         class="w-full"
@@ -102,7 +102,7 @@
                                     >
                                         <option></option>
                                         @foreach ($ticketTypes as $ticket)
-                                            <option value="{{$ticket->id}}" {{ old('id_ticket') == $ticket->id ? 'selected' : '' }}>{{ $ticket->name }} - ${{$ticket->price}}</option>
+                                            <option value="{{$ticket->id}}" {{ old('id_ticket') == $ticket->id ? 'selected' : '' }}>{{ $ticket->name }} - ${{ number_format($ticket->price, 0, '', '.') }}</option>
                                         @endforeach
                                     </x-base.tom-select>
                                     @error('id_ticket')
