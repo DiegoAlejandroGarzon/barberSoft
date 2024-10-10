@@ -244,27 +244,28 @@ class EventController extends Controller
     {
         $event = Event::where('public_link', $public_link)->firstOrFail();
 
-        if($request->courtesy_code){
+        // Verificar si se proporcionó un código de cortesía
+        if ($request->courtesy_code) {
             $coupon = Coupon::where('numeric_code', $request->courtesy_code)
                 ->where('event_id', $event->id)
                 ->where('is_consumed', false)
                 ->with('ticketType') // Asegura la relación con ticketType
                 ->first();
-                if(!$coupon){
-                    return redirect()->back()
-                    ->with('error', 'Inscripción NO exitosa. CUPON INVALIDO');
-                }
+            if (!$coupon) {
+                return redirect()->back()->with('error', 'Inscripción NO exitosa. CUPON INVALIDO');
+            }
         }
+
+        // Verificar si el evento ya ha finalizado
         $eventAssistantController = new EventAssistantController();
-        if($eventAssistantController->eventoFinalizado($event->id)){
-            return redirect()->back()
-            ->with('error', 'No se puede realizar está acción porque el evento ya ha sido finalizado.');
+        if ($eventAssistantController->eventoFinalizado($event->id)) {
+            return redirect()->back()->with('error', 'No se puede realizar esta acción porque el evento ya ha sido finalizado.');
         }
 
+        // Construir reglas de validación dinámicas basadas en los parámetros de registro del evento
         $registrationParameters = json_decode($event->registration_parameters, true) ?? [];
-
-        // Construir reglas de validación dinámicas
         $validationRules = [];
+
         foreach ($registrationParameters as $param) {
             switch ($param) {
                 case 'name':
@@ -272,78 +273,83 @@ class EventController extends Controller
                     $validationRules[$param] = 'required|string|max:255';
                     break;
                 case 'email':
-                    $validationRules[$param] = 'required|email|max:255|unique:users,email';
+                    $validationRules[$param] = 'required|email|max:255';
                     break;
                 case 'type_document':
                     $validationRules[$param] = 'required|string|max:3';
                     break;
                 case 'document_number':
-                    $validationRules[$param] = 'required|string|max:20|unique:users,document_number';
+                    $validationRules[$param] = 'required|string|max:20';
                     break;
                 case 'phone':
-                    $validationRules[$param] = 'nullable|string|max:15'; // Suponiendo que es opcional
+                    $validationRules[$param] = 'nullable|string|max:15';
                     break;
                 case 'city_id':
-                    $validationRules[$param] = 'nullable|exists:cities,id'; // Asegúrate de que la ciudad exista
+                    $validationRules[$param] = 'nullable|exists:cities,id';
                     break;
                 case 'birth_date':
-                    $validationRules[$param] = 'nullable|date'; // Opcional, formato de fecha
+                    $validationRules[$param] = 'nullable|date';
                     break;
-                // Agrega más parámetros según sea necesario
             }
         }
 
         // Validar el request
         $validatedData = $request->validate($validationRules);
-
-        // Obtener las columnas definidas en $fillable del modelo User
-        $user = new User();
-        $userFillableColumns = (new User())->getFillable();
-        $createData = []; // Inicializar el array para los datos de creación
-        // Recorrer las columnas permitidas y verificar si están presentes en el request
-        foreach ($userFillableColumns as $column) {
-            if ($request->has($column)) {
-                $createData[$column] = $request[$column];
-            }
+        $user = null;
+        if ($request->has('email') || $request->has('document_number')) {
+            // Verificar si el usuario ya existe por correo o número de documento
+            $user = User::where('email', $request->email)
+            ->orWhere('document_number', $request->document_number)
+            ->first();
         }
-        $createData['status'] = false;
-        $user = User::create($createData);
-
-        // Verificar si el usuario tiene el rol de 'assistant', si no, asignarlo
+        if ($user) {
+            // Si el usuario existe, actualizar su información
+            $user->update($validatedData);
+        } else {
+            // Si no existe, crearlo
+            $user = User::create(array_merge($validatedData, ['status' => false]));
+        }
         if (!$user->hasRole('assistant')) {
             $assistantRole = Role::firstOrCreate(['name' => 'assistant']); // Crear el rol si no existe
             $user->assignRole($assistantRole);
         }
-        $guardianId = $request->input('guardian_id') ?? null; // Asegúrate de que tu formulario tenga este campo
 
-        // Crear el registro en la tabla `event_assistant` si no existe
-        $eventAssistant = EventAssistant::firstOrCreate(
-            [
+        // Verificar si el usuario ya está inscrito en el evento
+        $eventAssistant = EventAssistant::where('event_id', $event->id)
+            ->where('user_id', $user->id)
+            ->first();
+
+        if ($eventAssistant) {
+            // Si ya está inscrito, mostrar mensaje de error
+            return redirect()->back()->with('error', 'El usuario ya está inscrito en este evento.');
+        } else {
+            // Si no está inscrito, crear el registro en `event_assistant`
+            $guardianId = $request->input('guardian_id') ?? null;
+            $eventAssistant = EventAssistant::create([
                 'event_id' => $event->id,
                 'user_id' => $user->id,
-            ],
-            [
                 'ticket_type_id' => $request['id_ticket'] ?? null,
                 'has_entered' => false,
                 'guardian_id' => $guardianId,
-            ]
-        );
-        if(isset($coupon)){
-            $coupon->is_consumed = true;
-            $coupon->event_assistant_id = $eventAssistant->id;
-            $coupon->save();
-            $eventAssistant->is_paid = true;
-            $eventAssistant->ticket_type_id = $coupon->ticket_type_id;
-            $eventAssistant->save();
+            ]);
+
+            // Si hay un código de cortesía, marcarlo como consumido y asignarlo al asistente
+            if (isset($coupon)) {
+                $coupon->is_consumed = true;
+                $coupon->event_assistant_id = $eventAssistant->id;
+                $coupon->save();
+                $eventAssistant->is_paid = true;
+                $eventAssistant->ticket_type_id = $coupon->ticket_type_id;
+                $eventAssistant->save();
+            }
         }
 
         // Obtener los parámetros adicionales definidos para el evento
         $definedParameters = AdditionalParameter::where('event_id', $event->id)->get();
-        // Obtener las columnas definidas en $fillable del modelo User
         $userFillableColumns = (new User())->getFillable();
+
         // Detectar y almacenar parámetros adicionales enviados en el registro
         $additionalParameters = $request->except(array_merge(['_token'], $userFillableColumns)); // Excluir columnas del modelo User
-
         foreach ($definedParameters as $definedParameter) {
             if (isset($additionalParameters[$definedParameter->name])) {
                 UserEventParameter::create([
@@ -354,10 +360,11 @@ class EventController extends Controller
                 ]);
             }
         }
+
+        // Generar el código QR y devolver la vista de registro exitoso
         $qrcode = $eventAssistant->qrCode;
         $message = 'Inscripción exitosa.';
         return view('event.public_registrated', compact('event', 'qrcode', 'message'));
-        ;
     }
 
     public function setRegistrationParameters($id)

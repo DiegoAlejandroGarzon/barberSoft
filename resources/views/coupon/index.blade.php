@@ -14,7 +14,7 @@
                 <label for="ticketType" class="block text-sm font-medium text-gray-700">Seleccionar Ticket</label>
                 <select id="ticketType" name="ticketType" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
                     @foreach($tickets as $ticket)
-                        <option value="{{ $ticket->id }}">{{ $ticket->name }}</option>
+                        <option value="{{ $ticket->id }}">{{ $ticket->name }} ({{ $consumedCouponsByTicket[$ticket->id] ?? 0 }} - {{ $couponsByTicket[$ticket->id] ?? 0 }} / {{$ticket->capacity}}) {{ $couponsByTicket[$ticket->id] >= $ticket->capacity ? "PECAUCIÓN":""}} </option>
                     @endforeach
                 </select>
             </div>
@@ -36,12 +36,22 @@
         </div>
     </div>
     <div class="box mt-3">
-        <div class="m-3">
-            <a class="ml-3" href="{{ route('coupons.pdf', ['idEvent' => $idEvent]) }}">
-                <x-base.button class="mr-2 shadow-md" variant="primary">
-                    Generar PDF Masivo Cupones Disponibles
-                </x-base.button>
-            </a>
+
+        <div class="grid-cols-2 gap-2 sm:grid">
+            <div class="m-3">
+                <a class="ml-3" href="{{ route('coupons.pdf', ['idEvent' => $idEvent]) }}">
+                    <x-base.button class="mr-2 shadow-md" variant="primary">
+                        Generar PDF Masivo Cupones Disponibles
+                    </x-base.button>
+                </a>
+            </div>
+            <div class="m-3">
+                <a class="ml-3" href="{{ route('coupons.excel', ['idEvent' => $idEvent]) }}">
+                    <x-base.button class="mr-2 shadow-md" variant="primary">
+                        Generar EXCEL Cupones Totales
+                    </x-base.button>
+                </a>
+            </div>
         </div>
     </div>
 
@@ -73,6 +83,17 @@
                                         <x-base.lucide icon="FileText" />
                                     </a>
                                 </x-base.tippy>
+                                @if (!$coupon->is_consumed) <!-- Solo mostrar el botón si el cupón no ha sido consumido -->
+                                <x-base.tippy content="Eliminar Cupón" class="ml-1">
+                                    <form action="{{ route('coupon.delete', ['id' => $coupon->id]) }}" method="POST" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este cupón?');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="text-danger">
+                                            <x-base.lucide icon="Trash" />
+                                        </button>
+                                    </form>
+                                </x-base.tippy>
+                            @endif
                             </div>
                         </x-base.table.td>
                     </x-base.table.tr>

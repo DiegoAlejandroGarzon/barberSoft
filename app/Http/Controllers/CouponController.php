@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\CouponExport;
 use App\Models\AdditionalParameter;
 use App\Models\Coupon;
 use App\Models\Departament;
@@ -12,8 +13,10 @@ use App\Models\User;
 use App\Models\UserEventParameter;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use setasign\Fpdi\Fpdi;
 use Spatie\Permission\Models\Role;
+use Maatwebsite\Excel\Facades\Excel;
 
 class CouponController extends Controller
 {
@@ -23,7 +26,23 @@ class CouponController extends Controller
         ->paginate(10);
         $event = Event::find($idEvent);
         $tickets = TicketType::where('event_id', $idEvent)->get();
-        return view('coupon.index', compact('coupons', 'tickets', 'idEvent', 'event'));
+        // Contar cuántos cupones hay por cada tipo de ticket
+        $couponsByTicket = Coupon::select('ticket_type_id', DB::raw('count(*) as total'))
+            ->where('event_id', $idEvent)
+            ->groupBy('ticket_type_id')
+            ->get()
+            ->pluck('total', 'ticket_type_id'); // Retornar una colección con ticket_type_id como clave y total como valor
+
+        // Contar cuántos cupones han sido consumidos por cada tipo de ticket
+        $consumedCouponsByTicket = Coupon::select('ticket_type_id', DB::raw('count(*) as consumed'))
+            ->where('event_id', $idEvent)
+            ->where('is_consumed', true) // Solo los cupones consumidos
+            ->groupBy('ticket_type_id')
+            ->get()
+            ->pluck('consumed', 'ticket_type_id'); // Retornar una colección con ticket_type_id como clave y total consumido como valor
+
+        // Pasar los datos a la vista
+        return view('coupon.index', compact('coupons', 'tickets', 'idEvent', 'event', 'couponsByTicket', 'consumedCouponsByTicket'));
     }
 
     public function generatePDF($id)
@@ -229,5 +248,28 @@ class CouponController extends Controller
         } else {
             return response()->json(['exists' => false, 'message' => 'CUPON NO VALIDO']);
         }
+    }
+    public function destroy($id)
+    {
+        // Buscar el cupón por ID
+        $coupon = Coupon::findOrFail($id);
+
+        // Verificar si el cupón ya ha sido consumido
+        if ($coupon->is_consumed) {
+            return redirect()->back()->withErrors('No se puede eliminar el cupón porque ya ha sido consumido.');
+        }
+        // Eliminar el cupón si no ha sido consumido
+        $coupon->delete();
+
+        // Redirigir con un mensaje de éxito
+        return redirect()->route('coupons.index', ['idEvent' => $coupon->event_id])->with('success', 'Cupón eliminado exitosamente.');
+    }
+
+    public function generateExcel($idEvent){
+        $event = Event::find($idEvent);
+        return Excel::download(
+            new CouponExport($idEvent),
+            'pagos_de_asistentes_del_evento_'.$event->name.'_'.date('d-m-Y').'.xlsx'
+        );
     }
 }

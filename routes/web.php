@@ -176,6 +176,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/coupon/{idEvent}', [CouponController::class, 'index'])->name('coupons.index');
     Route::get('/coupon/{id}/pdf', [CouponController::class, 'generatePDF'])->name('coupon.pdf');
     Route::get('/coupons/{idEvent}/pdf', [CouponController::class, 'generatePDFMasivo'])->name('coupons.pdf');
+    Route::get('/coupons/{idEvent}/xls', [CouponController::class, 'generateExcel'])->name('coupons.excel');
+    Route::delete('/coupons/{id}', [CouponController::class, 'destroy'])->name('coupon.delete');
 
     //SELECTS
     Route::get('/cities/{department}', [CityController::class, 'getCitiesByDepartment']);
