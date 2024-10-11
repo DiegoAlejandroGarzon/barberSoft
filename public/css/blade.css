@@ -141,5 +141,20 @@
     padding-left: 0.5rem;
   }
   
+  .row_contraseña{
+    display: flex;
+    width: 100%;
+  }
+
+  .col_contraseña{
+    display: block;
+    width: 100%;
+  }
+
+  .col_contraseña_confirmacion{
+    display: block;
+    width: 100%;
+    padding-left: 0.5rem;
+  }
 
  

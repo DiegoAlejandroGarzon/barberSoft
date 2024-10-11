@@ -138,9 +138,9 @@
                 
 
                 <!-- Contraseña -->
-                <div class="intro-y col-span-12 lg:col-span-6 mt-3">
-                    <x-base.form-label for="password">Contraseña</x-base.form-label>
-                    <div class="grid-cols-2 gap-2 sm:grid">
+                <div class="row row_contraseña">
+                    <div class="col mt-3 col_contraseña">
+                        <x-base.form-label for="password">Contraseña</x-base.form-label>
                         <x-base.form-input
                             class="w-full {{ $errors->has('password') ? 'border-red-500' : '' }}"
                             id="password"
@@ -151,7 +151,9 @@
                         @error('password')
                             <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
                         @enderror
-
+                    </div>
+                    <div class="col mt-3 col_contraseña_confirmacion">
+                        <x-base.form-label for="password">Confirmacion</x-base.form-label>
                         <x-base.form-input
                             class="w-full {{ $errors->has('password_confirmation') ? 'border-red-500' : '' }}"
                             id="password_confirmation"
