@@ -68,6 +68,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post('/users/create', [UserController::class, 'store'])->name('users.store');
     Route::get('/users/update/{id}', [UserController::class, 'edit'])->name('users.edit');
     Route::post('/users/update', [UserController::class, 'update'])->name('users.update');
+    Route::post('/check-record', [UserController::class, 'checkRecord'])->name('checkRecord');
 
     //CRUD CONFIGURACIONES
     //CRUD CONFIGURACION DEPARTAMENTO

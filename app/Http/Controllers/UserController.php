@@ -78,14 +78,14 @@ class UserController extends Controller
         $user->save();
 
         //validar ciudades
-        
+
         // Asignar el rol
         $role = Role::find($request->role_id);
         $user->assignRole($role);
 
         // Redirigir con mensaje de éxito
         return redirect()->route('users.index')->with('success', 'Usuario creado con éxito.');
-        
+
     }
 
     public function edit($id){
@@ -255,8 +255,8 @@ class UserController extends Controller
             'email' => 'required|email|exists:users,email',
         ]);
         // Send the password reset link
-        
-        
+
+
         $status = Password::sendResetLink($request->only('email'));
         return "prubea";
 
@@ -299,4 +299,25 @@ class UserController extends Controller
         return redirect()->back()->with('success', 'Foto de perfil actualizada exitosamente.');
     }
 
+    public function checkRecord(Request $request)
+    {
+        // Verifica si recibiste el correo o el documento
+        $email = $request->input('email');
+        $document = $request->input('document_number');
+
+        // Hacer la búsqueda en la base de datos
+        if ($email) {
+            $user = User::where('email', $email)->first();
+        } elseif ($document) {
+            $user = User::where('document_number', $document)->first();
+        }
+
+        if ($user) {
+            // Retorna la información del usuario encontrado
+            return response()->json(['data' => $user], 200);
+        }
+
+        // Si no encontró nada, devolver una respuesta vacía
+        return response()->json(['data' => null], 200);
+    }
 }
