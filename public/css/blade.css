@@ -1,0 +1,160 @@
+.rol {
+    width: 100%;
+    display: flex;
+    
+  }
+
+  .Col{
+    width: 25%;
+    display:block
+  }
+
+  .form_pagos{
+    width: 100%;
+    justify-content: center;
+    justify-items: center;
+    align-items: center;
+    align-content: center;
+  }
+
+ 
+
+  .form_control_Pagos_select{
+    width: 43%;  
+    font-size: 0.9rem;
+  }
+
+  .form_control_Pagos_select_paymentMethod{
+    width: 43%;  
+    font-size: 0.9rem;
+    margin-left: 1.3rem;
+  }
+
+  .form-control-amount{
+    margin-left: 1.4rem;
+  }
+
+
+  .row_identificacion,.row_amountpagos{
+    width: 80%;
+    display: flex;
+    margin-top: 1rem;
+    justify-content: left;
+    justify-items: left;
+
+  }
+
+  .col_identificacion_type,.col_identificacion_number,.col_paymentMethod,.col_amountDiv{
+    width: 50%;
+    display: block;
+    justify-content: left;
+    justify-items: left;
+  }
+
+  .row_amountpagos{
+    margin-left: 1.0rem;
+  }
+
+  .col_amountDiv{
+      margin-left: -1.0rem;
+    }
+
+
+  .col_identificacion_number,.col_paymentMethod{
+   margin-left: -6.0rem;
+  }
+
+
+
+
+  .select_document_type{
+    margin-left: 0.48rem;
+  }
+
+  
+
+  .row_payer_name{
+    max-width: 100%;
+  }
+
+  .row_amountDiv{
+    display: flex;
+    width:100% ;
+    margin-top: 1rem;
+  }
+
+
+
+  .row_paymentMethodDiv{
+    display: flex;
+    width: 100%;
+    margin-top: 1rem;
+  }
+
+  .col_paymentMethodDiv_name{
+    display:block;
+    width: 11.5%;
+
+
+  }
+
+  .col_paymentMethodDiv_value{
+    display:block;
+    width: 88.5%;
+    justify-content: left;
+    justify-items: left;
+
+  }
+
+  .row_documento_id{
+    display: flex;
+    width: 100%;
+  }
+
+  .col_document_type{
+    display: block;
+    width: 50%;
+    padding-left: 0.02rem;
+    padding-right: 0.02rem;
+  }
+
+  .col_document_id{
+    display: block;
+    width: 50%;
+    padding-left: 0.5rem;
+    
+  }
+
+  .row_dptocity,.row_horaIni-Fin,.row_phone_cumpleaños{
+    display: flex;
+    width: 100%;
+    
+  }
+
+ .col_depto,.col_horaIni,.col_cumpleaños{
+  display: block;
+  width: 50%;
+ }
+  .col_city,.col_horaFin,.col_phone{
+    display: block;
+    width: 50%;
+    padding-left: 0.5rem;
+  }
+  
+  .row_contraseña{
+    display: flex;
+    width: 100%;
+  }
+
+  .col_contraseña{
+    display: block;
+    width: 100%;
+  }
+
+  .col_contraseña_confirmacion{
+    display: block;
+    width: 100%;
+    padding-left: 0.5rem;
+  }
+
+ 

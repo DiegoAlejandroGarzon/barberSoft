@@ -88,7 +88,7 @@ class PaypalController extends Controller
             }
             
             $PDFController=new PDFController();
-            meta=$PDFController->buildPDF_Mail($request->event_assistant_id);
+            $meta=$PDFController->buildPDF_Mail($request->event_assistant_id);
             return view('email.return_email_ticketevent',compact('meta'));
 
         }

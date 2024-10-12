@@ -2,6 +2,7 @@
 
 @section('subhead')
 <title>Usuarios - Actualizar</title>
+<link rel="stylesheet" href="{{url('css/blade.css')}}">
 @endsection
 
 @section('subcontent')
@@ -46,66 +47,71 @@
                         @enderror
                     </div>
                 </div>
-
-                <div class="mt-3">
-                    <x-base.form-label for="type_document">Tipo de Documento</x-base.form-label>
-                    <x-base.tom-select
-                        class="w-full {{ $errors->has('type_document') ? 'border-red-500' : '' }}"
-                        id="type_document"
-                        name="type_document"
-                    >
-                        <option value="CC" {{ old('type_document', $user->type_document) == 'CC' ? 'selected' : '' }}>Cédula de Ciudadanía</option>
-                        <option value="TI" {{ old('type_document', $user->type_document) == 'TI' ? 'selected' : '' }}>Tarjeta de Identidad</option>
-                        <option value="CE" {{ old('type_document', $user->type_document) == 'CE' ? 'selected' : '' }}>Cédula de Extranjería</option>
-                        <!-- Agrega más opciones según sea necesario -->
-                    </x-base.tom-select>
-                    @error('type_document')
-                        <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
-                    @enderror
+                <div class="row row_documento_id">
+                    <div class="col mt-3 col_document_type">
+                        <x-base.form-label for="type_document">Tipo de Documento</x-base.form-label>
+                        <x-base.tom-select
+                            class="w-full {{ $errors->has('type_document') ? 'border-red-500' : '' }}"
+                            id="type_document"
+                            name="type_document"
+                        >
+                            <option value="CC" {{ old('type_document', $user->type_document) == 'CC' ? 'selected' : '' }}>Cédula de Ciudadanía</option>
+                            <option value="TI" {{ old('type_document', $user->type_document) == 'TI' ? 'selected' : '' }}>Tarjeta de Identidad</option>
+                            <option value="CE" {{ old('type_document', $user->type_document) == 'CE' ? 'selected' : '' }}>Cédula de Extranjería</option>
+                            <!-- Agrega más opciones según sea necesario -->
+                        </x-base.tom-select>
+                        @error('type_document')
+                            <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="col mt-3 col_document_id">
+                        <x-base.form-label for="document_number">Número de Documento</x-base.form-label>
+                        <x-base.form-input
+                            class="w-full {{ $errors->has('document_number') ? 'border-red-500' : '' }}"
+                            id="document_number"
+                            name="document_number"
+                            type="text"
+                            placeholder="Número de Documento"
+                            value="{{ old('document_number', $user->document_number) }}"
+                        />
+                        @error('document_number')
+                            <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                        @enderror
+                    </div>
                 </div>
+                
+                <div class="row row_phone_cumpleaños">
 
-                <div class="mt-3">
-                    <x-base.form-label for="document_number">Número de Documento</x-base.form-label>
-                    <x-base.form-input
-                        class="w-full {{ $errors->has('document_number') ? 'border-red-500' : '' }}"
-                        id="document_number"
-                        name="document_number"
-                        type="text"
-                        placeholder="Número de Documento"
-                        value="{{ old('document_number', $user->document_number) }}"
-                    />
-                    @error('document_number')
-                        <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
-                    @enderror
-                </div>
+                    <div class="col mt-3 col_cumpleaños">
+                        <x-base.form-label for="birth_date">Fecha Nacimiento</x-base.form-label>
+                        <x-base.form-input
+                            class="w-full {{ $errors->has('birth_date') ? 'border-red-500' : '' }}"
+                            id="birth_date"
+                            name="birth_date"
+                            type="date"
+                            value="{{ old('birth_date', $user->birth_date) }}"
+                        />
+                        @error('birth_date')
+                            <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                        @enderror
+                    </div>
 
-                <div class="mt-3">
-                    <x-base.form-label for="birth_date">Fecha Nacimiento</x-base.form-label>
-                    <x-base.form-input
-                        class="w-full {{ $errors->has('birth_date') ? 'border-red-500' : '' }}"
-                        id="birth_date"
-                        name="birth_date"
-                        type="date"
-                        value="{{ old('birth_date', $user->birth_date) }}"
-                    />
-                    @error('birth_date')
-                        <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
-                    @enderror
-                </div>
+                    <div class="col mt-3 col_phone">
+                        <x-base.form-label for="phone">Número de Teléfono</x-base.form-label>
+                        <x-base.form-input
+                            class="w-full {{ $errors->has('phone') ? 'border-red-500' : '' }}"
+                            id="phone"
+                            name="phone"
+                            type="text"
+                            placeholder="Número de Teléfono"
+                            value="{{ old('phone', $user->phone) }}"
+                        />
+                        @error('phone')
+                            <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                        @enderror
+                    </div>
 
-                <div class="mt-3">
-                    <x-base.form-label for="phone">Número de Teléfono</x-base.form-label>
-                    <x-base.form-input
-                        class="w-full {{ $errors->has('phone') ? 'border-red-500' : '' }}"
-                        id="phone"
-                        name="phone"
-                        type="text"
-                        placeholder="Número de Teléfono"
-                        value="{{ old('phone', $user->phone) }}"
-                    />
-                    @error('phone')
-                        <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
-                    @enderror
+                    
                 </div>
 
                 <div class="mt-3">
@@ -142,49 +148,50 @@
                     @enderror
                 </div>
                 @endif
-
-                <!-- Department -->
-                <div class="mt-3">
-                    <x-base.form-label for="department_id">Departamento</x-base.form-label>
-                    <x-base.tom-select
-                        class="w-full {{ $errors->has('department_id') ? 'border-red-500' : '' }}"
-                        id="department_id"
-                        name="department_id"
-                        onchange="filterCities()"
-                    >
-                        <option></option>
-                        @foreach ($departments as $department)
-                            <option value="{{ $department->id }}"
-                                {{ old('department_id', optional($user->city)->department ? $user->city->department->id : null) == $department->id ? 'selected' : '' }}>
-                                {{ $department->name }}
-                            </option>
-                        @endforeach
-                    </x-base.tom-select>
-                    @error('department_id')
-                        <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
-                    @enderror
-                </div>
-
-                <!-- City -->
-                <div class="mt-3">
-                    <x-base.form-label for="city_id">Ciudad</x-base.form-label>
-                    <x-base.tom-select
-                        class="w-full {{ $errors->has('city_id') ? 'border-red-500' : '' }}"
-                        id="city_id"
-                        name="city_id"
-                    >
-                        @if($user->city)
-                            <option value="{{ $user->city->id }}">{{ $user->city->name }}</option>
-                        @else
+                
+                <div class="row row_dptocity">
+                    <!-- Department -->
+                    <div class="col mt-3 col_depto">
+                        <x-base.form-label for="department_id">Departamento</x-base.form-label>
+                        <x-base.tom-select
+                            class="w-full {{ $errors->has('department_id') ? 'border-red-500' : '' }}"
+                            id="department_id"
+                            name="department_id"
+                            onchange="filterCities()"
+                        >
                             <option></option>
-                        @endif
-                        <!-- Aquí se llenarán las ciudades filtradas -->
-                    </x-base.tom-select>
-                    @error('city_id')
-                        <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
-                    @enderror
-                </div>
+                            @foreach ($departments as $department)
+                                <option value="{{ $department->id }}"
+                                    {{ old('department_id', optional($user->city)->department ? $user->city->department->id : null) == $department->id ? 'selected' : '' }}>
+                                    {{ $department->name }}
+                                </option>
+                            @endforeach
+                        </x-base.tom-select>
+                        @error('department_id')
+                            <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                        @enderror
+                    </div>
 
+                    <!-- City -->
+                    <div class="col mt-3 col_city">
+                        <x-base.form-label for="city_id">Ciudad</x-base.form-label>
+                        <x-base.tom-select
+                            class="w-full {{ $errors->has('city_id') ? 'border-red-500' : '' }}"
+                            id="city_id"
+                            name="city_id"
+                        >
+                            @if($user->city)
+                                <option value="{{ $user->city->id }}">{{ $user->city->name }}</option>
+                            @else
+                                <option></option>
+                            @endif
+                            <!-- Aquí se llenarán las ciudades filtradas -->
+                        </x-base.tom-select>
+                        @error('city_id')
+                            <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
                 @if(!isset($profileUpdate))
                 <div class="mt-3">
                     <label>Status</label>
