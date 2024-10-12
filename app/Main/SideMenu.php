@@ -9,7 +9,7 @@ class SideMenu
      */
     public static function menu(): array
     {
-        return [
+        $menu = [
             'usuarios' => [
                 'icon' => 'users',
                 'title' => 'Users',
@@ -74,11 +74,13 @@ class SideMenu
                     ]
                 ]
             ],
-            'divider',
-            'divider',
-            'dashboard' => [
+        ];
+        // Verificar el entorno y agregar el menú de configuraciones solo si APP_ENV es 'local'
+        if (env('APP_ENV') === 'local') {
+            $menu['divider'] = "divider";
+            $menu['dashboard'] = [
                 'icon' => 'home',
-                'title' => 'Dashboard',
+                'title' => 'dashboard',
                 'sub_menu' => [
                     'dashboard-overview-1' => [
                         'icon' => 'activity',
@@ -101,8 +103,8 @@ class SideMenu
                         'title' => 'Overview 4'
                     ]
                 ]
-            ],
-            'e-commerce' => [
+            ];
+            $menu['e-commerce'] = [
                 'icon' => 'shopping-bag',
                 'title' => 'E-Commerce',
                 'sub_menu' => [
@@ -170,39 +172,39 @@ class SideMenu
                         'title' => 'Reviews'
                     ],
                 ]
-            ],
-            'inbox' => [
+            ];
+            $menu['inbox'] = [
                 'icon' => 'inbox',
                 'route_name' => 'inbox',
                 'title' => 'Inbox'
-            ],
-            'file-manager' => [
+            ];
+            $menu['file-manager'] = [
                 'icon' => 'hard-drive',
                 'route_name' => 'file-manager',
                 'title' => 'File Manager'
-            ],
-            'point-of-sale' => [
+            ];
+            $menu['point-of-sale'] = [
                 'icon' => 'credit-card',
                 'route_name' => 'point-of-sale',
                 'title' => 'Point of Sale'
-            ],
-            'chat' => [
+            ];
+            $menu['chat'] = [
                 'icon' => 'message-square',
                 'route_name' => 'chat',
                 'title' => 'Chat'
-            ],
-            'post' => [
+            ];
+            $menu['post'] = [
                 'icon' => 'file-text',
                 'route_name' => 'post',
                 'title' => 'Post'
-            ],
-            'calendar' => [
+            ];
+            $menu['calendar'] = [
                 'icon' => 'calendar',
                 'route_name' => 'calendar',
                 'title' => 'Calendar'
-            ],
-            'divider',
-            'crud' => [
+            ];
+            $menu['divider2'] = "divider";
+            $menu['crud'] = [
                 'icon' => 'edit',
                 'title' => 'Crud',
                 'sub_menu' => [
@@ -217,8 +219,8 @@ class SideMenu
                         'title' => 'Form'
                     ]
                 ]
-            ],
-            'users' => [
+            ];
+            $menu['users'] = [
                 'icon' => 'users',
                 'title' => 'Users',
                 'sub_menu' => [
@@ -238,8 +240,8 @@ class SideMenu
                         'title' => 'Layout 3'
                     ]
                 ]
-            ],
-            'profile' => [
+            ];
+            $menu['profile'] = [
                 'icon' => 'trello',
                 'title' => 'Profile',
                 'sub_menu' => [
@@ -259,8 +261,8 @@ class SideMenu
                         'title' => 'Overview 3'
                     ]
                 ]
-            ],
-            'pages' => [
+            ];
+            $menu['pages'] = [
                 'icon' => 'layout',
                 'title' => 'Pages',
                 'sub_menu' => [
@@ -385,9 +387,9 @@ class SideMenu
                         'title' => 'Change Password'
                     ]
                 ]
-            ],
-            'divider',
-            'components' => [
+            ];
+            // $menu['divider'];
+            $menu['components'] = [
                 'icon' => 'inbox',
                 'title' => 'Components',
                 'sub_menu' => [
@@ -479,8 +481,8 @@ class SideMenu
                         'title' => 'Loading Icon'
                     ]
                 ]
-            ],
-            'forms' => [
+            ];
+            $menu['forms'] = [
                 'icon' => 'sidebar',
                 'title' => 'Forms',
                 'sub_menu' => [
@@ -541,8 +543,8 @@ class SideMenu
                         'title' => 'Validation'
                     ]
                 ]
-            ],
-            'widgets' => [
+            ];
+            $menu['widgets'] = [
                 'icon' => 'hard-drive',
                 'title' => 'Widgets',
                 'sub_menu' => [
@@ -562,12 +564,14 @@ class SideMenu
                         'title' => 'Image Zoom'
                     ]
                 ]
-                    ],
+            ];
             // 'logout' => [
             //     'icon' => 'activity',
             //     'route_name' => 'logout',
             //     'title' => 'Logout'
             // ],
-        ];
+        }
+
+        return $menu;
     }
 }

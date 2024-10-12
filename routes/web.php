@@ -68,6 +68,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post('/users/create', [UserController::class, 'store'])->name('users.store');
     Route::get('/users/update/{id}', [UserController::class, 'edit'])->name('users.edit');
     Route::post('/users/update', [UserController::class, 'update'])->name('users.update');
+    Route::post('/check-record', [UserController::class, 'checkRecord'])->name('checkRecord');
 
     //CRUD CONFIGURACIONES
     //CRUD CONFIGURACION DEPARTAMENTO
@@ -176,6 +177,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/coupon/{idEvent}', [CouponController::class, 'index'])->name('coupons.index');
     Route::get('/coupon/{id}/pdf', [CouponController::class, 'generatePDF'])->name('coupon.pdf');
     Route::get('/coupons/{idEvent}/pdf', [CouponController::class, 'generatePDFMasivo'])->name('coupons.pdf');
+    Route::get('/coupons/{idEvent}/xls', [CouponController::class, 'generateExcel'])->name('coupons.excel');
+    Route::delete('/coupons/{id}', [CouponController::class, 'destroy'])->name('coupon.delete');
 
     //SELECTS
     Route::get('/cities/{department}', [CityController::class, 'getCitiesByDepartment']);

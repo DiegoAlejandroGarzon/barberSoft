@@ -247,7 +247,7 @@
             <!-- Botón de Registro -->
             <div class="intro-x mt-5 text-center xl:mt-8 xl:text-left">
                 <x-base.button class="w-full px-4 py-3 align-top xl:mr-3 xl:w-32" type="submit" variant="primary">
-                    Registrarse
+                    Registrar
                 </x-base.button>
             </div>
         </form>
@@ -348,5 +348,70 @@
         }
         filterCities();
     @endif
+</script>
+<script>
+    //script para rellenar los campos si coincide un document_number o email
+    document.addEventListener('DOMContentLoaded', function () {
+        const documentNumberInput = document.getElementById('document_number');
+        const emailInput = document.getElementById('email');
+
+        // Función para hacer una solicitud al servidor
+        const fetchData = async (url, data) => {
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'  // Token CSRF para seguridad
+                    },
+                    body: JSON.stringify(data),
+                });
+                const result = await response.json();
+                return result.data;  // Devuelve el usuario encontrado o null
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        };
+
+        // Función para rellenar los campos si se encuentra un registro
+        const populateFields = (userData) => {
+            if (userData) {
+                // Recorre todas las propiedades del objeto userData
+                for (const key in userData) {
+                    if (userData.hasOwnProperty(key)) {
+                        // Busca un input en el DOM con un id que coincida con el nombre de la propiedad
+                        const inputField = document.getElementById(key);
+
+                        // Si existe el input, asigna el valor de userData[key]
+                        if (inputField) {
+                            inputField.value = userData[key] || '';
+                        }
+                    }
+                }
+            }
+        };
+
+        // Detectar cuando se termina de escribir en el campo de número de documento
+        if (documentNumberInput) {
+            documentNumberInput.addEventListener('blur', async function () {
+                const documentNumber = documentNumberInput.value.trim();
+                if (documentNumber) {
+                    const userData = await fetchData('{{ route("checkRecord") }}', { document_number: documentNumber });
+                    populateFields(userData);
+                }
+            });
+        }
+
+        // Detectar cuando se termina de escribir en el campo de email
+        if (emailInput) {
+            emailInput.addEventListener('blur', async function () {
+                const email = emailInput.value.trim();
+                if (email) {
+                    const userData = await fetchData('{{ route("checkRecord") }}', { email: email });
+                    populateFields(userData);
+                }
+            });
+        }
+    });
 </script>
 @endsection

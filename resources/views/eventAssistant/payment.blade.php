@@ -111,13 +111,13 @@
                     </div>
                 </div>
                 <div class="mt-3">
-                    <label for="courtesy_code_checkbox" class="form-label">¿Tienes un código de cortesía?</label>
+                    <label for="courtesy_code_checkbox" class="form-label">¿Tienes un Cupon de cortesía?</label>
                     <input type="checkbox" id="courtesy_code_checkbox" name="courtesy_code_checkbox" onchange="toggleCourtesyCode()">
                 </div>
 
                 <!-- Campo del Código de Cortesía, oculto inicialmente -->
                 <div class="mt-3" id="courtesy_code_div" style="display: none;">
-                    <label for="courtesy_code" class="form-label">Código de Cortesía</label>
+                    <label for="courtesy_code" class="form-label">Cupon de Cortesía</label>
                     <input type="text" id="courtesy_code" name="courtesy_code" class="form-control">
                 </div>
                 <!-- Cantidad a Pagar -->

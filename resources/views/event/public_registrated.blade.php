@@ -17,7 +17,11 @@
                     <img class="w-6" src="{{ Vite::asset('resources/images/logo.svg') }}" alt="" />
                     <span class="ml-3 text-lg text-white"> SSISET </span>
                     <div class="my-auto">
+                        @if ($event->header_image_path)
+                        <img class="-intro-x -mt-16 w-1/2" src="{{ asset('storage/' . $event->header_image_path) }}" alt="Imagen del evento" />
+                        @else
                         <img class="-intro-x -mt-16 w-1/2" src="{{ Vite::asset('resources/images/illustration.svg') }}" alt="" />
+                        @endif
                         <div class="-intro-x mt-10 text-4xl font-medium leading-tight text-white">
                             PROYECTO EVENTOS
                         </div>
@@ -32,43 +36,19 @@
                 <div class="my-10 flex h-screen py-5 xl:my-0 xl:h-auto xl:py-0">
                     <div class="mx-auto my-auto w-full rounded-md bg-white px-5 py-8 shadow-md dark:bg-darkmode-600 sm:w-3/4 sm:px-8 lg:w-2/4 xl:ml-20 xl:w-auto xl:bg-transparent xl:p-0 xl:shadow-none">
                         <h2 class="intro-x text-center text-2xl font-bold xl:text-left xl:text-3xl">
-                            CUPON CONSUMIDO PARA ENTRAR AL EVENTO: {{ $coupon->event->name }}
+                            Inscripción para el evento: {{ $event->name }}
                         </h2>
                         <p class="intro-x mt-2 text-center text-slate-400 xl:hidden">
-                            {{ $coupon->event->description }}
+                            {{ $event->description }}
                         </p>
-                        @if (session('success'))
-                            <div class="intro-x mt-4 alert alert-success">
+                        <div class="intro-x mt-4 alert alert-success text-green-500">
+                            {{ $message }}
+                        </div>
 
-                            <div class="status-alert bg-success">
-                                {{ session('success') }}
-                            </div>
-                        @endif
-                        @if (session('error'))
-                            <div class="intro-x mt-4 alert alert-danger">
-                                {{ session('error') }}
-                            </div>
-                        @endif
-
-                        <div class="section box mt-2">
-                            <div class="m-3">
-                                <h1>Información del ticket</h1>
-                                @if($coupon?->ticketType)
-                                    <p><strong>Tipo de Ticket:</strong> {{ $coupon->ticketType->name ?? 'N/A' }}</p>
-                                    <ul>
-                                        @foreach ($coupon->ticketType->features as $feature)
-                                            <li>
-                                                <strong>{{ $feature->name }}:</strong>
-                                                <span>{{ $feature->consumable ? 'Consumible' : 'Acceso' }}</span>
-                                            </li>
-                                        @endforeach
-                                    </ul>
-                                @endif
-                                <div class="status-alert {{ $coupon->is_consumed ? 'bg-danger' : 'bg-success' }} text-white">
-                                    <h3>ESTADO DEL CUPON:</h3>
-                                    <p>{{ $coupon->is_consumed ? 'CONSUMIDO' : 'NO CONSUMIDO' }}</p>
-                                </div>
-                            </div>
+                        <p><strong>Recuerda Guardar el codigo QR para poder acceder al evento:</strong></p>
+                        <p><strong>Código QR:</strong></p>
+                        <div class="mt-2">
+                            {{ $qrcode }}
                         </div>
                     </div>
                 </div>

@@ -234,13 +234,13 @@ class EventAssistantController extends Controller
                     $validationRules[$param] = 'required|string|max:255';
                     break;
                 case 'email':
-                    $validationRules[$param] = 'required|email|max:255|unique:users,email';
+                    $validationRules[$param] = 'required|email|max:255';
                     break;
                 case 'type_document':
                     $validationRules[$param] = 'required|string|max:3';
                     break;
                 case 'document_number':
-                    $validationRules[$param] = 'required|string|max:20|unique:users,document_number';
+                    $validationRules[$param] = 'required|string|max:20';
                     break;
                 case 'phone':
                     $validationRules[$param] = 'nullable|string|max:15'; // Suponiendo que es opcional
@@ -258,18 +258,29 @@ class EventAssistantController extends Controller
         // Validar el request
         $validatedData = $request->validate($validationRules);
 
-        // Obtener las columnas definidas en $fillable del modelo User
-        $user = new User();
-        $userFillableColumns = (new User())->getFillable();
-        $createData = []; // Inicializar el array para los datos de creación
-        // Recorrer las columnas permitidas y verificar si están presentes en el request
-        foreach ($userFillableColumns as $column) {
-            if ($request->has($column)) {
-                $createData[$column] = $request[$column];
-            }
+        if ($request->has('email') || $request->has('document_number')) {
+            // Verificar si el usuario ya existe por correo o número de documento
+            $user = User::where('email', $request->email)
+            ->orWhere('document_number', $request->document_number)
+            ->first();
         }
-        $createData['status'] = false;
-        $user = User::create($createData);
+
+        if ($user) {
+            // Actualizar el usuario existente
+            $user->update($validatedData);
+        } else {
+            // Si no existe, crear un nuevo usuario
+            $userFillableColumns = (new User())->getFillable(); // Obtener las columnas permitidas
+            $createData = []; // Inicializar el array para los datos de creación
+
+            foreach ($userFillableColumns as $column) {
+                if ($request->has($column)) {
+                    $createData[$column] = $request[$column];
+                }
+            }
+            $createData['status'] = false;
+            $user = User::create($createData);
+        }
 
         // Verificar si el usuario tiene el rol de 'assistant', si no, asignarlo
         if (!$user->hasRole('assistant')) {

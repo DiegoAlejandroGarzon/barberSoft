@@ -91,7 +91,7 @@
                         @endforeach
                     </ul>
                 @endif
-                <div class="status-alert {{ $coupon->is_consumed ? 'bg-danger' : 'bg-success' }}">
+                <div class="status-alert {{ $coupon->is_consumed ? 'bg-danger' : 'bg-success' }} text-white">
                     <h3>ESTADO DEL CUPON:</h3>
                     <p>{{ $coupon->is_consumed ? 'CONSUMIDO' : 'NO CONSUMIDO' }}</p>
                 </div>
