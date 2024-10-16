@@ -54,6 +54,18 @@
                     </x-base.menu.item>
                 </x-base.menu.items>
             </x-base.menu>
+
+            <div class="mt-3 w-full sm:ml-auto sm:mt-0 sm:w-auto md:ml-0">
+                <form method="GET" action="{{ route('payments.index', ['idEvent' => $idEvent]) }}">
+                    <div class="relative w-56 text-slate-500">
+                        <input type="text" name="search" class="!box w-56 pr-10" value="{{ request()->input('search') }}" placeholder="Buscar..." />
+
+                        <button type="submit" class="absolute inset-y-0 right-0 my-auto mr-3 h-4 w-4">
+                            <x-base.lucide icon="Search" />
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
         <!-- BEGIN: Data List -->
         @php
@@ -76,6 +88,7 @@
 
                             <x-base.table.th class="whitespace-nowrap border-b-0 text-center">Tipo de ticket</x-base.table.th>
                             <x-base.table.th class="whitespace-nowrap border-b-0 text-center">Ticket</x-base.table.th>
+                            <x-base.table.th class="whitespace-nowrap border-b-0 text-center">Entrada</x-base.table.th>
                             <x-base.table.th class="whitespace-nowrap border-b-0 text-center">Acciones</x-base.table.th>
                         </x-base.table.tr>
                     </x-base.table.thead>
@@ -147,6 +160,18 @@
                                                 Pendiente - Monto: {{ $formattedPayments }}
                                             </div>
                                         @endif
+                                    @endif
+                                </x-base.table.td>
+
+                                <x-base.table.td class="box text-center">
+                                    @if ($asistente->has_entered)
+                                        <div role="alert" class="alert rounded-md bg-success text-slate-900 dark:border-success p-1">
+                                            Entrada
+                                        </div>
+                                    @else
+                                        <div role="alert" class="alert rounded-md bg-warning text-slate-900 dark:border-warning p-1">
+                                            No Entrada
+                                        </div>
                                     @endif
                                 </x-base.table.td>
 

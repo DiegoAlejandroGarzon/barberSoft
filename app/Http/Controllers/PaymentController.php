@@ -15,52 +15,98 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class PaymentController extends Controller
 {
-    public function index($idEvent)
+    public function index(Request $request, $idEvent)
     {
         $event = Event::find($idEvent);
 
-        // Recaudo total
-        $recaudoTotal = Payment::whereHas('eventAssistant', function ($query) use ($idEvent) {
-            $query->where('event_id', $idEvent);
+        // Crear el query base para los asistentes
+        $query = EventAssistant::query()->where('event_id', $idEvent);
+
+        // Aplicar el filtro de búsqueda si existe
+        if ($request->has('search')) {
+            $search = $request->input('search');
+
+            $query->where(function ($q) use ($search) {
+                // Buscar en la relación 'user'
+                $q->whereHas('user', function ($query) use ($search) {
+                    $query->where('name', 'like', "%{$search}%")
+                          ->orWhere('email', 'like', "%{$search}%")
+                          ->orWhere('phone', 'like', "%{$search}%");
+                });
+
+                // Buscar en la relación 'ticketType'
+                $q->orWhereHas('ticketType', function ($query2) use ($search) {
+                    $query2->where('name', 'like', "%{$search}%");
+                });
+
+                // Verificar si 'search' contiene "Entrada" y filtrar por 'has_entered'
+                if (strtolower($search) === 'entrada') {
+                    $q->orWhere('has_entered', 1); // Buscar entradas con valor 1
+                } elseif (strtolower($search) === 'no entrada') {
+                    $q->orWhere('has_entered', 0); // Buscar entradas con valor 0
+                }
+
+                // Verificar si 'search' contiene "pagado", "no pagado" o "pendiente"
+                if (strtolower($search) === 'pagado') {
+                    $q->orWhere(function ($q) {
+                        $q->where('is_paid', true); // Buscar asistente con is_paid = true
+                    });
+                } elseif (strtolower($search) === 'no pagado') {
+                    $q->orWhere(function ($q) {
+                        $q->where('is_paid', false)
+                          ->whereDoesntHave('payments'); // No hay pagos registrados
+                    });
+                } elseif (strtolower($search) === 'pendiente') {
+                    $q->orWhere(function ($q) {
+                        $q->where('is_paid', false)
+                          ->whereHas('payments'); // Tiene al menos un pago registrado
+                    });
+                }
+            });
+        }
+
+        // Obtener los asistentes filtrados
+        $asistentes = $query->paginate(10);
+
+        // Cálculo de valores con base en los asistentes filtrados
+        $asistentesFiltrados = $query->get(); // Obtener todos los resultados sin paginación para cálculos
+
+        // Recaudo total con base en los asistentes filtrados
+        $recaudoTotal = Payment::whereHas('eventAssistant', function ($q) use ($asistentesFiltrados) {
+            $q->whereIn('id', $asistentesFiltrados->pluck('id')); // Usar IDs de los asistentes filtrados
         })->sum('amount');
 
         // Asistentes pagados
-        $asistentesPagos = EventAssistant::query()
-            ->where('event_id', $idEvent)
-            ->whereHas('payments') // Asegúrate que la relación esté bien definida
-            ->get()->count();
+        $asistentesPagos = $asistentesFiltrados->filter(function ($asistente) {
+            return $asistente->payments->count() > 0; // Contar solo los que tienen pagos registrados
+        })->count();
 
         // Asistentes que no registraron entrada
-        $asistentesSinEntrada = EventAssistant::query()
-            ->where('event_id', $idEvent)
-            ->where('has_entered', false)
-            ->get()->count();
+        $asistentesSinEntrada = $asistentesFiltrados->where('has_entered', false)->count();
 
-        // Cupones redimidos
-        $cuponesRedimidos = Coupon::where('event_id', $idEvent)
+        // Cupones redimidos con base en los asistentes filtrados
+        $cuponesRedimidos = Coupon::whereIn('event_assistant_id', $asistentesFiltrados->pluck('id'))
             ->whereNotNull('event_assistant_id')
-            ->get()->count();
+            ->count();
 
-        // Cupones no redimidos
+        // Cupones no redimidos con base en los asistentes filtrados
         $cuponesNoRedimidos = Coupon::where('event_id', $idEvent)
             ->whereNull('event_assistant_id')
-            ->get()->count();
+            ->count();
 
-        $asistentes = EventAssistant::query()
-            ->where('event_id', $idEvent)
-            ->paginate(10);
-
+        // Devolver la vista con los datos calculados y filtrados
         return view('payment.index', compact(
             'asistentes',
             'idEvent',
             'event',
-            'asistentesPagos',
             'recaudoTotal',
+            'asistentesPagos',
             'asistentesSinEntrada',
             'cuponesRedimidos',
             'cuponesNoRedimidos'
         ));
     }
+
 
     public function generatePDF($id)
     {
