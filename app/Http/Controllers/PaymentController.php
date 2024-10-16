@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Exports\PaymentExport;
 use App\Exports\TemplatePayloadExport;
 use App\Imports\PayloadImport;
+use App\Models\Coupon;
 use App\Models\Event;
+use App\Models\EventAssistant;
 use App\Models\Payment;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
@@ -13,6 +15,53 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class PaymentController extends Controller
 {
+    public function index($idEvent)
+    {
+        $event = Event::find($idEvent);
+
+        // Recaudo total
+        $recaudoTotal = Payment::whereHas('eventAssistant', function ($query) use ($idEvent) {
+            $query->where('event_id', $idEvent);
+        })->sum('amount');
+
+        // Asistentes pagados
+        $asistentesPagos = EventAssistant::query()
+            ->where('event_id', $idEvent)
+            ->whereHas('payments') // Asegúrate que la relación esté bien definida
+            ->get()->count();
+
+        // Asistentes que no registraron entrada
+        $asistentesSinEntrada = EventAssistant::query()
+            ->where('event_id', $idEvent)
+            ->where('has_entered', false)
+            ->get()->count();
+
+        // Cupones redimidos
+        $cuponesRedimidos = Coupon::where('event_id', $idEvent)
+            ->whereNotNull('event_assistant_id')
+            ->get()->count();
+
+        // Cupones no redimidos
+        $cuponesNoRedimidos = Coupon::where('event_id', $idEvent)
+            ->whereNull('event_assistant_id')
+            ->get()->count();
+
+        $asistentes = EventAssistant::query()
+            ->where('event_id', $idEvent)
+            ->paginate(10);
+
+        return view('payment.index', compact(
+            'asistentes',
+            'idEvent',
+            'event',
+            'asistentesPagos',
+            'recaudoTotal',
+            'asistentesSinEntrada',
+            'cuponesRedimidos',
+            'cuponesNoRedimidos'
+        ));
+    }
+
     public function generatePDF($id)
     {
         // Obtener el pago específico por ID
