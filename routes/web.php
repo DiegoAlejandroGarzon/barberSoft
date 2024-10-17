@@ -167,6 +167,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/get-coupons/{eventId}', [EventAssistantController::class, 'getCoupons']);
 
     //Payloads
+    Route::get('/paymentList/{idEvent}', [PaymentController::class, 'index'])->name('payments.index');
     Route::get('/payment/{id}', [PaymentController::class, 'generatePDF'])->name('payments.generatePDF');
     Route::get('/event-assistant/payment/{idEvent}/export-excel', [PaymentController::class, 'exportExcel'])->name('payment.exportExcel');
     Route::get('/event-assistant/paymentStatus/{idEvent}/export-excel', [PaymentController::class, 'exportExcelPaymentStatus'])->name('paymentStatus.exportExcel');

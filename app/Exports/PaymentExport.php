@@ -54,9 +54,41 @@ class PaymentExport implements FromCollection, WithHeadings
             $query->leftjoin('payments', 'event_assistants.id', '=', 'payments.event_assistant_id');
         }
         if ($this->search) {
-            $query->whereHas('user', function ($q) {
-                $q->where('name', 'like', '%' . $this->search . '%')
-                    ->orWhere('email', 'like', '%' . $this->search . '%');
+            $search = $this->search;
+            $query->where(function ($q) use ($search) {
+                // Buscar en la relación 'user'
+                $q->whereHas('user', function ($query) use ($search) {
+                    $query->where('name', 'like', "%{$search}%")
+                            ->orWhere('email', 'like', "%{$search}%")
+                            ->orWhere('phone', 'like', "%{$search}%");
+                });
+                // Buscar en la relación 'ticketType'
+                $q->orWhereHas('ticketType', function ($query2) use ($search) {
+                    $query2->where('name', 'like', "%{$search}%");
+                });
+                // Verificar si 'search' contiene "Entrada" y filtrar por 'has_entered'
+                if (strtolower($search) === 'entrada') {
+                    $q->orWhere('has_entered', 1); // Buscar entradas con valor 1
+                } elseif(strtolower($search) === 'no entrada') {
+                    $q->orWhere('has_entered', 0); // Buscar entradas con valor 0
+                }
+
+                // Verificar si 'search' contiene "pagado", "no pagado" o "pendiente"
+                if (strtolower($search) === 'pagado') {
+                    $q->orWhere(function ($q) {
+                        $q->where('is_paid', true); // Buscar asistente con is_paid = true
+                    });
+                } elseif (strtolower($search) === 'no pagado') {
+                    $q->orWhere(function ($q) {
+                        $q->where('is_paid', false)
+                          ->whereDoesntHave('payments'); // No hay pagos registrados
+                    });
+                } elseif (strtolower($search) === 'pendiente') {
+                    $q->orWhere(function ($q) {
+                        $q->where('is_paid', false)
+                          ->whereHas('payments'); // Tiene al menos un pago registrado
+                    });
+                }
             });
         }
         $users = $query->get();
