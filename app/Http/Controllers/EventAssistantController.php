@@ -519,13 +519,13 @@ class EventAssistantController extends Controller
             // Avisar que se está cerca del aforo máximo para el tipo de ticket
             return redirect()->back()->with([
                 'success' => $successMessage,
-                'warning' => 'Atención: Se ha alcanzado el 90% de la capacidad para el tipo de ticket "' . $ticketType->name . '". Se han registrado ' . $currentTicketCount . " entradas y la capacidad máxima es de " . $ticketType->capacity . "."
+                'warning' => 'Atención: Se ha alcanzado el 90% de la capacidad para el tipo de Boleta "' . $ticketType->name . '". Se han registrado ' . $currentTicketCount . " entradas y la capacidad máxima es de " . $ticketType->capacity . "."
             ]);
         } elseif ($ticketCapacityReached) {
             // Redirigir con una alerta si se ha superado el aforo para el tipo de ticket
             return redirect()->back()->with([
                 'success' => $successMessage,
-                'error' => 'Aforo máximo alcanzado o superado para el tipo de ticket "' . $ticketType->name . '". Se han registrado ' . $currentTicketCount . " entradas y la capacidad máxima es de " . $ticketType->capacity . "."
+                'error' => 'Aforo máximo alcanzado o superado para el tipo de Boleta "' . $ticketType->name . '". Se han registrado ' . $currentTicketCount . " entradas y la capacidad máxima es de " . $ticketType->capacity . "."
             ]);
         }else{
             return redirect()->back()->with('success', $successMessage);

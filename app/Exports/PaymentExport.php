@@ -39,7 +39,8 @@ class PaymentExport implements FromCollection, WithHeadings
             'events.name as event_name',
             'events.status as event_status',
             'events.status as event_city_id',
-            'payments.*'
+            'payments.*',
+            'event_assistants.is_paid',
             )
             ->join('users', 'event_assistants.user_id', '=', 'users.id')
             ->join('events', 'event_assistants.event_id', '=', 'events.id')

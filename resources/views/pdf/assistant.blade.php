@@ -23,12 +23,12 @@
             @else
                 @if ($asistente->totalPayments() == 0)
                 <div role="alert" class="alert relative border rounded-md bg-danger border-danger text-white dark:border-danger mb-2 box p-5">
-                    <H1>ESTADO DEL TICKET DEL TICKET: </H1>No Pagado
+                    <H1>ESTADO DE LA BOLETA DEL TICKET: </H1>No Pagado
 
                 </div>
                 @else
                 <div role="alert" class="alert rounded-md bg-warning text-slate-900 dark:border-warning box p-5">
-                    <H1>ESTADO DEL TICKET DEL TICKET: </H1>Pendiente
+                    <H1>ESTADO DE LA BOLETA DEL TICKET: </H1>Pendiente
                 </div>
                 @endif
             @endif

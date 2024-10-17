@@ -8,22 +8,28 @@
     <h2 class="intro-y mt-10 text-lg font-medium">Lista de Cupones del evento: <b>{{$event->name}}</b></h2>
 
     <div class="box">
-        <div class="flex flex-col sm:flex-row justify-between m-4">
+        <div class="flex flex-col sm:flex-row justify-between m-4" style="margin:1rem">
             <!-- Seleccionar tipo de ticket -->
-            <div class="sm:w-1/3 mb-2 sm:mb-0">
+            <div class="sm:w-1/3 mb-2 sm:mb-0" style="width: 33.333333%; margin:1rem">
                 <label for="ticketType" class="block text-sm font-medium text-gray-700">Seleccionar Ticket</label>
                 <select id="ticketType" name="ticketType" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
                     @foreach($tickets as $ticket)
-                        <option value="{{ $ticket->id }}">{{ $ticket->name }} ({{ $consumedCouponsByTicket[$ticket->id] ?? 0 }} - {{ $couponsByTicket[$ticket->id] ?? 0 }} / {{$ticket->capacity}}) {{ $couponsByTicket[$ticket->id] >= $ticket->capacity ? "PECAUCIÓN":""}} </option>
+                        <option value="{{ $ticket->id }}">
+                            {{ $ticket->name }}
+                            ({{ $consumedCouponsByTicket[$ticket->id] ?? 0 }} -
+                            {{ $couponsByTicket[$ticket->id] ?? 0 }} /
+                            {{$ticket->capacity}})
+                            {{ ($couponsByTicket[$ticket->id] ?? 0) >= $ticket->capacity }}
+                        </option>
                     @endforeach
                 </select>
             </div>
-            <div class="sm:w-1/3 mb-2 sm:mb-0">
+            <div class="sm:w-1/3 mb-2 sm:mb-0" style="width: 33.333333%; margin:1rem">
                 <label for="numberOfCoupons" class="block text-sm font-medium text-gray-700">N° de cupones</label>
                 <input type="number" id="numberOfCoupons" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
             </div>
             <!-- Botón para generar nuevos códigos -->
-            <div class="sm:w-1/4">
+            <div class="sm:w-1/4" style="width: 33.333333%; margin:1rem">
 
                 <x-base.button
                     id="generateCouponsButton"
@@ -64,6 +70,7 @@
                     <x-base.table.th class="whitespace-nowrap border-b-0">Código</x-base.table.th>
                     <x-base.table.th class="whitespace-nowrap border-b-0 text-center">Ticket</x-base.table.th>
                     <x-base.table.th class="whitespace-nowrap border-b-0 text-center">Status</x-base.table.th>
+                    <x-base.table.th class="whitespace-nowrap border-b-0 text-center">Fecha Creación</x-base.table.th>
                     <x-base.table.th class="whitespace-nowrap border-b-0 text-center">Acciones</x-base.table.th>
                 </x-base.table.tr>
             </x-base.table.thead>
@@ -76,6 +83,7 @@
                         <x-base.table.td class="box rounded-l-none rounded-r-none border-x-0 text-center shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600 {{ $coupon->is_consumed ? 'bg-red-500 text-white' : 'bg-green-500 text-white' }}">
                             {{ $coupon->is_consumed ? "No Disponible" : "Disponible" }}
                         </x-base.table.td>
+                        <x-base.table.td class="box rounded-l-none rounded-r-none border-x-0 text-center shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600">{{ $coupon->created_at->format('d/m/Y') }}</x-base.table.td>
                         <x-base.table.td class="box w-56 rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600">
                             <div class="flex items-center justify-center">
                                 <x-base.tippy content="Generar PDF" class="mr-1">

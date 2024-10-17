@@ -234,7 +234,7 @@
                                     />
                                     <x-base.tom-select
                                     type="text"
-                                    name="ticketTypes[{{ $index }}][features]"
+                                    name="ticketTypes[{{ $index }}][features][]"
                                     placeholder="Características"
                                     class="form-control w-1/3 mr-2"
                                     value="{{ old('ticketTypes.' . $index . '.features', $ticket->features) }}"
@@ -243,7 +243,7 @@
 
                                         @foreach($features as $key => $feature)
                                         <option value="{{ $feature['id'] }}" {{ in_array($feature['id'], old('features', $event->ticketTypes[$index]->features->pluck('id')->toArray())) ? 'selected' : '' }} >
-                                            {{ $feature['name'] }}
+                                            {{ $feature['name'] }} {{ $feature->consumable ? '- (CONSUMIBLE)' : '' }}
                                         </option>
                                         @endforeach
                                     </x-base.tom-select>

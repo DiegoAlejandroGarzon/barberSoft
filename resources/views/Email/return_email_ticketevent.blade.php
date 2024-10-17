@@ -14,7 +14,7 @@
             word-break: normal;
             word-wrap:break-word;
         }
-      
+
     </style>
 @endsection
 
@@ -23,7 +23,7 @@
     <H1 class="text">Gracias por su compora {{$meta['name']}}</H1>
 </div>
 <div>
-    <h3 class="text">Tu ticket para el ingreso al evento {{$meta['title']}} fue enviado al correo registrado😉<h3>
+    <h3 class="text">Tu Boleta para el ingreso al evento {{$meta['title']}} fue enviado al correo registrado😉<h3>
     <p class="text">que lo disfrutes y espero servirle en futuras ocaciones 😉</p>
 </div>
 <div>

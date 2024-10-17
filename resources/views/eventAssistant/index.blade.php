@@ -318,7 +318,7 @@
                                                 <x-base.lucide icon="FileText" />
                                             </a>
                                         </x-base.tippy>
-                                        <x-base.tippy content="Generar Ticket PDF" class="mr-1">
+                                        <x-base.tippy content="Generar Boleta PDF" class="mr-1">
                                             <a class="text-info" href="{{ route('eventAssistant.getPDFTicket', ['id' => $asistente->id]) }}" target="_blank">
                                                 <x-base.lucide icon="FileText" />
                                             </a>

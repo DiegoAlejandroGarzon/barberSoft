@@ -11,7 +11,7 @@
             {{ session('error') }}
         </x-base.alert>
     @endif
-    <h2 class="intro-y mt-10 text-lg font-medium">Lista de Pagos del evento</h2>
+    <h2 class="intro-y mt-10 text-lg font-medium">RECAUDOS</h2>
     <div class="">
 
         <!-- BEGIN: DashBoard -->
@@ -86,9 +86,10 @@
                                 @endif
                             @endforeach
 
-                            <x-base.table.th class="whitespace-nowrap border-b-0 text-center">Tipo de ticket</x-base.table.th>
-                            <x-base.table.th class="whitespace-nowrap border-b-0 text-center">Ticket</x-base.table.th>
+                            <x-base.table.th class="whitespace-nowrap border-b-0 text-center">Tipo de Boleta</x-base.table.th>
+                            <x-base.table.th class="whitespace-nowrap border-b-0 text-center">Estatus de pago</x-base.table.th>
                             <x-base.table.th class="whitespace-nowrap border-b-0 text-center">Entrada</x-base.table.th>
+                            <x-base.table.th class="whitespace-nowrap border-b-0 text-center">Consumos</x-base.table.th>
                             <x-base.table.th class="whitespace-nowrap border-b-0 text-center">Acciones</x-base.table.th>
                         </x-base.table.tr>
                     </x-base.table.thead>
@@ -172,6 +173,14 @@
                                         <div role="alert" class="alert rounded-md bg-warning text-slate-900 dark:border-warning p-1">
                                             No Entrada
                                         </div>
+                                    @endif
+                                </x-base.table.td>
+
+                                <x-base.table.td class="box text-center">
+                                    @if ($asistente->featureConsumptions->isEmpty())
+                                        SIN CONSUMOS
+                                    @else
+                                        {{ $asistente->featureConsumptions->pluck('ticketFeature.name')->implode(', ') }}
                                     @endif
                                 </x-base.table.td>
 
