@@ -85,6 +85,9 @@
                             Descripción
                         </x-base.table.th>
                         <x-base.table.th class="whitespace-nowrap border-b-0 text-center">
+                            Ciudad
+                        </x-base.table.th>
+                        <x-base.table.th class="whitespace-nowrap border-b-0 text-center">
                             Fecha Evento
                         </x-base.table.th>
                         <x-base.table.th class="whitespace-nowrap border-b-0 text-center">
@@ -231,6 +234,11 @@
                                 {{ $evento->event_date }}
                             </x-base.table.td>
                             <x-base.table.td
+                                class="box rounded-l-none rounded-r-none border-x-0 text-center shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
+                            >
+                                {{ $evento->city->name }} - {{ $evento->city->department->name }}
+                            </x-base.table.td>
+                            <x-base.table.td
                                 class="
                                     box rounded-l-none rounded-r-none border-x-0 text-center shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600
                                     {{ $evento->status == 1 ? 'bg-gray-400 text-white' : '' }}
@@ -254,7 +262,7 @@
             {{ $eventos->withQueryString()->links() }}
         </div>
         <!-- Modal -->
-        <div id="descriptionModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-75">
+        <div id="descriptionModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-75" style="--tw-bg-opacity: 0.75;">
             <div class="bg-white p-5 rounded-lg shadow-lg w-1/2">
                 <h2 class="text-xl font-bold mb-4">Descripción Completa</h2>
                 <p id="descriptionContent" class="mb-4"></p>

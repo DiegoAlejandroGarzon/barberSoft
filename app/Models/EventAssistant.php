@@ -70,4 +70,9 @@ class EventAssistant extends Model
     {
         return $this->belongsTo(User::class, 'guardian_id');
     }
+
+    public function featureConsumptions()
+    {
+        return $this->hasMany(FeatureConsumption::class, 'event_assistant_id');
+    }
 }

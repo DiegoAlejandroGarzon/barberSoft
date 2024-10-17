@@ -184,7 +184,7 @@ class EventController extends Controller
             $event->ticketTypes()->whereNotIn('id', $newTicketTypeIds)->get()->each(function ($ticketType) {
                 if ($ticketType->EventAssistant()->exists()) {
                     // Si el tipo de ticket está asociado a algún EventAssistant, no lo eliminamos y podríamos optar por otra lógica aquí
-                    throw new \Exception("El tipo de ticket '{$ticketType->name}' no puede ser eliminado porque está asociado a un asistente.");
+                    throw new \Exception("El tipo de Boleta '{$ticketType->name}' no puede ser eliminado porque está asociado a un asistente.");
                 }
                 $ticketType->delete();
             });
@@ -296,10 +296,13 @@ class EventController extends Controller
         // Validar el request
         $validatedData = $request->validate($validationRules);
         $user = null;
-        if ($request->has('email') || $request->has('document_number')) {
-            // Verificar si el usuario ya existe por correo o número de documento
+        if ($request->has('email')) {
+            // Verificar si el usuario ya existe por correo
             $user = User::where('email', $request->email)
-            ->orWhere('document_number', $request->document_number)
+            ->first();
+        }elseif($request->has('document_number')){
+            // Verificar si el usuario ya existe por número de documento
+            $user = User::where('document_number', $request->document_number)
             ->first();
         }
         if ($user) {

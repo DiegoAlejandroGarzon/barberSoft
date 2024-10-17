@@ -41,9 +41,9 @@
                         <p class="intro-x mt-2 text-center text-slate-400 xl:hidden">
                             {{ $event->description }}
                         </p>
-                        <div class="intro-x mt-4 alert alert-success text-green-500">
+                        <h2 class="intro-x text-center text-2xl font-bold xl:text-left xl:text-3xl text-success">
                             {{ $message }}
-                        </div>
+                        </h2>
 
                         <p><strong>Recuerda Guardar el codigo QR para poder acceder al evento:</strong></p>
                         <p><strong>Código QR:</strong></p>

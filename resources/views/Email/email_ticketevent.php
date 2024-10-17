@@ -21,7 +21,7 @@
 <div class="header">
     <H1 style="text-align: center">Gracias por su compora {{$registro['name']}}</H1>
 </div class="body">
-    <h3 style="text-align: center">Tu ticket para el ingreso al evento {{$registro['title']}} fue enviado 😉<h3>
+    <h3 style="text-align: center">Tu Boleta para el ingreso al evento {{$registro['title']}} fue enviado 😉<h3>
     <p style="text-align: center">que lo disfrutes y espero servirle en futuras ocaciones 😉</p>
     <div class="Footer"></div>
 </div>

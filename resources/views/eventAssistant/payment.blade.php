@@ -3,7 +3,7 @@
 @section('subhead')
     <title>Pagar Ticket</title>
     <link rel="stylesheet" href="{{url('css/blade.css')}}">
-   
+
 @endsection
 
 @section('subcontent')
@@ -107,7 +107,7 @@
                     <div class="col mt-3 col_identificacion_number">
                             <label for="payer_document_number" class="form-label">No. de Documento</label>
                             <input type="text" id="payer_document_number" name="payer_document_number" class="form-control" required>
-                            
+
                     </div>
                 </div>
                 <div class="mt-3">
@@ -125,7 +125,7 @@
                     <div class="col mt-3 col_amountDiv">
                         <label for="amount" class="form-label">Cantidad a Pagar</label>
                         <input type="number" id="amount" name="amount" class="form-control form-control-amount" value="{{ $eventAssistant->ticketType?->price - $eventAssistant->totalPayments() }}" required>
-                    
+
                     </div>
 
                     <!-- Forma de Pago -->
@@ -160,7 +160,7 @@
 
     <div class="mt-5">
         <div class="box p-5">
-            Actualmente el ticket ya está registrado como pagado
+            Actualmente la Boleta ya está registrado como pagado
             <div class="mt-5">
                 <div class="box p-5">
 
