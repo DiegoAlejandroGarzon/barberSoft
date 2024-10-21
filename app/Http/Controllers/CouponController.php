@@ -61,7 +61,57 @@ class CouponController extends Controller
         // return $pdf->download('Asistente_Evento_' . $asistente->user->name . '.pdf');
     }
 
-    public function generatePDFMasivo($idEvent)
+    public function generatePDFMasivo($idEvent) //union en un zip
+    {
+        // Obtener todos los cupones no consumidos del evento
+        $coupons = Coupon::where('event_id', $idEvent)
+            ->where('is_consumed', false)
+            ->get();
+
+        // Crear un array para almacenar los nombres de los PDFs
+        $pdfFiles = [];
+
+        foreach ($coupons as $coupon) {
+            // Generar QR code como base64
+            $qrCodeBase64 = 'data:image/png;base64,' . base64_encode($coupon->qrCode);
+
+            // Generar el PDF individual
+            $pdf = Pdf::loadView('pdf.coupon', compact('coupon', 'qrCodeBase64'));
+
+            // Guardar el PDF temporalmente
+            $pdfPath = storage_path('app/public/cupons/cupon_'.$coupon->id.'_'.$coupon->numeric_code . '.pdf');
+            $pdf->save($pdfPath);
+            $pdfFiles[] = $pdfPath; // Agregar la ruta del archivo PDF al array
+        }
+
+        // Crear el archivo ZIP
+        $zip = new \ZipArchive();
+        $zipFileName = 'cupones_evento_'.str_replace(' ', '_', Event::find($idEvent)->name).'_'.date("Y-m-d_Hi").'.zip';
+        $zipPath = storage_path('app/public/cupons/' . $zipFileName);
+
+        if ($zip->open($zipPath, \ZipArchive::CREATE) !== TRUE) {
+            return response()->json(['error' => 'No se pudo crear el archivo ZIP'], 500);
+        }
+
+        // Agregar cada PDF al ZIP
+        foreach ($pdfFiles as $file) {
+            // Agregar el archivo PDF al ZIP
+            $zip->addFile($file, basename($file)); // basename para solo agregar el nombre del archivo
+        }
+
+        // Cerrar el archivo ZIP
+        $zip->close();
+
+        // Opcionalmente, puedes eliminar los PDFs temporales si ya no los necesitas
+        foreach ($pdfFiles as $file) {
+            unlink($file);
+        }
+
+        // Retornar el archivo ZIP al navegador
+        return response()->download($zipPath)->deleteFileAfterSend(true);
+    }
+
+    public function generatePDFMasivoUnionPaginas($idEvent)
     {
         // Obtener todos los cupones no consumidos del evento
         $coupons = Coupon::where('event_id', $idEvent)
