@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Exports\CouponExport;
+use App\Jobs\GenerateCouponsJob;
 use App\Models\AdditionalParameter;
 use App\Models\Coupon;
 use App\Models\Departament;
 use App\Models\Event;
 use App\Models\EventAssistant;
+use App\Models\JobStatus;
 use App\Models\TicketType;
 use App\Models\User;
 use App\Models\UserEventParameter;
@@ -271,5 +273,64 @@ class CouponController extends Controller
             new CouponExport($idEvent),
             'pagos_de_asistentes_del_evento_'.$event->name.'_'.date('d-m-Y').'.xlsx'
         );
+    }
+
+
+    public function createCoupons(Request $request)
+    {
+        $jobInProgress = JobStatus::where('event_id', $request->event_id)
+                                    ->where('status', 'processing')
+                                    ->first();
+        if ($jobInProgress) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Ya hay un proceso en progreso para este evento.'
+            ], 400);
+        }
+        $job = new GenerateCouponsJob($request->event_id, $request->ticket_type_id, $request->number_of_coupons);
+        dispatch($job);
+        return response()->json(['status' => 'Proceso creado exitosamente.']);
+    }
+
+    public function getCoupons($eventId)
+    {
+        $coupons = Coupon::where('event_id', $eventId)->with('ticketType')->get();
+        return response()->json($coupons);
+    }
+
+    public function checkJobStatus($eventId)
+    {
+        $jobInProgress = JobStatus::where('event_id', $eventId)
+                                    ->where('status', 'processing')
+                                    ->first();
+        if ($jobInProgress) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Ya hay un proceso en progreso para este evento.'
+            ], 400);
+        }
+        return response()->json(['status' => 'ok'], 200);
+    }
+
+    public function getJobProgress($eventId)
+    {
+
+        // Busca el estado del trabajo correspondiente al evento
+        $jobStatus = JobStatus::where('event_id', $eventId)->where('status', 'processing')->first();
+
+        // Si no encuentra el trabajo, devuelve un error
+        if (!$jobStatus) {
+            // Responder con el progreso y el estado del trabajo
+            return response()->json([
+                'message' => 'No hay procesos actualmente',
+                'status' => 'sinRegistros',
+            ]);
+        }
+
+        // Responder con el progreso y el estado del trabajo
+        return response()->json([
+            'progress' => $jobStatus->progress,
+            'status' => $jobStatus->status,
+        ]);
     }
 }

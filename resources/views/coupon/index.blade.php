@@ -38,6 +38,14 @@
                 >
                 Generar nuevos códigos
                 </x-base.button>
+
+                <!-- Modal de Carga -->
+                <div id="loadingModal" style="display: none">
+                    <div class="">
+                        <h4>Generating Coupons...</h4>
+                        <p id="progressText">Generated: 0</p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -79,7 +87,7 @@
                     <x-base.table.tr class="intro-x">
                         <x-base.table.td class="box w-40 rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600">{{ ($coupons->currentPage() - 1) * $coupons->perPage() + $key + 1 }}</x-base.table.td>
                         <x-base.table.td class="box rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600">{{ $coupon->numeric_code }}</x-base.table.td>
-                        <x-base.table.td class="box rounded-l-none rounded-r-none border-x-0 text-center shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600">{{ $coupon->ticketType->name }}</x-base.table.td>
+                        <x-base.table.td class="box rounded-l-none rounded-r-none border-x-0 text-center shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600">{{ $coupon->ticketType?->name }}</x-base.table.td>
                         <x-base.table.td class="box rounded-l-none rounded-r-none border-x-0 text-center shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600 {{ $coupon->is_consumed ? 'bg-red-500 text-white' : 'bg-green-500 text-white' }}">
                             {{ $coupon->is_consumed ? "No Disponible" : "Disponible" }}
                         </x-base.table.td>
@@ -118,29 +126,60 @@
     <!-- END: Pagination -->
 
     <script>
-        const eventId = {{$idEvent}}; // ID del evento (modificar dinámicamente si es necesario)
-        document.getElementById('generateCouponsButton').addEventListener('click', function (){
+        document.getElementById('generateCouponsButton').addEventListener('click', function () {
+            const eventId = {{$idEvent}};
             const numberOfCoupons = document.getElementById('numberOfCoupons').value;
             const ticketTypeId = document.getElementById('ticketType').value;
 
-            fetch("{{ route('generateCoupons') }}", {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                },
-                body: JSON.stringify({
-                    event_id: {{$idEvent}},
-                    number_of_coupons: numberOfCoupons,
-                    ticket_type_id: ticketTypeId // Enviar el ID del ticket
-                })
-            })
+            // Verificar si hay un job en progreso
+            fetch(`/check-job-status/${eventId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'error') {
+                        alert(data.message);
+                        return;
+                    }
+
+                    // Si no hay jobs en progreso, iniciar generación
+                    const modal = document.getElementById('loadingModal');
+                    modal.style.display = 'block'; // Mostrar modal
+
+                    fetch("{{ route('generateCoupons') }}", {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        body: JSON.stringify({
+                            event_id: eventId,
+                            number_of_coupons: numberOfCoupons,
+                            ticket_type_id: ticketTypeId,
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        alert('Se inició la generación de cupones. Comprueba el progreso...');
+                        checkJobProgress(); // Llamar función para monitorear progreso
+                    })
+                    .catch(error => console.error('Error:', error));
+                });
+        });
+
+
+        function checkJobProgress() {
+            fetch('{{ route('job-progress', ['eventId' => $idEvent]) }}')
             .then(response => response.json())
             .then(data => {
-                // Aquí puedes recargar la página
-                location.reload();
-            })
-            .catch(error => console.error('Error:', error));
-        });
+
+                if (data.status === 'sinRegistros') {
+                    document.getElementById('loadingModal').style.display = 'none';
+                } else {
+                    document.getElementById('loadingModal').style.display = 'block';
+                    document.getElementById('progressText').innerText = `Generated: ${data.progress}`;
+                    setTimeout(checkJobProgress, 2000); // Revisar cada 5 segundos
+                }
+            });
+        }
+        checkJobProgress();
     </script>
 @endsection

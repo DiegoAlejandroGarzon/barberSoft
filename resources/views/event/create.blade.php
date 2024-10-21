@@ -47,40 +47,6 @@
                         @enderror
                     </div>
 
-                    <!-- Departamento -->
-                    <div class="mt-3">
-                        <x-base.form-label for="department_id">Departamento</x-base.form-label>
-                        <x-base.tom-select
-                            class="w-full {{ $errors->has('department_id') ? 'border-red-500' : '' }}"
-                            id="department_id"
-                            name="department_id"
-                            onchange="filterCities()"
-                        >
-                            <option></option>
-                            @foreach ($departments as $department)
-                                <option value="{{$department->id}}" {{ old('department_id') == $department->id ? 'selected' : '' }}>{{ $department->code_dane }} - {{ $department->name }}</option>
-                            @endforeach
-                        </x-base.tom-select>
-                        @error('department_id')
-                            <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
-                        @enderror
-                    </div>
-
-                    <!-- Ciudad -->
-                    <div class="mt-3">
-                        <x-base.form-label for="city_id">Ciudad</x-base.form-label>
-                        <x-base.tom-select
-                            class="w-full {{ $errors->has('city_id') ? 'border-red-500' : '' }}"
-                            id="city_id"
-                            name="city_id"
-                        >
-                            <option></option>
-                        </x-base.tom-select>
-                        @error('city_id')
-                            <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
-                        @enderror
-                    </div>
-
                     <div class="mt-3 box">
                         <x-base.form-label class="m-2">Fechas Evento</x-base.form-label>
                         <div class="grid-cols-2 gap-2 sm:grid">

@@ -163,7 +163,9 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/assistants/{idEvent}/massPayload', [EventAssistantController::class, 'showMassPayload'])->name('eventAssistant.massPayload');
     Route::get('/assistants/{idEvent}/courtesyCode', [EventAssistantController::class, 'courtesyCode'])->name('eventAssistant.courtesyCode');
     Route::get('/event-assistant/{id}/pdfTicket', [PDFController::class, 'getPDFEvento'])->name('eventAssistant.getPDFTicket');
-    Route::post('/generate-coupons', [EventAssistantController::class, 'generateCoupons'])->name('generateCoupons');
+    Route::post('/generate-coupons', [CouponController::class, 'createCoupons'])->name('generateCoupons');
+    Route::get('/check-job-status/{eventId}', [CouponController::class, 'checkJobStatus']);
+    Route::get('/job-progress/{eventId}', [CouponController::class, 'getJobProgress'])->name('job-progress');
     Route::get('/get-coupons/{eventId}', [EventAssistantController::class, 'getCoupons']);
 
     //Payloads

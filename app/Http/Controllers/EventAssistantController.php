@@ -881,24 +881,5 @@ class EventAssistantController extends Controller
         $event = Event::find($idEvent);
         return view('eventAssistant.courtesyCode', compact('event'));
     }
-    public function generateCoupons(Request $request)
-    {
-        $eventId = $request->event_id; // Asegúrate de pasar el ID del evento
-        $numberOfCoupons = $request->number_of_coupons; // Número de cupones a generar
 
-        for ($i = 0; $i < $numberOfCoupons; $i++) {
-            Coupon::create([
-                'event_id' => $eventId,
-                'is_consumed' => false,
-                'ticket_type_id' => $request->ticket_type_id,
-            ]);
-        }
-
-        return response()->json(['message' => 'Cupones generados correctamente']);
-    }
-    public function getCoupons($eventId)
-    {
-        $coupons = Coupon::where('event_id', $eventId)->with('ticketType')->get();
-        return response()->json($coupons);
-    }
 }
