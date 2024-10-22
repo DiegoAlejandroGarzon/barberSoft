@@ -53,7 +53,7 @@
 
         <div class="grid-cols-2 gap-2 sm:grid">
             <div class="m-3">
-                <a class="ml-3" href="{{ route('coupons.pdf', ['idEvent' => $idEvent]) }}">
+                <a id="generatePdfMassive" class="ml-3" href="javascript:void(0)">
                     <x-base.button class="mr-2 shadow-md" variant="primary">
                         Generar PDF Masivo Cupones Disponibles
                     </x-base.button>
@@ -182,4 +182,56 @@
         }
         checkJobProgress();
     </script>
+    <script>
+        document.getElementById('generatePdfMassive').addEventListener('click', function () {
+            const idEvent = {{$idEvent}};
+
+            // Obtener cupones disponibles
+            fetch(`/api/coupons/count-available/${idEvent}`)
+                .then(response => response.json())
+                .then(data => {
+                    const totalCoupons = data.total;
+                    const batchSize = 500; // Tamaño del lote
+                    let processedCoupons = 0;
+
+                    if (totalCoupons === 0) {
+                        alert('No hay cupones disponibles para generar.');
+                        return;
+                    }
+
+                    // Llamadas por lote
+                    for (let i = 0; i < totalCoupons; i += batchSize) {
+                        generatePDFBatch(idEvent, i, batchSize);
+                    }
+                });
+        });
+
+        function generatePDFBatch(idEvent, offset, limit) {
+            fetch(`/generate-massive-pdf/${idEvent}?offset=${offset}&limit=${limit}`, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/zip' // Acepta un archivo ZIP
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.blob(); // Obtener el contenido como Blob
+                } else {
+                    throw new Error('Error en la generación del PDF');
+                }
+            })
+            .then(blob => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `cupones_evento_${idEvent}_${new Date().toISOString()}.zip`; // Nombre del archivo
+                document.body.appendChild(a);
+                a.click(); // Simular clic para descargar
+                a.remove(); // Eliminar el elemento
+                window.URL.revokeObjectURL(url); // Liberar memoria
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    </script>
+
 @endsection

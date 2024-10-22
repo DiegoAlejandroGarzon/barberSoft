@@ -61,11 +61,17 @@ class CouponController extends Controller
         // return $pdf->download('Asistente_Evento_' . $asistente->user->name . '.pdf');
     }
 
-    public function generatePDFMasivo($idEvent) //union en un zip
+    public function generatePDFMasivo($idEvent, Request $request)
     {
-        // Obtener todos los cupones no consumidos del evento
+        // Obtener offset y límite de la petición
+        $offset = $request->query('offset', 0);
+        $limit = $request->query('limit', 500);
+
+        // Obtener cupones no consumidos con paginación
         $coupons = Coupon::where('event_id', $idEvent)
             ->where('is_consumed', false)
+            ->skip($offset)
+            ->take($limit)
             ->get();
 
         // Crear un array para almacenar los nombres de los PDFs
@@ -111,6 +117,14 @@ class CouponController extends Controller
         return response()->download($zipPath)->deleteFileAfterSend(true);
     }
 
+    public function countAvailableCoupons($idEvent)
+    {
+        $totalCoupons = Coupon::where('event_id', $idEvent)
+            ->where('is_consumed', false)
+            ->count();
+
+        return response()->json(['total' => $totalCoupons]);
+    }
     public function generatePDFMasivoUnionPaginas($idEvent)
     {
         // Obtener todos los cupones no consumidos del evento

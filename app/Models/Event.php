@@ -24,8 +24,8 @@ class Event extends Model
         'status',
         'address',
         'event_date_end',
-        'color_one',        // Nueva columna para el primer color
-        'color_two',        // Nueva columna para el segundo color
+        'color_one',
+        'color_two',
     ];
 
 
