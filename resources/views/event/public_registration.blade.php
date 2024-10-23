@@ -27,6 +27,12 @@
         --tw-bg-opacity: 1;
         background-color: {{$event->color_one}};
     }
+    @media (max-width: 1280px) {
+        .lg\:overflow-hidden {
+            overflow: hidden;
+            background-color: {{$event->color_one}}; /* Aplica bg-color-one a pantallas mayores de 640px */
+        }
+    }
 </style>
 <div @class([
     'p-3 sm:px-8 relative h-screen lg:overflow-hidden bg-primary xl:bg-white dark:bg-darkmode-800 xl:dark:bg-darkmode-600',
@@ -44,8 +50,7 @@
             <div class="block grid-cols-2 gap-4 xl:grid">
                 <!-- BEGIN: Event Info -->
                 <div class="hidden min-h-screen flex-col xl:flex">
-                    <img class="w-6" src="{{ Vite::asset('resources/images/logo.svg') }}" alt="" />
-                    <span class="ml-3 text-lg text-white"> SSISET </span>
+                    <span class="ml-3 text-lg text-white"> tuBoleta </span>
                     <div class="my-auto">
                         @if ($event->header_image_path)
                         <img class="-intro-x -mt-16 w-1/2" src="{{ asset('storage/' . $event->header_image_path) }}" alt="Imagen del evento" />
@@ -68,6 +73,13 @@
                         <h2 class="intro-x text-center text-2xl font-bold xl:text-left xl:text-3xl">
                             Inscripción para el evento: {{ $event->name }}
                         </h2>
+                        <div class="block xl:hidden">
+                            @if ($event->header_image_path)
+                            <img class="" src="{{ asset('storage/' . $event->header_image_path) }}" alt="Imagen del evento" />
+                            @else
+                            <img class="-intro-x -mt-16 w-1/2" src="{{ Vite::asset('resources/images/illustration.svg') }}" alt="" />
+                            @endif
+                        </div>
                         <p class="intro-x mt-2 text-center text-slate-400 xl:hidden">
                             {{ $event->description }}
                         </p>

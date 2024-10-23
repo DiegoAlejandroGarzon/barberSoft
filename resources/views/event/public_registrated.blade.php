@@ -33,6 +33,12 @@
             --tw-bg-opacity: 1;
             background-color: {{$event->color_one}};
         }
+        @media (max-width: 1280px) {
+            .lg\:overflow-hidden {
+                overflow: hidden;
+                background-color: {{$event->color_one}}; /* Aplica bg-color-one a pantallas mayores de 640px */
+            }
+        }
     </style>
     <div @class([
         'p-3 sm:px-8 relative h-screen lg:overflow-hidden bg-primary xl:bg-white dark:bg-darkmode-800 xl:dark:bg-darkmode-600',
@@ -77,6 +83,15 @@
                         <h2 class="intro-x text-center text-2xl font-bold xl:text-left xl:text-3xl">
                             Se ha generado el siguiente codigo QR para el ingreso al evento: <br> {{ $event->name }}
                         </h2>
+
+                        <div class="block xl:hidden">
+                            @if ($event->header_image_path)
+                            <img class="" src="{{ asset('storage/' . $event->header_image_path) }}" alt="Imagen del evento" />
+                            @else
+                            <img class="-intro-x -mt-16 w-1/2" src="{{ Vite::asset('resources/images/illustration.svg') }}" alt="" />
+                            @endif
+                        </div>
+
                         <p class="intro-x mt-2 text-center text-slate-400 xl:hidden">
                             {{ $event->description }}
                         </p>
