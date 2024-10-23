@@ -84,7 +84,6 @@
 
             <p><strong>Tipo de Ticket:</strong> {{ $eventAssistant->ticketType->name ?? 'N/A' }}</p>
             <p><strong>Fecha de Registro:</strong> {{ $eventAssistant->created_at->format('d/m/Y') }}</p>
-            <p><strong>GUID:</strong> {{ $eventAssistant->guid }}</p>
             <p><strong>Código QR:</strong></p>
             <div class="mt-2">
                 {!! $eventAssistant->qrCode !!}

@@ -98,6 +98,7 @@
 
                         <p><strong>Recuerda Guardar el codigo QR para poder acceder al evento:</strong></p>
                         <p><strong>Código QR:</strong></p>
+                        <p>{{$userName}}</p>
                         <div class="custom-border">
                             <div class="mt-4 mb-4 inline-block" id="qrContainer">
                                 {{ $qrcode }}
@@ -111,8 +112,11 @@
                         </p>
                         <!-- Botón para descargar el QR -->
                         <button id="downloadQRCode" class="mt-4 inline-block bg-success text-white py-2 px-4 rounded">
-                            Descargar Código QR
+                            Descargar Código QR png
                         </button>
+                        <a href="{{ route('event.download.pdf', ['public_link' => $event->public_link, 'id' => $idEventAssistant]) }}" id="downloadQRCode" class="mt-4 inline-block bg-success text-white py-2 px-4 rounded" target="blank">
+                            Descargar Boleta en pdf
+                        </a>
                     </div>
                 </div>
                 <!-- END: Registration Form -->

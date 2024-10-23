@@ -312,6 +312,10 @@ class EventController extends Controller
             // Si no existe, crearlo
             $user = User::create(array_merge($validatedData, ['status' => false]));
         }
+        $userName = null;
+        if($user->name != null){
+            $userName = $user->name." ".$user->lastname;
+        }
         if (!$user->hasRole('assistant')) {
             $assistantRole = Role::firstOrCreate(['name' => 'assistant']); // Crear el rol si no existe
             $user->assignRole($assistantRole);
@@ -366,8 +370,9 @@ class EventController extends Controller
 
         // Generar el código QR y devolver la vista de registro exitoso
         $qrcode = $eventAssistant->qrCode;
+        $idEventAssistant = $eventAssistant->id;
         $message = 'Inscripción exitosa.';
-        return view('event.public_registrated', compact('event', 'qrcode', 'message'));
+        return view('event.public_registrated', compact('event', 'qrcode', 'message', 'userName', 'idEventAssistant'));
     }
 
     public function setRegistrationParameters($id)
