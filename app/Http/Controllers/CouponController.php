@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Exports\CouponExport;
 use App\Jobs\GenerateCouponsJob;
+use App\Jobs\GenerateMassivePDFJob;
 use App\Models\AdditionalParameter;
 use App\Models\Coupon;
 use App\Models\Departament;
@@ -16,6 +17,7 @@ use App\Models\UserEventParameter;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use setasign\Fpdi\Fpdi;
 use Spatie\Permission\Models\Role;
 use Maatwebsite\Excel\Facades\Excel;
@@ -59,6 +61,44 @@ class CouponController extends Controller
         return $pdf->stream('cupon_'.$coupon->numeric_code.'.pdf');
         // Se descarga,
         // return $pdf->download('Asistente_Evento_' . $asistente->user->name . '.pdf');
+    }
+
+    public function generateZipsPdfs($idEvent){
+
+        GenerateMassivePDFJob::dispatch($idEvent);
+        return response()->json(['message' => 'Job iniciado correctamente']);
+    }
+
+    public function getGeneratedZips($idEvent)
+    {
+        // Obtén el nombre del evento correspondiente al ID
+        $event = Event::find($idEvent);
+
+        if (!$event) {
+            return response()->json(['error' => 'Evento no encontrado'], 404);
+        }
+
+        $eventName = str_replace(' ', '_', $event->name); // Normaliza el nombre del evento
+
+        // Obtén todos los archivos de la carpeta 'cupons'
+        $files = Storage::disk('public')->files('cupons');
+
+        // Filtra los archivos que contienen el patrón del evento
+        $eventZips = array_filter($files, function($file) use ($eventName) {
+            return strpos($file, 'cupones_evento_' . $eventName) !== false;
+        });
+
+        // Retorna el listado de archivos ZIP del evento
+        return response()->json(['zips' => array_values($eventZips)]);
+    }
+
+    public function checkJobStatusjob($idEvent)
+    {
+        $jobExists = DB::table('jobs')
+            ->where('payload', 'like', '%"idEvent":'.$idEvent.'%')
+            ->exists();
+
+        return response()->json(['jobRunning' => $jobExists]);
     }
 
     public function generatePDFMasivo($idEvent, Request $request)
@@ -365,7 +405,7 @@ class CouponController extends Controller
     public function checkJobStatus($eventId)
     {
         $jobInProgress = JobStatus::where('event_id', $eventId)
-                                    ->where('status', 'processing')
+                                    ->where('status', 'LIKE', '%processing%')
                                     ->first();
         if ($jobInProgress) {
             return response()->json([

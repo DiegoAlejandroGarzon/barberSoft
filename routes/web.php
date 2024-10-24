@@ -183,6 +183,9 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/api/coupons/count-available/{idEvent}', [CouponController::class, 'countAvailableCoupons']);
     // Route::get('/coupons/{idEvent}/pdf', [CouponController::class, 'generatePDFMasivo'])->name('coupons.pdf');
     Route::get('/generate-massive-pdf/{idEvent}', [CouponController::class, 'generatePDFMasivo'])->name('coupons.pdf');
+    Route::get('/generate-pdf-job/{idEvent}', [CouponController::class, 'generateZipsPdfs']);
+    Route::get('/generated-zips/{idEvent}', [CouponController::class, 'getGeneratedZips']);
+    Route::get('/api/check-job-status/{idEvent}', [CouponController::class, 'checkJobStatusjob']);
     Route::get('/coupons/{idEvent}/xls', [CouponController::class, 'generateExcel'])->name('coupons.excel');
     Route::delete('/coupons/{id}', [CouponController::class, 'destroy'])->name('coupon.delete');
 

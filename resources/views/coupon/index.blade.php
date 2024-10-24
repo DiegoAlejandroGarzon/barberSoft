@@ -59,6 +59,34 @@
                     </x-base.button>
                 </a>
             </div>
+
+        <x-base.preview>
+            <!-- BEGIN: Modal Toggle -->
+            <div class="text-center">
+                <x-base.button
+                    id="viewGeneratedZips" data-tw-toggle="modal" data-tw-target="#basic-modal-preview" as="a" variant="primary" class="mt-4">
+                    Ver Archivos ZIP Generados
+                </x-base.button>
+            </div>
+            <!-- END: Modal Toggle -->
+            <!-- BEGIN: Modal Content -->
+            <x-base.dialog id="basic-modal-preview">
+                <x-base.dialog.panel class="p-10 text-center" size="xl">
+                    <h2>Archivos ZIP generados</h2>
+                    <table id="zipTable" class="table-auto w-full text-left mt-4">
+                        <thead>
+                            <tr>
+                                <th class="px-4 py-2">#</th>
+                                <th class="px-4 py-2">Archivo ZIP</th>
+                            </tr>
+                        </thead>
+                        <tbody id="zipList"></tbody>
+                    </table>
+                </x-base.dialog.panel>
+            </x-base.dialog>
+            <!-- END: Modal Content -->
+        </x-base.preview>
+
             <div class="m-3">
                 <a class="ml-3" href="{{ route('coupons.excel', ['idEvent' => $idEvent]) }}">
                     <x-base.button class="mr-2 shadow-md" variant="primary">
@@ -182,7 +210,7 @@
         }
         checkJobProgress();
     </script>
-    <script>
+    {{-- <script>
         document.getElementById('generatePdfMassive').addEventListener('click', function () {
             const idEvent = {{$idEvent}};
 
@@ -232,6 +260,90 @@
             })
             .catch(error => console.error('Error:', error));
         }
+    </script> --}}
+    <script>
+        document.getElementById('generatePdfMassive').addEventListener('click', function () {
+            const idEvent = {{$idEvent}};
+
+            fetch(`/check-job-status/${idEvent}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'error') {
+                    alert(data.message);
+                    return;
+                }
+
+                // Si no hay jobs en progreso, iniciar generación
+                const modal = document.getElementById('loadingModal');
+                modal.style.display = 'block'; // Mostrar modal
+
+
+                // Iniciar el Job para generar PDFs
+                fetch(`/generate-pdf-job/${idEvent}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        alert(data.message);
+                    })
+                    // .then(response => response.json())
+                    .then(data => {
+                        alert('Se inició la generación de zips.');
+                        checkJobProgress(); // Llamar función para monitorear progreso
+                    })
+                    .catch(error => console.error('Error:', error));
+            });
+        });
+
+        document.getElementById('viewGeneratedZips').addEventListener('click', function () {
+            const idEvent = {{$idEvent}};
+
+            // Obtener los archivos ZIP generados
+            fetch(`/generated-zips/${idEvent}`)
+                .then(response => response.json())
+                .then(data => {
+                    const zipList = document.getElementById('zipList');
+                    zipList.innerHTML = ''; // Limpiar la tabla antes de rellenarla
+
+                    data.zips.forEach(function (zip, index) {
+                        const row = document.createElement('tr');
+
+                        // Columna de índice
+                        const indexCell = document.createElement('td');
+                        indexCell.classList.add('px-4', 'py-2');
+                        indexCell.textContent = index + 1;
+
+                        // Columna del enlace
+                        const linkCell = document.createElement('td');
+                        linkCell.classList.add('px-4', 'py-2');
+
+                        const link = document.createElement('a');
+                        link.href = `/storage/${zip}`;
+                        link.textContent = zip; // Nombre del archivo
+                        link.classList.add('text-blue-500', 'underline'); // Color azul y subrayado
+
+                        linkCell.appendChild(link);
+                        row.appendChild(indexCell);
+                        row.appendChild(linkCell);
+                        zipList.appendChild(row);
+                    });
+
+                    document.getElementById('zipModal').classList.remove('hidden');
+                });
+        });
+
+
+        function checkJobStatus() {
+            const idEvent = {{$idEvent}};
+            fetch(`/check-job-status/${idEvent}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status != "ok") {
+                        alert('Un proceso está en ejecución para este evento.');
+                    } else {
+                        // alert('No hay jobs en ejecución.');
+                    }
+                });
+        }
+        checkJobStatus();
     </script>
 
 @endsection
