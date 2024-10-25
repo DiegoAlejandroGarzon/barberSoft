@@ -176,6 +176,15 @@
                                         </a>
                                     </x-base.tippy>
 
+                                    <x-base.tippy content="Silletería" class="mr-1">
+                                        <a class="mr-3 flex items-center" href="{{ route('seats.index', ['idEvent' => $evento->id]) }}">
+                                                <x-base.lucide
+                                                class="mx-auto block"
+                                                icon="Grid"
+                                            />
+                                        </a>
+                                    </x-base.tippy>
+
                                     <x-base.tippy content="Recaudos" class="mr-1">
                                         <a class="mr-3 flex items-center" href="{{ route('payments.index', ['idEvent' => $evento->id]) }}">
                                             <x-base.lucide

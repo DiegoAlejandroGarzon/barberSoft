@@ -32,6 +32,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\TicketFeatureController;
 use App\Http\Controllers\PDFController;
 use App\Http\Controllers\PaypalController;
+use App\Http\Controllers\SeatController;
 
 Route::get('theme-switcher/{activeTheme}', [ThemeController::class, 'switch'])->name('theme-switcher');
 Route::get('layout-switcher/{activeLayout}', [LayoutController::class, 'switch'])->name('layout-switcher');
@@ -191,6 +192,15 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
     //SELECTS
     Route::get('/cities/{department}', [CityController::class, 'getCitiesByDepartment']);
+
+    //SEATS
+    Route::get('ticket-types/{idEvent}/seats', [SeatController::class, 'index'])->name('seats.index');
+    Route::get('/get-seats-by-ticket-type/{ticketTypeId}', [SeatController::class, 'getSeatsByTicketType']);
+    Route::post('seats/assign/{seat}', [SeatController::class, 'assignSeat'])->name('seats.assign');
+    Route::post('seats/unassign/{seat}', [SeatController::class, 'unassignSeat'])->name('seats.unassign');
+    Route::get('/seats/upload-form/{idEvent}', [SeatController::class, 'showUploadForm'])->name('seats.uploadForm');
+    Route::post('/seats/upload/{idEvent}', [SeatController::class, 'uploadExcel'])->name('seats.upload');
+    Route::get('/get-event-assistants/{ticketTypeId}', [SeatController::class, 'getEventAssistants']);
 });
 
 
