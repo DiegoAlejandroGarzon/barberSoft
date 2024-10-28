@@ -140,11 +140,13 @@
                                         class="w-full {{ $errors->has('id_ticket') ? 'border-red-500' : '' }}"
                                         id="id_ticket"
                                         name="id_ticket"
-                                        onchange="filterCities()"
+                                        onchange="fetchSeatsByTicketType()"
                                     >
                                         <option></option>
                                         @foreach ($ticketTypes as $ticket)
-                                            <option value="{{$ticket->id}}" {{ old('id_ticket') == $ticket->id ? 'selected' : '' }}>{{ $ticket->name }} - ${{ number_format($ticket->price, 0, '', '.') }}</option>
+                                            <option value="{{$ticket->id}}" {{ old('id_ticket') == $ticket->id ? 'selected' : '' }}>
+                                                {{ $ticket->name }} - ${{ number_format($ticket->price, 0, '', '.') }}
+                                            </option>
                                         @endforeach
                                     </x-base.tom-select>
                                     @error('id_ticket')
@@ -152,6 +154,21 @@
                                     @enderror
                                 </div>
 
+                                <!-- Select para asientos, oculto por defecto -->
+                                <div id="seatSelectContainer" class="mt-3" style="display: none;">
+                                    <x-base.form-label for="seat_id">Seleccione Asiento</x-base.form-label>
+                                    <x-base.tom-select
+                                        class="w-full"
+                                        id="seat_id"
+                                        name="seat_id"
+                                    >
+                                        <option></option>
+                                    </x-base.tom-select>
+                                </div>
+
+                                <!-- Contenedor de mensajes si no hay asientos -->
+                                <div id="seatMessage" class="text-gray-500 mt-2"></div>
+                                <br>
                                 <!-- Renderizar campos dinámicamente -->
                                 @if(in_array('name', $selectedFields))
                                     <x-base.form-label for="name">Nombre</x-base.form-label>
@@ -444,4 +461,47 @@
             }
         }
     </script>
+    <!-- JavaScript para manejar el cambio de ticket y traer los asientos -->
+<script>
+    function fetchSeatsByTicketType() {
+        const ticketTypeId = document.getElementById('id_ticket').value;
+        const seatSelectContainer = document.getElementById('seatSelectContainer');
+        const seatSelect = document.getElementById('seat_id');
+        const citySelectTom = document.querySelector('#seat_id').tomselect;
+        const seatMessage = document.getElementById('seatMessage');
+
+        // Limpiar el select de asientos y el mensaje
+        seatSelect.innerHTML = '<option></option>';
+        seatMessage.textContent = '';
+
+        if (ticketTypeId) {
+            fetch(`/get-seats-by-ticket-type/${ticketTypeId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.length >= 1) {
+                        citySelectTom.clearOptions();
+                        flatSeatSinAsignarExist = false;
+                        // Mostrar select si hay más de un asiento
+                        data.forEach(seat => {
+                            if(seat.is_assigned == 0){
+                                citySelectTom.addOption({value: seat.id, text: `${seat.row}-${seat.column}`});
+                                flatSeatSinAsignarExist = true;
+                            }
+                        });
+                        citySelectTom.refreshOptions(false);
+                        seatSelectContainer.style.display = 'block';
+                        seatMessage.textContent = '';
+                        if(!flatSeatSinAsignarExist){
+                            // seatSelectContainer.style.display = 'none';
+                            seatMessage.textContent = 'No hay asientos disponibles para este tipo de ticket.';
+                        }
+                    }
+                })
+                .catch(error => console.error('Error fetching seats:', error));
+        } else {
+            // Ocultar el select de asientos si no hay ticket seleccionado
+            seatSelectContainer.style.display = 'none';
+        }
+    }
+</script>
 @endsection

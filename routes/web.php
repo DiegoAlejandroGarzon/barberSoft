@@ -59,6 +59,7 @@ Route::get('/event-assistant/infoQrCoupon/{id}/{guid}', [CouponController::class
 Route::post('/cuopon/register/{public_link}', [CouponController::class, 'submitPublicRegistration'])->name('coupon.register.submit');
 Route::get('/evento/{public_link}/download-pdf/{id}', [PDFController::class, 'getPDFEvento'])->name('event.download.pdf');
 Route::get('/check-courtesy-code/{eventId}/{code}', [CouponController::class, 'checkCourtesyCode'])->name('check.courtesy.code');
+Route::get('/get-seats-by-ticket-type/{ticketTypeId}', [SeatController::class, 'getSeatsByTicketType']);
 
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
@@ -195,7 +196,6 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
     //SEATS
     Route::get('ticket-types/{idEvent}/seats', [SeatController::class, 'index'])->name('seats.index');
-    Route::get('/get-seats-by-ticket-type/{ticketTypeId}', [SeatController::class, 'getSeatsByTicketType']);
     Route::post('seats/assign/{seat}', [SeatController::class, 'assignSeat'])->name('seats.assign');
     Route::post('seats/unassign/{seat}', [SeatController::class, 'unassignSeat'])->name('seats.unassign');
     Route::get('/seats/upload-form/{idEvent}', [SeatController::class, 'showUploadForm'])->name('seats.uploadForm');

@@ -7,6 +7,7 @@ use App\Models\Coupon;
 use App\Models\Departament;
 use App\Models\Event;
 use App\Models\EventAssistant;
+use App\Models\Seat;
 use App\Models\TicketFeatures;
 use App\Models\TicketType;
 use App\Models\User;
@@ -256,6 +257,29 @@ class EventController extends Controller
             }
         }
 
+        // Verificar si el tipo de ticket tiene asientos registrados
+        $ticketTypeSeats = Seat::where('ticket_type_id', $request->id_ticket)->exists();
+
+        // Si el tipo de ticket tiene asientos y no se envió un seat_id en el request, mostrar error
+        if ($ticketTypeSeats && !$request->seat_id) {
+            return redirect()->back()->with('error', 'Es obligatorio asignar una silla para este tipo de ticket.');
+        }
+
+        // Si el seat_id está presente en el request, hacer las validaciones adicionales
+        if ($request->seat_id) {
+            $seat = Seat::find($request->seat_id);
+
+            // Validar si la silla ya está asignada
+            if ($seat->is_assigned) {
+                return redirect()->back()->with('error', 'Inscripción NO exitosa. SILLA ASIGNADA');
+            }
+
+            // Validar si la silla coincide con el tipo de ticket seleccionado
+            if ($seat->ticket_type_id != $request->id_ticket) {
+                return redirect()->back()->with('error', 'Inscripción NO exitosa. SILLA NO COINCIDE CON TIPO DE TICKET');
+            }
+        }
+
         // Verificar si el evento ya ha finalizado
         $eventAssistantController = new EventAssistantController();
         if ($eventAssistantController->eventoFinalizado($event->id)) {
@@ -348,6 +372,11 @@ class EventController extends Controller
                 $eventAssistant->is_paid = true;
                 $eventAssistant->ticket_type_id = $coupon->ticket_type_id;
                 $eventAssistant->save();
+            }
+            if(isset($seat)){
+                $seat->is_assigned = 1;
+                $seat->event_assistant_id = $eventAssistant->id;
+                $seat->save();
             }
         }
 
