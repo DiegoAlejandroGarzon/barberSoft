@@ -732,14 +732,17 @@ class EventAssistantController extends Controller
 
         // Obtener el correo electrónico del usuario relacionado
         $email = $eventAssistant->user->email;
-        // return $email;
+        $pdfControlle = new PDFController();
+        // Generar el PDF llamando a getPDFEvento
+        $pdfContent = $pdfControlle->getPDFEvento($id, true);
 
-        // Enviar el correo
-        Mail::send('emails.assistant',
-        ['eventAssistant' => $eventAssistant]
-        , function($message) use ($email) {
+        // Enviar el correo con el PDF adjunto
+        Mail::send('emails.assistant', ['eventAssistant' => $eventAssistant], function ($message) use ($email, $pdfContent, $id) {
             $message->to($email)
-                    ->subject('Información del evento');
+                    ->subject('Información del evento')
+                    ->attachData($pdfContent, "ticket{$id}.pdf", [
+                        'mime' => 'application/pdf',
+                    ]);
         });
 
         return response()->json(['message' => 'Email enviado a ' . $email]);

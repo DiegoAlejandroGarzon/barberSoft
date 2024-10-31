@@ -27,13 +27,20 @@ class PDFController extends Controller
 		return $pdf->stream('prueba.pdf');
 	}
 
-	public function getPDFEvento($id){
-
+    public function getPDFEvento($id, $output = false)
+    {
         $eventAssistant = EventAssistant::find($id);
         $qrCodeBase64 = 'data:image/png;base64,' . base64_encode($eventAssistant->qrCode);
-        $pdf = Pdf::loadView('pdf.PDF_TicketEvento2', compact('eventAssistant','qrCodeBase64'));
-        return $pdf->stream('ticket'.$id.'.pdf');
-	}
+        if($output){
+            // Generar el PDF y devolverlo en memoria
+            $pdf = Pdf::loadView('pdf.PDF_TicketEvento2', compact('eventAssistant', 'qrCodeBase64'));
+            return $pdf->output(); // Devolver el PDF en formato binario
+        }else{
+            $pdf = Pdf::loadView('pdf.PDF_TicketEvento2', compact('eventAssistant','qrCodeBase64'));
+            return $pdf->stream('ticket'.$id.'.pdf');
+        }
+
+    }
 
 	public function getPDFEventoQuery($id){
 
