@@ -5,6 +5,7 @@
 @endsection
 
 @section('subcontent')
+<a href="{{ route('eventAssistant.index', ['idEvent' => $event->id]) }}">volver</a>
 <div class="container">
     <h2 class="mb-4">Crear Asistente para el Evento: <b>{{ $event->name }}</b></h2>
 
@@ -24,17 +25,35 @@
                     class="w-full {{ $errors->has('id_ticket') ? 'border-red-500' : '' }}"
                     id="id_ticket"
                     name="id_ticket"
-                    onchange="filterCities()"
+                    onchange="fetchSeatsByTicketType()"
                 >
                     <option></option>
                     @foreach ($ticketTypes as $ticket)
-                        <option value="{{$ticket->id}}" {{ old('id_ticket') == $ticket->id ? 'selected' : '' }}>{{ $ticket->name }}</option>
+                        <option value="{{$ticket->id}}" {{ old('id_ticket') == $ticket->id ? 'selected' : '' }}>
+                            {{ $ticket->name }} - ${{ number_format($ticket->price, 0, '', '.') }}
+                        </option>
                     @endforeach
                 </x-base.tom-select>
                 @error('id_ticket')
                     <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
                 @enderror
             </div>
+
+            <!-- Select para asientos, oculto por defecto -->
+            <div id="seatSelectContainer" class="mt-3" style="display: none;">
+                <x-base.form-label for="seat_id">Seleccione Asiento</x-base.form-label>
+                <x-base.tom-select
+                    class="w-full"
+                    id="seat_id"
+                    name="seat_id"
+                >
+                    <option></option>
+                </x-base.tom-select>
+            </div>
+
+            <!-- Contenedor de mensajes si no hay asientos -->
+            <div id="seatMessage" class="text-gray-500 mt-2"></div>
+            <br>
 
             @if(in_array('name', $selectedFields))
                 <x-base.form-label for="name">Nombre</x-base.form-label>
@@ -413,5 +432,48 @@
             });
         }
     });
+</script>
+
+<script>
+    function fetchSeatsByTicketType() {
+        const ticketTypeId = document.getElementById('id_ticket').value;
+        const seatSelectContainer = document.getElementById('seatSelectContainer');
+        const seatSelect = document.getElementById('seat_id');
+        const citySelectTom = document.querySelector('#seat_id').tomselect;
+        const seatMessage = document.getElementById('seatMessage');
+
+        // Limpiar el select de asientos y el mensaje
+        seatSelect.innerHTML = '<option></option>';
+        seatMessage.textContent = '';
+
+        if (ticketTypeId) {
+            fetch(`/get-seats-by-ticket-type/${ticketTypeId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.length >= 1) {
+                        citySelectTom.clearOptions();
+                        flatSeatSinAsignarExist = false;
+                        // Mostrar select si hay más de un asiento
+                        data.forEach(seat => {
+                            if(seat.is_assigned == 0){
+                                citySelectTom.addOption({value: seat.id, text: `${seat.row}-${seat.column}`});
+                                flatSeatSinAsignarExist = true;
+                            }
+                        });
+                        citySelectTom.refreshOptions(false);
+                        seatSelectContainer.style.display = 'block';
+                        seatMessage.textContent = '';
+                        if(!flatSeatSinAsignarExist){
+                            // seatSelectContainer.style.display = 'none';
+                            seatMessage.textContent = 'No hay asientos disponibles para este tipo de ticket.';
+                        }
+                    }
+                })
+                .catch(error => console.error('Error fetching seats:', error));
+        } else {
+            // Ocultar el select de asientos si no hay ticket seleccionado
+            seatSelectContainer.style.display = 'none';
+        }
+    }
 </script>
 @endsection

@@ -25,6 +25,7 @@ use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Mail;
 use App\Http\Controllers\PDFController;
 use App\Models\Coupon;
+use App\Models\Seat;
 
 class EventAssistantController extends Controller
 {
@@ -223,6 +224,29 @@ class EventAssistantController extends Controller
         }
         $event = Event::find($idEvent);
 
+        // Verificar si el tipo de ticket tiene asientos registrados
+        $ticketTypeSeats = Seat::where('ticket_type_id', $request->id_ticket)->exists();
+
+        // Si el tipo de ticket tiene asientos y no se envió un seat_id en el request, mostrar error
+        if ($ticketTypeSeats && !$request->seat_id) {
+            return redirect()->back()->with('error', 'Es obligatorio asignar una silla para este tipo de ticket.');
+        }
+
+        // Si el seat_id está presente en el request, hacer las validaciones adicionales
+        if ($request->seat_id) {
+            $seat = Seat::find($request->seat_id);
+
+            // Validar si la silla ya está asignada
+            if ($seat->is_assigned) {
+                return redirect()->back()->with('error', 'Inscripción NO exitosa. SILLA ASIGNADA');
+            }
+
+            // Validar si la silla coincide con el tipo de ticket seleccionado
+            if ($seat->ticket_type_id != $request->id_ticket) {
+                return redirect()->back()->with('error', 'Inscripción NO exitosa. SILLA NO COINCIDE CON TIPO DE TICKET');
+            }
+        }
+
         $registrationParameters = json_decode($event->registration_parameters, true) ?? [];
 
         // Construir reglas de validación dinámicas
@@ -265,7 +289,7 @@ class EventAssistantController extends Controller
             ->first();
         }
 
-        if ($user) {
+        if (isset($user)) {
             // Actualizar el usuario existente
             $user->update($validatedData);
         } else {
@@ -301,6 +325,12 @@ class EventAssistantController extends Controller
                 'guardian_id' => $guardianId,
             ]
         );
+
+        if(isset($seat)){
+            $seat->is_assigned = 1;
+            $seat->event_assistant_id = $eventAssistant->id;
+            $seat->save();
+        }
 
         // Obtener los parámetros adicionales definidos para el evento
         $definedParameters = AdditionalParameter::where('event_id', $event->id)->get();
