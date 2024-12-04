@@ -83,7 +83,7 @@
                 </div>
                 </div>
 
-               
+
                 <div class="row row_phone_cumpleaños">
 
                      <!-- Fecha Cumpleaños -->
@@ -100,7 +100,7 @@
                             <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
                         @enderror
                     </div>
-                    
+
                     <!-- Phone -->
                     <div class="col mt-3 col_phone">
                         <x-base.form-label for="phone">Teléfono</x-base.form-label>
@@ -116,9 +116,9 @@
                             <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
                         @enderror
                     </div>
-                   
+
                 </div>
- 
+
                  <!-- Correo Electrónico -->
                  <div class="mt-3">
                     <x-base.form-label for="email">Correo Electrónico</x-base.form-label>
@@ -134,8 +134,8 @@
                         <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
                     @enderror
                 </div>
-                
-                
+
+
 
                 <!-- Contraseña -->
                 <div class="row row_contraseña">
@@ -167,9 +167,6 @@
                     </div>
                 </div>
 
-                
-                
-
                 <!-- Role -->
                 <div class="mt-3">
                     <x-base.form-label for="role_id">Role</x-base.form-label>
@@ -187,7 +184,6 @@
                         <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
                     @enderror
                 </div>
-
 
                 <div class="row row_dptocity">
                     <!-- Departamento -->
@@ -224,6 +220,24 @@
                             <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
                         @enderror
                     </div>
+                </div>
+
+                <!-- Barberia -->
+                <div class="mt-3">
+                    <x-base.form-label for="barberia_id">Barberia</x-base.form-label>
+                    <x-base.tom-select
+                        class="w-full {{ $errors->has('barberia_id') ? 'border-red-500' : '' }}"
+                        id="barberia_id"
+                        name="barberia_id"
+                    >
+                        <option></option>
+                        @foreach ($barberias as $barberia)
+                            <option value="{{$barberia->id}}" {{ old('barberia_id') == $barberia->id ? 'selected' : '' }}>{{ $barberia->nombre }}</option>
+                        @endforeach
+                    </x-base.tom-select>
+                    @error('barberia_id')
+                        <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                    @enderror
                 </div>
 
                 <!-- Status -->
@@ -311,7 +325,7 @@
                     .catch(error => console.error('Error fetching cities:', error));
             }
         }
-       
+
 
     </script>
 @endsection

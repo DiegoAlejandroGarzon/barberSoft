@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Barberia;
 use App\Models\Departament;
 use App\Models\City;
 use App\Models\User;
@@ -21,7 +22,7 @@ class UserController extends Controller
     {
         $query = User::with('roles')
         ->whereDoesntHave('roles', function ($q) {
-            $q->where('name', 'assistant');
+            $q->where('name', 'super-admin');
         })
         ;
         if ($request->has('search')) {
@@ -44,8 +45,9 @@ class UserController extends Controller
     public function create(){
         $roles = Role::all();
         $departments = Departament::all(); // Obtener los departamentos
+        $barberias = Barberia::all();
 
-        return view('users.create', compact(['roles', 'departments']));
+        return view('users.create', compact(['roles', 'departments', 'barberias']));
     }
 
     public function store(Request $request){
@@ -59,9 +61,10 @@ class UserController extends Controller
             'department_id' => 'required|exists:departments,id',
             'city_id' => 'required|exists:cities,id',
             'birth_date' => 'nullable|date',
-            'phone' => 'required|string|max:15', // Validación para phone
-            'type_document' => 'required|string|max:3', // Validación para type_document
-            'document_number' => 'required|string|max:20|unique:users,document_number', // Validación para document_number
+            'phone' => 'required|string|max:15',
+            'type_document' => 'required|string|max:3',
+            'document_number' => 'required|string|max:20|unique:users,document_number',
+            'barberia_id' => 'required|exists:barberias,id',
         ]);
 
         $user = new User();
@@ -72,9 +75,10 @@ class UserController extends Controller
         $user->status = $request->status;
         $user->city_id = $request->city_id;
         $user->birth_date = $request->birth_date;
-        $user->phone = $request->phone; // Asignación del campo phone
-        $user->type_document = $request->type_document; // Asignación del campo type_document
-        $user->document_number = $request->document_number; // Asignación del campo document_number
+        $user->phone = $request->phone;
+        $user->type_document = $request->type_document;
+        $user->document_number = $request->document_number;
+        $user->barberia_id = $request->barberia_id;
         $user->save();
 
         //validar ciudades
@@ -92,7 +96,8 @@ class UserController extends Controller
         $user = User::find($id);
         $roles = Role::all();
         $departments = Departament::all();
-        return view('users.update', compact(['user', 'roles', 'departments']));
+        $barberias = Barberia::all();
+        return view('users.update', compact(['user', 'roles', 'departments', 'barberias']));
     }
 
     public function update(Request $request){
@@ -119,6 +124,7 @@ class UserController extends Controller
             'department_id' => 'required|exists:departments,id',
             'city_id' => 'required|exists:cities,id',
             'birth_date' => 'nullable|date',
+            'barberia_id' => 'required|exists:barberias,id',
         ]);
 
         $user = User::findOrFail($userId);
@@ -131,6 +137,7 @@ class UserController extends Controller
         $user->status = $request->status;
         $user->city_id = $request->city_id;
         $user->birth_date = $request->birth_date;
+        $user->barberia_id = $request->barberia_id;
         $user->save();
 
         // Asignar el rol

@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('profile_photo_path')->nullable();
             $table->string('type_document')->nullable();
             $table->string('document_number')->nullable();
-            $table->foreignId('barberia_id')->constrained('barberias')->onDelete('cascade');
+            $table->foreignId('barberia_id')->nullable()->constrained('barberias')->onDelete('cascade');
             $table->rememberToken();
             $table->timestamps();
         });

@@ -79,7 +79,7 @@
                         @enderror
                     </div>
                 </div>
-                
+
                 <div class="row row_phone_cumpleaños">
 
                     <div class="col mt-3 col_cumpleaños">
@@ -111,7 +111,7 @@
                         @enderror
                     </div>
 
-                    
+
                 </div>
 
                 <div class="mt-3">
@@ -148,7 +148,7 @@
                     @enderror
                 </div>
                 @endif
-                
+
                 <div class="row row_dptocity">
                     <!-- Department -->
                     <div class="col mt-3 col_depto">
@@ -192,6 +192,25 @@
                         @enderror
                     </div>
                 </div>
+                <!-- Barberia -->
+                <div class="mt-3">
+                    <x-base.form-label for="barberia_id">Barberia</x-base.form-label>
+                    <x-base.tom-select
+                        class="w-full {{ $errors->has('barberia_id') ? 'border-red-500' : '' }}"
+                        id="barberia_id"
+                        name="barberia_id"
+                    >
+                        <option></option>
+                        @foreach ($barberias as $barberia)
+                            {{-- <option value="{{$barberia->id}}" {{ old('barberia_id') == $barberia->id ? 'selected' : '' }}>{{ $barberia->nombre }}</option> --}}
+                            <option value="{{$barberia->id}}" {{ old('barberia_id', $user->barberia_id) == $barberia->id ? 'selected' : '' }}>{{ $barberia->nombre }}</option>
+                        @endforeach
+                    </x-base.tom-select>
+                    @error('barberia_id')
+                        <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                    @enderror
+                </div>
+
                 @if(!isset($profileUpdate))
                 <div class="mt-3">
                     <label>Status</label>

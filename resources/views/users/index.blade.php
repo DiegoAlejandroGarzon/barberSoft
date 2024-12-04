@@ -30,6 +30,7 @@
                     <x-base.table.tr>
                         <x-base.table.th class="whitespace-nowrap border-b-0">No.</x-base.table.th>
                         <x-base.table.th class="whitespace-nowrap border-b-0">Nombre</x-base.table.th>
+                        <x-base.table.th class="whitespace-nowrap border-b-0 text-center">Correo</x-base.table.th>
                         <x-base.table.th class="whitespace-nowrap border-b-0 text-center">Telefono</x-base.table.th>
                         <x-base.table.th class="whitespace-nowrap border-b-0 text-center">Role</x-base.table.th>
                         <x-base.table.th class="whitespace-nowrap border-b-0 text-center">Estado</x-base.table.th>
@@ -45,6 +46,9 @@
                             </x-base.table.td>
                             <x-base.table.td class="box rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600">
                                 <div class="whitespace-nowrap font-medium">{{ $usuario->name }} {{ $usuario->lastname }}</div>
+                            </x-base.table.td>
+                            <x-base.table.td class="box rounded-l-none rounded-r-none border-x-0 text-center shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600">
+                                {{ $usuario->email }}
                             </x-base.table.td>
                             <x-base.table.td class="box rounded-l-none rounded-r-none border-x-0 text-center shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600">
                                 {{ $usuario->phone }}
