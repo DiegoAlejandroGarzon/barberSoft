@@ -15,14 +15,14 @@
                 <!-- BEGIN: Login Info -->
                 <div class="hidden min-h-screen flex-col xl:flex">
                         <img class="w-6" src="{{ Vite::asset('resources/images/logo.svg') }}" alt="" />
-                        <span class="ml-3 text-lg text-white"> tuBoleta </span>
+                        <span class="ml-3 text-lg text-white"> barberShop </span>
                     <div class="my-auto">
-                        <img class="-intro-x -mt-16 w-1/2" src="{{ Vite::asset('resources/images/illustration.svg') }}" alt="" />
+                        <img class="-intro-x -mt-16 w-1/2" src="{{ Vite::asset('resources/images/barberSoft.webp') }}" alt="" />
                         <div class="-intro-x mt-10 text-4xl font-medium leading-tight text-white">
-                            PROYECTO EVENTOS
+                            BarberShop
                         </div>
                         <div class="-intro-x mt-5 text-lg text-white text-opacity-70 dark:text-slate-400">
-                            Registrar eventos y llevar su gestión
+                            llevar la gestión de su barbería a un nuevo nivel
                         </div>
                     </div>
                 </div>

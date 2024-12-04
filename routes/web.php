@@ -26,6 +26,7 @@ use App\Http\Controllers\EventController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\AjaxController;
+use App\Http\Controllers\BarberiaController;
 use App\Http\Controllers\CouponController;
 use App\Http\Controllers\PaymentController;
 use Illuminate\Support\Facades\Auth;
@@ -89,6 +90,14 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/city/update/{id}',[CityController::class,'edit'])->name('city.edit');
     Route::post('/city/update/',[CityController::class,'update'])->name('city.update');
     Route::get('/city/delete/{id}',[CityController::class,'delete'])->name('city.delete');
+
+    //CRUS BARBERIAS
+    Route::get('/barberias',[BarberiaController::class,'index'])->name('barberia.index');
+    Route::get('/barberia/create',[BarberiaController::class,'create'])->name('barberia.create');
+    Route::post('/barberia/create',[BarberiaController::class,'store'])->name('barberia.store');
+    Route::get('/barberia/update/{id}',[BarberiaController::class,'edit'])->name('barberia.edit');
+    Route::put('/barberia/update/{id}',[BarberiaController::class,'update'])->name('barberia.update');
+    Route::delete('/barberia/delete/{id}',[BarberiaController::class,'destroy'])->name('barberia.delete');
 
     //CRUD  CONFIGURACION TICKETFREATURE
     Route::get('/ticketFeatures',[TicketFeatureController::class,'index'])->name('ticketFeatures.index');

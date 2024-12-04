@@ -26,6 +26,76 @@ class SideMenu
                     ]
                 ]
             ],
+            'Barberias' => [
+                'icon' => 'file-text',
+                'title' => 'Barberías',
+                'sub_menu' => [
+                    'event.create' => [
+                        'icon' => 'file-text',
+                        'route_name' => 'barberia.create',
+                        'title' => 'Crear Barbería'
+                    ],
+                    'event.index' => [
+                        'icon' => 'file-text',
+                        'route_name' => 'barberia.index',
+                        'title' => 'Lista de Barberías'
+                    ]
+                ]
+            ],
+            'Barberos' => [
+                'icon' => 'file-text',
+                'title' => 'Barberos',
+                'sub_menu' => [
+                    'event.create' => [
+                        'icon' => 'file-text',
+                        'route_name' => 'event.create',
+                        'title' => 'Crear Barbero'
+                    ],
+                    'event.index' => [
+                        'icon' => 'file-text',
+                        'route_name' => 'event.index',
+                        'title' => 'Lista de Barberos'
+                    ]
+                ]
+            ],
+            'Citas' => [
+                'icon' => 'file-text',
+                'title' => 'Citas',
+                'sub_menu' => [
+                    'event.create' => [
+                        'icon' => 'file-text',
+                        'route_name' => 'event.create',
+                        'title' => 'Crear Cita'
+                    ],
+                    'event.index' => [
+                        'icon' => 'file-text',
+                        'route_name' => 'event.index',
+                        'title' => 'Lista de Citas'
+                    ]
+                ]
+            ],
+            'Configuraciones' => [
+                'icon' => 'file-text',
+                'title' => 'Configuraciones',
+                'sub_menu' => [
+                    'configuration.department' => [
+                        'icon' => 'file-text',
+                        'route_name' => 'department.index',
+                        'title' => 'Departamentos'
+                    ],
+                    'configuration.city' => [
+                        'icon' => 'file-text',
+                        'route_name' => 'city.index',
+                        'title' => 'ciudades'
+                    ],
+                    // 'configuration.ticketFeature' => [
+                    //     'icon' => 'file-text',
+                    //     'route_name' => 'ticketFeatures.index',
+                    //     'title' => 'tickets'
+                    // ]
+                ]
+            ],
+            'divider',
             'Eventos' => [
                 'icon' => 'file-text',
                 'title' => 'Eventos',
@@ -50,27 +120,6 @@ class SideMenu
                         'icon' => 'file-text',
                         'route_name' => 'checkout.paypal',
                         'title' => 'Paypal'
-                    ]
-                ]
-            ],
-            'Configuraciones' => [
-                'icon' => 'file-text',
-                'title' => 'Configuraciones',
-                'sub_menu' => [
-                    'configuration.department' => [
-                        'icon' => 'file-text',
-                        'route_name' => 'department.index',
-                        'title' => 'Departamentos'
-                    ],
-                    'configuration.city' => [
-                        'icon' => 'file-text',
-                        'route_name' => 'city.index',
-                        'title' => 'ciudades'
-                    ],
-                    'configuration.ticketFeature' => [
-                        'icon' => 'file-text',
-                        'route_name' => 'ticketFeatures.index',
-                        'title' => 'tickets'
                     ]
                 ]
             ],
