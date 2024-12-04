@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Barberia extends Model
 {
@@ -18,12 +19,6 @@ class Barberia extends Model
         'status',
         'logo',
     ];
-
-    // Relación con los barberos
-    public function barberos()
-    {
-        return $this->hasMany(Barbero::class);
-    }
 
     // Relación con los horarios de la barbería
     public function horarios()
@@ -41,5 +36,10 @@ class Barberia extends Model
     public function servicios()
     {
         return $this->hasManyThrough(Servicio::class, Barbero::class);
+    }
+
+    public function barberos(): BelongsToMany
+    {
+        return $this->belongsToMany(Barbero::class, 'barbero_barberia');
     }
 }

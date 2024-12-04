@@ -13,11 +13,15 @@ return new class extends Migration
     {
         Schema::create('barberos', function (Blueprint $table) {
             $table->id();
-            $table->string('nombre');
             $table->foreignId('usuario_id')->constrained('users')->onDelete('cascade');
+            $table->string('foto')->nullable();
+            $table->timestamps();
+        });
+        Schema::create('barbero_barberia', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('barbero_id')->constrained('barberos')->onDelete('cascade');
             $table->foreignId('barberia_id')->constrained('barberias')->onDelete('cascade');
             $table->boolean('estado')->default(true);
-            $table->string('foto')->nullable();
             $table->timestamps();
         });
     }
