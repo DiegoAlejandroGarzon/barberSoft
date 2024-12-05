@@ -86,13 +86,13 @@ class SideMenu
                     'configuration.city' => [
                         'icon' => 'file-text',
                         'route_name' => 'city.index',
-                        'title' => 'ciudades'
+                        'title' => 'Ciudades'
                     ],
-                    // 'configuration.ticketFeature' => [
-                    //     'icon' => 'file-text',
-                    //     'route_name' => 'ticketFeatures.index',
-                    //     'title' => 'tickets'
-                    // ]
+                    'configuration.servicio' => [
+                        'icon' => 'file-text',
+                        'route_name' => 'servicio.index',
+                        'title' => 'Servicios'
+                    ],
                 ]
             ],
             'divider',

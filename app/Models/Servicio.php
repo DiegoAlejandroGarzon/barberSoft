@@ -14,17 +14,22 @@ class Servicio extends Model
     protected $fillable = [
         'nombre',
         'precio',
+        'descripcion',
+        'barberia_id',
     ];
 
-    // Relación con los barberos (muchos a muchos)
     public function barberos()
     {
         return $this->belongsToMany(Barbero::class, 'barbero_servicios');
     }
 
-    // Relación con las citas (muchos a muchos)
     public function citas()
     {
         return $this->belongsToMany(Cita::class, 'cita_servicios');
+    }
+
+    public function barberia()
+    {
+        return $this->belongsTo(Barberia::class, 'barberia_id');
     }
 }

@@ -34,6 +34,7 @@ use App\Http\Controllers\TicketFeatureController;
 use App\Http\Controllers\PDFController;
 use App\Http\Controllers\PaypalController;
 use App\Http\Controllers\SeatController;
+use App\Http\Controllers\ServicioController;
 
 Route::get('theme-switcher/{activeTheme}', [ThemeController::class, 'switch'])->name('theme-switcher');
 Route::get('layout-switcher/{activeLayout}', [LayoutController::class, 'switch'])->name('layout-switcher');
@@ -82,6 +83,14 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/department/update/{id}',[DepartmentController::class,'edit'])->name('department.edit');
     Route::post('/department/update/',[DepartmentController::class,'update'])->name('department.update');
     Route::get('/department/delete/{id}',[DepartmentController::class,'delete'])->name('department.delete');
+
+    //CRUD SERVICIOS
+    Route::get('/servicios',[ServicioController::class,'index'])->name('servicio.index');
+    Route::get('/servicios/create',[ServicioController::class,'create'])->name('servicio.create');
+    Route::post('/servicios/create',[ServicioController::class,'store'])->name('servicio.store');
+    Route::get('/servicios/update/{id}',[ServicioController::class,'edit'])->name('servicio.edit');
+    Route::put('/servicios/update/{id}',[ServicioController::class,'update'])->name('servicio.update');
+    Route::delete('/servicios/delete/{id}',[ServicioController::class,'destroy'])->name('servicio.delete');
 
     //CRUD CONFIGURACION CIUDAD
     Route::get('/city',[CityController::class,'list'])->name('city.index');

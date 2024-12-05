@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('nombre');
             $table->integer('precio');
+            $table->string('descripcion');
+            $table->foreignId('barberia_id')->nullable()->constrained('barberias')->onDelete('cascade');
             $table->timestamps();
         });
     }
