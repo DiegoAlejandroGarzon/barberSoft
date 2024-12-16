@@ -64,6 +64,18 @@ class CitaController extends Controller
             'fecha_hora'        => 'required|date',
         ]);
 
+        // Verificar si ya existe una cita para el mismo barbero en la misma fecha y hora
+        $citaExistente = Cita::where('barbero_id', $request->barbero_id)
+            ->where('fecha_hora', $request->fecha_hora)
+            ->first();
+
+        if ($citaExistente) {
+            return redirect()
+                ->back()
+                ->withErrors(['error' => 'Ya existe una cita para este barbero en esta fecha y hora.'])
+                ->withInput();
+        }
+
         // Buscar o crear el cliente
         $cliente = Cliente::firstOrCreate(
             [
@@ -78,7 +90,6 @@ class CitaController extends Controller
             ]
         );
 
-        // Crear la cita
         $cita = new Cita();
         $cita->cliente_id   = $cliente->id;
         $cita->barbero_id   = $request->barbero_id;
@@ -134,6 +145,18 @@ class CitaController extends Controller
             'servicios.*' => 'exists:servicios,id',
             'fecha_hora' => 'required|date',
         ]);
+
+        // Verificar si ya existe una cita para el mismo barbero en la misma fecha y hora
+        $citaExistente = Cita::where('barbero_id', $request->barbero_id)
+            ->where('fecha_hora', $request->fecha_hora)
+            ->first();
+
+        if ($citaExistente) {
+            return redirect()
+                ->back()
+                ->withErrors(['error' => 'Ya existe una cita para este barbero en esta fecha y hora.'])
+                ->withInput();
+        }
 
         // Buscar la cita
         $cita = Cita::findOrFail($id);
