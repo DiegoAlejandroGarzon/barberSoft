@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Str;
 
 class Barberia extends Model
 {
@@ -19,6 +20,17 @@ class Barberia extends Model
         'status',
         'logo',
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            if (empty($model->guid)) {
+                $model->guid = Str::uuid();
+            }
+        });
+    }
 
     // Relación con los horarios de la barbería
     public function horarios()

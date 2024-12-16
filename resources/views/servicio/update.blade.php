@@ -11,7 +11,7 @@
     <div class="mt-5 grid grid-cols-12 gap-6">
         <div class="intro-y col-span-12 lg:col-span-12">
             <div class="intro-y box p-5">
-            <form method="POST" action="{{ route('servicio.update', ['id' => $servicio->id]) }}" >
+            <form method="POST" action="{{ route('barbero.update', ['id' => $servicio->id]) }}" >
                 @csrf
                 @method('PUT')
 

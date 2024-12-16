@@ -9,6 +9,7 @@ use Spatie\Permission\Models\Role;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class BarberiaController extends Controller
 {
@@ -100,40 +101,40 @@ class BarberiaController extends Controller
      * Update the specified resource in storage.
      */
     public function update(Request $request, $id)
-{
-    // Validar los datos recibidos
-    $request->validate([
-        'nombre' => 'required|string|max:255',
-        'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-    ]);
+    {
+        // Validar los datos recibidos
+        $request->validate([
+            'nombre' => 'required|string|max:255',
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ]);
 
-    // Encontrar la barbería por su ID
-    $barberia = Barberia::findOrFail($id);
+        // Encontrar la barbería por su ID
+        $barberia = Barberia::findOrFail($id);
 
-    // Si hay un nuevo logo, lo subimos
-    if ($request->hasFile('logo')) {
-        // Eliminar el logo anterior si existe
-        if ($barberia->logo) {
-            Storage::disk('public')->delete($barberia->logo);
+        // Si hay un nuevo logo, lo subimos
+        if ($request->hasFile('logo')) {
+            // Eliminar el logo anterior si existe
+            if ($barberia->logo) {
+                Storage::disk('public')->delete($barberia->logo);
+            }
+
+            // Reemplazar los espacios en el nombre de la barbería con guiones bajos
+            $fileName = strtolower(str_replace(' ', '_', $request->nombre)) . '-' . now()->format('Y-m-d_H-i-s') . '.' . $request->logo->extension();
+            $logoPath = $request->file('logo')->storeAs('barberias/logos', $fileName, 'public');
+        } else {
+            // Si no se sube un nuevo logo, mantenemos el logo actual
+            $logoPath = $barberia->logo;
         }
+        $barberia->guid = Str::uuid(); // Generar manualmente
+        // Actualizar la barbería
+        $barberia->update([
+            'nombre' => $request->nombre,
+            'logo' => $logoPath,
+        ]);
 
-        // Reemplazar los espacios en el nombre de la barbería con guiones bajos
-        $fileName = strtolower(str_replace(' ', '_', $request->nombre)) . '-' . now()->format('Y-m-d_H-i-s') . '.' . $request->logo->extension();
-        $logoPath = $request->file('logo')->storeAs('barberias/logos', $fileName, 'public');
-    } else {
-        // Si no se sube un nuevo logo, mantenemos el logo actual
-        $logoPath = $barberia->logo;
+        // Redirigir con mensaje de éxito
+        return redirect()->route('barberia.index')->with('success', 'Barbería actualizada correctamente.');
     }
-
-    // Actualizar la barbería
-    $barberia->update([
-        'nombre' => $request->nombre,
-        'logo' => $logoPath,
-    ]);
-
-    // Redirigir con mensaje de éxito
-    return redirect()->route('barberia.index')->with('success', 'Barbería actualizada correctamente.');
-}
 
     /**
      * Remove the specified resource from storage.

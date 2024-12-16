@@ -27,6 +27,9 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\AjaxController;
 use App\Http\Controllers\BarberiaController;
+use App\Http\Controllers\BarberoController;
+use App\Http\Controllers\CitaController;
+use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\CouponController;
 use App\Http\Controllers\PaymentController;
 use Illuminate\Support\Facades\Auth;
@@ -38,7 +41,7 @@ use App\Http\Controllers\ServicioController;
 
 Route::get('theme-switcher/{activeTheme}', [ThemeController::class, 'switch'])->name('theme-switcher');
 Route::get('layout-switcher/{activeLayout}', [LayoutController::class, 'switch'])->name('layout-switcher');
-Route::post('/login', [LoginController::class, 'login'])->name('login');
+Route::post('/login', [LoginController::class, 'login']);
 Route::get('login', [PageController::class, 'login'])->name('login');
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 Route::get('/RegisterUsers', [UserController::class, 'RegisterUsers'])->name('users.register');
@@ -65,7 +68,6 @@ Route::get('/get-seats-by-ticket-type/{ticketTypeId}', [SeatController::class, '
 
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
-    Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
     Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
     //CRUD USUARIOS
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
@@ -108,6 +110,25 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::put('/barberia/update/{id}',[BarberiaController::class,'update'])->name('barberia.update');
     Route::delete('/barberia/delete/{id}',[BarberiaController::class,'destroy'])->name('barberia.delete');
 
+    //CRUS BARBEROS
+    Route::get('/barberos',[BarberoController::class,'index'])->name('barbero.index');
+    Route::get('/barberos/create',[BarberoController::class,'create'])->name('barbero.create');
+    Route::post('/barberos/create',[BarberoController::class,'store'])->name('barbero.store');
+    Route::get('/barbero/update/{id}',[BarberoController::class,'edit'])->name('barbero.edit');
+    Route::put('/barbero/update/{id}',[BarberoController::class,'update'])->name('barbero.update');
+    Route::delete('/barberos/delete/{id}',[BarberoController::class,'destroy'])->name('barbero.delete');
+    Route::get('/barberos/{id}/servicios ',[BarberoController::class,'obtenerServicios']);
+
+    //CRUS BARBEROS
+    Route::get('/citas',[CitaController::class,'index'])->name('citas.index');
+    Route::get('/cita/create',[CitaController::class,'create'])->name('citas.create');
+    Route::post('/cita/create',[CitaController::class,'store'])->name('citas.store');
+    Route::get('/cita/update/{id}',[CitaController::class,'edit'])->name('citas.edit');
+    Route::put('/cita/update/{id}',[CitaController::class,'update'])->name('citas.update');
+    Route::delete('/cita/delete/{id}',[CitaController::class,'destroy'])->name('citas.delete');
+    Route::get('/citas/dashboard', [CitaController::class, 'citesDashBoard'])->name('cites.dashboard');
+
+
     //CRUD  CONFIGURACION TICKETFREATURE
     Route::get('/ticketFeatures',[TicketFeatureController::class,'index'])->name('ticketFeatures.index');
     Route::get('/ticketFeaturess/create',[TicketFeatureController::class,'create'])->name('ticketFeatures.create');
@@ -116,6 +137,9 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post('/ticketFeatures/update/',[TicketFeatureController::class,'update'])->name('ticketFeatures.update');
     Route::get('/ticketFeatures/delete/{id}',[TicketFeatureController::class,'delete'])->name('ticketFeatures.delete');
 
+    //CRUD CLIENTES
+
+    Route::get('/clientes/buscar ',[ClienteController::class,'buscarCliente']);
 
     //CRUD PDF
     Route::get('/pdf/{id}',[PDFController::class,'buildPDF'])->name('pdf');

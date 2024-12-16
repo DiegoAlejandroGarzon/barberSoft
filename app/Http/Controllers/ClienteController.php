@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cliente;
 use Illuminate\Http\Request;
 
 class ClienteController extends Controller
@@ -60,5 +61,18 @@ class ClienteController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    public function buscarCliente(Request $request)
+    {
+        $cliente = Cliente::where('tipo_documento', $request->tipo_documento)
+            ->where('numero_documento', $request->numero_documento)
+            ->first();
+
+        if ($cliente) {
+            return response()->json(['success' => true, 'cliente' => $cliente]);
+        }
+
+        return response()->json(['success' => false, 'message' => 'Cliente no encontrado']);
     }
 }

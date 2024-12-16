@@ -46,14 +46,14 @@ class SideMenu
                 'icon' => 'file-text',
                 'title' => 'Barberos',
                 'sub_menu' => [
-                    'event.create' => [
+                    'barbero.create' => [
                         'icon' => 'file-text',
-                        'route_name' => 'event.create',
+                        'route_name' => 'barbero.create',
                         'title' => 'Crear Barbero'
                     ],
-                    'event.index' => [
+                    'barbero.index' => [
                         'icon' => 'file-text',
-                        'route_name' => 'event.index',
+                        'route_name' => 'barbero.index',
                         'title' => 'Lista de Barberos'
                     ]
                 ]
@@ -64,12 +64,12 @@ class SideMenu
                 'sub_menu' => [
                     'event.create' => [
                         'icon' => 'file-text',
-                        'route_name' => 'event.create',
+                        'route_name' => 'citas.create',
                         'title' => 'Crear Cita'
                     ],
                     'event.index' => [
                         'icon' => 'file-text',
-                        'route_name' => 'event.index',
+                        'route_name' => 'citas.index',
                         'title' => 'Lista de Citas'
                     ]
                 ]

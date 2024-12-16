@@ -15,7 +15,7 @@
             <nav class="side-nav hidden w-[80px] overflow-x-hidden pb-16 pr-5 md:block xl:w-[230px]">
                 <a
                     class="intro-x flex items-center pl-5 pt-4"
-                    href=""
+                    href="{{ route('cites.dashboard', ['date' => now()->toDateString()]) }}"
                 >
                     <img
                         class="w-6"

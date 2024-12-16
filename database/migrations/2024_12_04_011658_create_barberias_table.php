@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('barberias', function (Blueprint $table) {
             $table->id();
+            $table->uuid('guid')->nullable()->unique();
             $table->string('nombre');
             $table->string('ubicacion')->nullable();
             $table->string('contacto')->nullable();
