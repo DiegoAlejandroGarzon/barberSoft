@@ -1,11 +1,11 @@
 @extends('../themes/' . $activeTheme . '/' . $activeLayout)
 
 @section('subhead')
-    <title>Lista de Barberos</title>
+    <title>Lista de empleados</title>
 @endsection
 
 @section('subcontent')
-    <h2 class="intro-y mt-10 text-lg font-medium">Lista de Barberos</h2>
+    <h2 class="intro-y mt-10 text-lg font-medium">Lista de empleados</h2>
     <div class="mt-5 grid grid-cols-12 gap-6">
         <div class="intro-y col-span-12 mt-2 flex flex-wrap items-center sm:flex-nowrap">
             <a href="{{ route('barbero.create') }}">
@@ -77,7 +77,7 @@
                     </x-base.table.tr>
                 </x-base.table.thead>
                 <x-base.table.tbody>
-                    @foreach ($barberos as $barbero)
+                    @foreach ($empleados as $barbero)
                         <x-base.table.tr class="intro-x">
                             <x-base.table.td>{{ $barbero->id }}</x-base.table.td>
                             <x-base.table.td class="text-center">

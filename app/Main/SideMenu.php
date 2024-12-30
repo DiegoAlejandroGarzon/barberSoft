@@ -26,7 +26,7 @@ class SideMenu
                     ]
                 ]
             ],
-            'Barberias' => [
+            'empresas' => [
                 'icon' => 'file-text',
                 'title' => 'Barberías',
                 'sub_menu' => [
@@ -42,9 +42,9 @@ class SideMenu
                     ]
                 ]
             ],
-            'Barberos' => [
+            'empleados' => [
                 'icon' => 'file-text',
-                'title' => 'Barberos',
+                'title' => 'empleados',
                 'sub_menu' => [
                     'barbero.create' => [
                         'icon' => 'file-text',
@@ -54,7 +54,7 @@ class SideMenu
                     'barbero.index' => [
                         'icon' => 'file-text',
                         'route_name' => 'barbero.index',
-                        'title' => 'Lista de Barberos'
+                        'title' => 'Lista de empleados'
                     ]
                 ]
             ],

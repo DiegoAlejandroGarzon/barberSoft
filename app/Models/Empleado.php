@@ -6,17 +6,17 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class Barbero extends Model
+class Empleado extends Model
 {
     use HasFactory;
 
-    protected $table = 'barberos';
+    protected $table = 'empleados';
 
     // Definir los campos que se pueden asignar masivamente
     protected $fillable = [
         'nombre',
         'usuario_id',
-        'barberia_id',
+        'empresa_id',
         'estado',
         'foto',
     ];
@@ -30,11 +30,11 @@ class Barbero extends Model
     // Si el barbero tiene muchos servicios, puedes agregar esa relación aquí
     public function servicios()
     {
-        return $this->belongsToMany(Servicio::class, 'barbero_servicios');
+        return $this->belongsToMany(Servicio::class, 'empleado_servicios');
     }
 
-    public function barberias(): BelongsToMany
+    public function empresas(): BelongsToMany
     {
-        return $this->belongsToMany(Barberia::class, 'barbero_barberia');
+        return $this->belongsToMany(Empresa::class, 'empleado_empresa');
     }
 }

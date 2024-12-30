@@ -15,20 +15,20 @@ class RolesAndPermissionsSeeder extends Seeder
     public function run(): void
     {
         // Crear permisos para los modelos
-        Permission::create(['name' => 'create barberias']);
-        Permission::create(['name' => 'edit barberias']);
-        Permission::create(['name' => 'delete barberias']);
-        Permission::create(['name' => 'show barberias']);
+        Permission::create(['name' => 'create empresas']);
+        Permission::create(['name' => 'edit empresas']);
+        Permission::create(['name' => 'delete empresas']);
+        Permission::create(['name' => 'show empresas']);
 
         Permission::create(['name' => 'create users']);
         Permission::create(['name' => 'edit users']);
         Permission::create(['name' => 'delete users']);
         Permission::create(['name' => 'show users']);
 
-        Permission::create(['name' => 'create barberos']);
-        Permission::create(['name' => 'edit barberos']);
-        Permission::create(['name' => 'delete barberos']);
-        Permission::create(['name' => 'show barberos']);
+        Permission::create(['name' => 'create empleados']);
+        Permission::create(['name' => 'edit empleados']);
+        Permission::create(['name' => 'delete empleados']);
+        Permission::create(['name' => 'show empleados']);
 
         Permission::create(['name' => 'create horarios']);
         Permission::create(['name' => 'edit horarios']);
@@ -53,18 +53,18 @@ class RolesAndPermissionsSeeder extends Seeder
         // Crear el rol super-admin y asignarle los permisos
         $superAdminRole = Role::create(['name' => 'super-admin']);
         $superAdminRole->givePermissionTo([
-            'create barberias',
-            'edit barberias',
-            'delete barberias',
-            'show barberias',
+            'create empresas',
+            'edit empresas',
+            'delete empresas',
+            'show empresas',
             'create users',
             'edit users',
             'delete users',
             'show users',
-            'create barberos',
-            'edit barberos',
-            'delete barberos',
-            'show barberos',
+            'create empleados',
+            'edit empleados',
+            'delete empleados',
+            'show empleados',
             'create horarios',
             'edit horarios',
             'delete horarios',
@@ -86,10 +86,10 @@ class RolesAndPermissionsSeeder extends Seeder
         // Crear el rol admin y asignarle los permisos, sin los permisos sobre barberías y usuarios
         $adminRole = Role::create(['name' => 'admin']);
         $adminRole->givePermissionTo([
-            'create barberos',
-            'edit barberos',
-            'delete barberos',
-            'show barberos',
+            'create empleados',
+            'edit empleados',
+            'delete empleados',
+            'show empleados',
             'create horarios',
             'edit horarios',
             'delete horarios',

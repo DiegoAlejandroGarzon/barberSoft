@@ -32,7 +32,7 @@ class User extends Authenticatable
         'profile_photo_path',
         'city_id',
         'birth_date',
-        'barberia_id',
+        'empresa_id',
     ];
 
     /**

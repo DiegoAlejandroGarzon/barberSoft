@@ -11,14 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('barberias', function (Blueprint $table) {
+        Schema::create('empresas', function (Blueprint $table) {
             $table->id();
             $table->uuid('guid')->nullable()->unique();
             $table->string('nombre');
             $table->string('ubicacion')->nullable();
             $table->string('contacto')->nullable();
             $table->boolean('status')->default(true);
+            $table->string('etiqueta_empleado');
             $table->string('logo')->nullable();
+            $table->string('color_one', 7)->nullable();
+            $table->string('color_two', 7)->nullable();
             $table->timestamps();
         });
     }
@@ -28,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('barberias');
+        Schema::dropIfExists('empresas');
     }
 };

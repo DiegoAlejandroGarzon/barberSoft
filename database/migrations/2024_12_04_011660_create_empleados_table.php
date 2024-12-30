@@ -11,16 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('barberos', function (Blueprint $table) {
+        Schema::create('empleados', function (Blueprint $table) {
             $table->id();
             $table->foreignId('usuario_id')->constrained('users')->onDelete('cascade');
             $table->string('foto')->nullable();
             $table->timestamps();
         });
-        Schema::create('barbero_barberia', function (Blueprint $table) {
+        Schema::create('empleado_empresa', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('barbero_id')->constrained('barberos')->onDelete('cascade');
-            $table->foreignId('barberia_id')->constrained('barberias')->onDelete('cascade');
+            $table->foreignId('empleado_id')->constrained('empleados')->onDelete('cascade');
+            $table->foreignId('empresa_id')->constrained('barberias')->onDelete('cascade');
             $table->boolean('estado')->default(true);
             $table->timestamps();
         });
@@ -31,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('barberos');
+        Schema::dropIfExists('empleados');
     }
 };

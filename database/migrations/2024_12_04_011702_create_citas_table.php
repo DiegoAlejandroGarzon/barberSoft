@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('citas', function (Blueprint $table) {
             $table->id();
             $table->foreignId('cliente_id')->constrained()->onDelete('cascade');
-            $table->foreignId('barbero_id')->constrained()->onDelete('cascade');
+            $table->foreignId('empleado_id')->constrained()->onDelete('cascade');
             $table->dateTime('fecha_hora');
             $table->string('estado')->default('pendiente'); // pendiente, completada, cancelada
             $table->timestamps();

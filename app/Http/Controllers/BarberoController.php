@@ -22,12 +22,12 @@ class BarberoController extends Controller
      */
     public function index()
     {
-        $barberos = Barbero::with('user')
+        $empleados = Empleado::with('user')
             ->whereHas('user.roles', function ($query) {
                 $query->where('name', 'barbero');
             })
             ->get();
-        return view('barbero.index', compact('barberos'));
+        return view('barbero.index', compact('empleados'));
     }
 
     /**
@@ -36,11 +36,11 @@ class BarberoController extends Controller
     public function create()
     {
         // Obtener todas las barberías para llenar el select
-        $barberias = Barberia::all();
+        $empresas = Empresa::all();
         $departments = Departament::all(); // Obtener los departamentos
         $servicios = Servicio::all();
 
-        return view('barbero.create', compact('barberias', 'departments', 'servicios'));
+        return view('barbero.create', compact('empresas', 'departments', 'servicios'));
     }
 
     /**
@@ -57,14 +57,14 @@ class BarberoController extends Controller
             'birth_date' => 'nullable|date',
             'phone' => 'nullable|string|max:15',
             'email' => 'required|email|unique:users,email',
-            'barberia_id' => 'nullable|exists:barberias,id',
+            'empresa_id' => 'nullable|exists:empresas,id',
             'foto' => 'nullable|mimes:jpg,jpeg,png,gif|max:2048',
             'servicios' => 'nullable|array',
             'servicios.*' => 'exists:servicios,id', // Validar que los servicios existan
         ]);
-        // Si el usuario autenticado no envía barberia_id, asignar la barbería del usuario autenticado
-        if (is_null($request->barberia_id)) {
-            $validatedData['barberia_id'] = auth()->user()->barberia_id ?? null;
+        // Si el usuario autenticado no envía empresa_id, asignar la barbería del usuario autenticado
+        if (is_null($request->empresa_id)) {
+            $validatedData['empresa_id'] = auth()->user()->empresa_id ?? null;
         }
 
         // Generar una contraseña aleatoria
@@ -79,7 +79,7 @@ class BarberoController extends Controller
         $user->birth_date = $validatedData['birth_date'];
         $user->phone = $validatedData['phone'];
         $user->email = $validatedData['email'];
-        $user->barberia_id = $validatedData['barberia_id'];
+        $user->empresa_id = $validatedData['empresa_id'];
         $user->password = Hash::make($randomPassword);
         $user->status = true;
 
@@ -96,8 +96,8 @@ class BarberoController extends Controller
             $extension = $logo->getClientOriginalExtension();
             // Crear un nombre único para el archivo basado en el nombre de la barbería y la fecha
             $fileName = $user->id. '-' . now()->format('Y-m-d_H-i-s') . '.' . $extension;
-            // Guardar el archivo en la carpeta barberias/logos
-            $fotoPath = $logo->storeAs('barberos/fotos', $fileName, 'public');
+            // Guardar el archivo en la carpeta empresas/logos
+            $fotoPath = $logo->storeAs('empleados/fotos', $fileName, 'public');
         } else {
             $fotoPath = null;
         }
@@ -110,7 +110,7 @@ class BarberoController extends Controller
         $servicios = $validatedData['servicios'] ?? [];
         foreach ($servicios as $servicioId) {
             BarberoServicio::create([
-                'barbero_id' => $barbero->id,
+                'empleado_id' => $barbero->id,
                 'servicio_id' => $servicioId,
             ]);
         }
@@ -131,10 +131,10 @@ class BarberoController extends Controller
      */
     public function edit($id)
     {
-        $barbero = Barbero::findOrFail($id);
-        $barberias = Barberia::all();
+        $barbero = Empleado::findOrFail($id);
+        $empresas = Empresa::all();
         $servicios = Servicio::all();
-        return view('barbero.update', compact('barbero', 'barberias', 'servicios'));
+        return view('barbero.update', compact('barbero', 'empresas', 'servicios'));
     }
 
     /**
@@ -142,7 +142,7 @@ class BarberoController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $barbero = Barbero::find($id);
+        $barbero = Empleado::find($id);
         // Buscar el usuario existente
         $user = User::findOrFail($barbero->usuario_id);
         // Validar los datos de entrada
@@ -163,15 +163,15 @@ class BarberoController extends Controller
                 'email',
                 Rule::unique('users', 'email')->ignore($user->id),
             ],
-            'barberia_id' => 'nullable|exists:barberias,id',
+            'empresa_id' => 'nullable|exists:empresas,id',
             'foto' => 'nullable|mimes:jpg,jpeg,png,gif|max:2048',
             'servicios' => 'nullable|array',
             'servicios.*' => 'exists:servicios,id', // Validar que los servicios existan
         ]);
 
-        // Si el usuario autenticado no envía barberia_id, mantener la barbería actual
-        if (is_null($request->barberia_id)) {
-            $validatedData['barberia_id'] = $user->barberia_id;
+        // Si el usuario autenticado no envía empresa_id, mantener la barbería actual
+        if (is_null($request->empresa_id)) {
+            $validatedData['empresa_id'] = $user->empresa_id;
         }
 
         // Actualizar los datos del usuario
@@ -182,7 +182,7 @@ class BarberoController extends Controller
         $user->birth_date = $validatedData['birth_date'];
         $user->phone = $validatedData['phone'];
         $user->email = $validatedData['email'];
-        $user->barberia_id = $validatedData['barberia_id'];
+        $user->empresa_id = $validatedData['empresa_id'];
 
         $user->save();
 
@@ -197,7 +197,7 @@ class BarberoController extends Controller
             $logo = $request->file('foto');
             $extension = $logo->getClientOriginalExtension();
             $fileName = $user->id . '-' . now()->format('Y-m-d_H-i-s') . '.' . $extension;
-            $fotoPath = $logo->storeAs('barberos/fotos', $fileName, 'public');
+            $fotoPath = $logo->storeAs('empleados/fotos', $fileName, 'public');
 
             // Guardar la nueva foto
             if ($barbero) {
@@ -216,13 +216,13 @@ class BarberoController extends Controller
         // Agregar nuevos servicios
         foreach ($toAdd as $servicioId) {
             BarberoServicio::create([
-                'barbero_id' => $barbero->id,
+                'empleado_id' => $barbero->id,
                 'servicio_id' => $servicioId,
             ]);
         }
 
         // Eliminar servicios que ya no están en la lista
-        BarberoServicio::where('barbero_id', $barbero->id)
+        BarberoServicio::where('empleado_id', $barbero->id)
             ->whereIn('servicio_id', $toRemove)
             ->delete();
 
@@ -236,7 +236,7 @@ class BarberoController extends Controller
     public function destroy(string $id)
     {
         // Buscar la barbería por su ID
-        $barbero = Barbero::find($id);
+        $barbero = Empleado::find($id);
 
         // Si no se encuentra la barbería, redirigir con un mensaje de error
         if (!$barbero) {
@@ -252,7 +252,7 @@ class BarberoController extends Controller
 
     public function obtenerServicios($id)
     {
-        $barbero = Barbero::find($id);
+        $barbero = Empleado::find($id);
 
         if (!$barbero) {
             return response()->json(['success' => false, 'message' => 'Barbero no encontrado']);

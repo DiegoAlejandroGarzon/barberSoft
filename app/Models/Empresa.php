@@ -7,11 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Str;
 
-class Barberia extends Model
+class Empresa extends Model
 {
     use HasFactory;
 
-    protected $table = "barberias";
+    protected $table = "empresas";
 
     protected $fillable = [
         'nombre',
@@ -19,6 +19,8 @@ class Barberia extends Model
         'contacto',
         'status',
         'logo',
+        'color_one',
+        'color_two',
     ];
 
     protected static function boot()
@@ -41,17 +43,17 @@ class Barberia extends Model
     // Relación con las citas de la barbería
     public function citas()
     {
-        return $this->hasManyThrough(Cita::class, Barbero::class);
+        return $this->hasManyThrough(Cita::class, Empleado::class);
     }
 
     // Relación con los servicios de la barbería
     public function servicios()
     {
-        return $this->hasManyThrough(Servicio::class, Barbero::class);
+        return $this->hasManyThrough(Servicio::class, Empleado::class);
     }
 
-    public function barberos(): BelongsToMany
+    public function empleados(): BelongsToMany
     {
-        return $this->belongsToMany(Barbero::class, 'barbero_barberia');
+        return $this->belongsToMany(Empleado::class, 'empleado_empresa');
     }
 }

@@ -15,12 +15,12 @@ class Servicio extends Model
         'nombre',
         'precio',
         'descripcion',
-        'barberia_id',
+        'empresa_id',
     ];
 
-    public function barberos()
+    public function empleados()
     {
-        return $this->belongsToMany(Barbero::class, 'barbero_servicios');
+        return $this->belongsToMany(Empleado::class, 'empleado_servicios');
     }
 
     public function citas()
@@ -30,6 +30,6 @@ class Servicio extends Model
 
     public function barberia()
     {
-        return $this->belongsTo(Barberia::class, 'barberia_id');
+        return $this->belongsTo(Empresa::class, 'empresa_id');
     }
 }

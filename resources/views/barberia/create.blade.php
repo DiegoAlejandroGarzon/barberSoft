@@ -92,6 +92,43 @@
                         @enderror
                     </div>
 
+                    <div class="mt-3 box">
+                        <x-base.form-label class="m-2">Colores Representativos</x-base.form-label>
+                        <div class="grid-cols-2 gap-2 sm:grid">
+                            <!-- color_one -->
+                            <div class="m-2">
+                                <x-base.form-label for="color_one">Color Primario</x-base.form-label>
+                                <x-base.form-input
+                                    class="w-full {{ $errors->has('color_one') ? 'border-red-500' : '' }}"
+                                    id="color_one"
+                                    name="color_one"
+                                    type="color"
+                                    placeholder="Color principal"
+                                    value="{{ old('color_one', $barberia->color_one ?? '#FFFFFF') }}"
+                                />
+                                @error('color_one')
+                                    <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <!-- two -->
+                            <div class="m-2">
+                                <x-base.form-label for="color_two">Color Secundario</x-base.form-label>
+                                <x-base.form-input
+                                    class="w-full {{ $errors->has('color_two') ? 'border-red-500' : '' }}"
+                                    id="color_two"
+                                    name="color_two"
+                                    type="color"
+                                    placeholder="Color Secundario"
+                                    value="{{ old('color_one', $barberia->color_two ?? '#FFFFFF') }}"
+                                />
+                                @error('color_two')
+                                    <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Botón para crear -->
                     <div class="mt-5 text-right">
                         <x-base.button

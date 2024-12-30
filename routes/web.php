@@ -26,7 +26,7 @@ use App\Http\Controllers\EventController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\AjaxController;
-use App\Http\Controllers\BarberiaController;
+use App\Http\Controllers\EmpresaController;
 use App\Http\Controllers\BarberoController;
 use App\Http\Controllers\CitaController;
 use App\Http\Controllers\ClienteController;
@@ -66,6 +66,12 @@ Route::get('/evento/{public_link}/download-pdf/{id}', [PDFController::class, 'ge
 Route::get('/check-courtesy-code/{eventId}/{code}', [CouponController::class, 'checkCourtesyCode'])->name('check.courtesy.code');
 Route::get('/get-seats-by-ticket-type/{ticketTypeId}', [SeatController::class, 'getSeatsByTicketType']);
 
+Route::get('/registroCitas/{guid}',[EmpresaController::class,'registerPublic'])->name('barberia.registerPublic');
+Route::post('/registroCitasSubmit/{guid}',[EmpresaController::class,'registerPublicSubmit'])->name('citas.registerPublic');
+
+Route::get('/clientes/buscar ',[ClienteController::class,'buscarCliente']);
+Route::get('/empleados/{id}/servicios ',[BarberoController::class,'obtenerServicios']);
+
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
     Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
@@ -102,24 +108,23 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post('/city/update/',[CityController::class,'update'])->name('city.update');
     Route::get('/city/delete/{id}',[CityController::class,'delete'])->name('city.delete');
 
-    //CRUS BARBERIAS
-    Route::get('/barberias',[BarberiaController::class,'index'])->name('barberia.index');
-    Route::get('/barberia/create',[BarberiaController::class,'create'])->name('barberia.create');
-    Route::post('/barberia/create',[BarberiaController::class,'store'])->name('barberia.store');
-    Route::get('/barberia/update/{id}',[BarberiaController::class,'edit'])->name('barberia.edit');
-    Route::put('/barberia/update/{id}',[BarberiaController::class,'update'])->name('barberia.update');
-    Route::delete('/barberia/delete/{id}',[BarberiaController::class,'destroy'])->name('barberia.delete');
+    //CRUS empresas
+    Route::get('/empresas',[EmpresaController::class,'index'])->name('barberia.index');
+    Route::get('/barberia/create',[EmpresaController::class,'create'])->name('barberia.create');
+    Route::post('/barberia/create',[EmpresaController::class,'store'])->name('barberia.store');
+    Route::get('/barberia/update/{id}',[EmpresaController::class,'edit'])->name('barberia.edit');
+    Route::put('/barberia/update/{id}',[EmpresaController::class,'update'])->name('barberia.update');
+    Route::delete('/barberia/delete/{id}',[EmpresaController::class,'destroy'])->name('barberia.delete');
 
-    //CRUS BARBEROS
-    Route::get('/barberos',[BarberoController::class,'index'])->name('barbero.index');
-    Route::get('/barberos/create',[BarberoController::class,'create'])->name('barbero.create');
-    Route::post('/barberos/create',[BarberoController::class,'store'])->name('barbero.store');
+    //CRUS empleados
+    Route::get('/empleados',[BarberoController::class,'index'])->name('barbero.index');
+    Route::get('/empleados/create',[BarberoController::class,'create'])->name('barbero.create');
+    Route::post('/empleados/create',[BarberoController::class,'store'])->name('barbero.store');
     Route::get('/barbero/update/{id}',[BarberoController::class,'edit'])->name('barbero.edit');
     Route::put('/barbero/update/{id}',[BarberoController::class,'update'])->name('barbero.update');
-    Route::delete('/barberos/delete/{id}',[BarberoController::class,'destroy'])->name('barbero.delete');
-    Route::get('/barberos/{id}/servicios ',[BarberoController::class,'obtenerServicios']);
+    Route::delete('/empleados/delete/{id}',[BarberoController::class,'destroy'])->name('barbero.delete');
 
-    //CRUS BARBEROS
+    //CRUS empleados
     Route::get('/citas',[CitaController::class,'index'])->name('citas.index');
     Route::get('/cita/create',[CitaController::class,'create'])->name('citas.create');
     Route::post('/cita/create',[CitaController::class,'store'])->name('citas.store');
@@ -138,8 +143,6 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/ticketFeatures/delete/{id}',[TicketFeatureController::class,'delete'])->name('ticketFeatures.delete');
 
     //CRUD CLIENTES
-
-    Route::get('/clientes/buscar ',[ClienteController::class,'buscarCliente']);
 
     //CRUD PDF
     Route::get('/pdf/{id}',[PDFController::class,'buildPDF'])->name('pdf');

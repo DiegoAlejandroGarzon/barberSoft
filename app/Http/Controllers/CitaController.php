@@ -20,7 +20,7 @@ class CitaController extends Controller
         $query = Cita::with(['cliente', 'barbero.user']);
         if (!$user->hasRole('super-admin')) {
             $query->whereHas('barbero.user', function ($query) use ($user) {
-                $query->where('barberia_id', $user->barberia_id);
+                $query->where('empresa_id', $user->empresa_id);
             });
         }
         $citas = $query->orderByRaw("
@@ -39,10 +39,10 @@ class CitaController extends Controller
     public function create()
     {
         $clientes = Cliente::all();
-        $barberos = Barbero::all();
+        $empleados = Empleado::all();
         $servicios = Servicio::all();
 
-        return view('citas.create', compact('clientes', 'barberos', 'servicios'));
+        return view('citas.create', compact('clientes', 'empleados', 'servicios'));
     }
 
     /**
@@ -58,14 +58,14 @@ class CitaController extends Controller
             'apellidos'         => 'required|string|max:255',
             'telefono'          => 'nullable|string|max:20',
             'correo'            => 'nullable|email|max:255',
-            'barbero_id'        => 'required|exists:barberos,id',
+            'empleado_id'        => 'required|exists:empleados,id',
             'servicios'         => 'required|array',
             'servicios.*'       => 'exists:servicios,id',
             'fecha_hora'        => 'required|date',
         ]);
 
         // Verificar si ya existe una cita para el mismo barbero en la misma fecha y hora
-        $citaExistente = Cita::where('barbero_id', $request->barbero_id)
+        $citaExistente = Cita::where('empleado_id', $request->empleado_id)
             ->where('fecha_hora', $request->fecha_hora)
             ->first();
 
@@ -92,7 +92,7 @@ class CitaController extends Controller
 
         $cita = new Cita();
         $cita->cliente_id   = $cliente->id;
-        $cita->barbero_id   = $request->barbero_id;
+        $cita->empleado_id   = $request->empleado_id;
         $cita->fecha_hora   = $request->fecha_hora;
         $cita->save();
 
@@ -121,14 +121,14 @@ class CitaController extends Controller
         // Encuentra la cita por su ID
         $cita = Cita::findOrFail($id);
 
-        // Obtén la lista de barberos (relacionados a usuarios)
-        $barberos = Barbero::with('user')->get();
+        // Obtén la lista de empleados (relacionados a usuarios)
+        $empleados = Empleado::with('user')->get();
 
         // Obtén los servicios relacionados a esta cita
         $serviciosSeleccionados = $cita->servicios()->pluck('servicios.id')->toArray();
         $servicios = Servicio::all();
 
-        return view('citas.update', compact('cita', 'barberos', 'servicios', 'serviciosSeleccionados'));
+        return view('citas.update', compact('cita', 'empleados', 'servicios', 'serviciosSeleccionados'));
     }
 
     public function update(Request $request, string $id)
@@ -140,14 +140,14 @@ class CitaController extends Controller
             'apellidos' => 'required|string|max:255',
             'telefono' => 'required|string|max:15',
             'correo' => 'required|email|max:255',
-            'barbero_id' => 'required|exists:barberos,id',
+            'empleado_id' => 'required|exists:empleados,id',
             'servicios' => 'required|array',
             'servicios.*' => 'exists:servicios,id',
             'fecha_hora' => 'required|date',
         ]);
 
         // Verificar si ya existe una cita para el mismo barbero en la misma fecha y hora
-        $citaExistente = Cita::where('barbero_id', $request->barbero_id)
+        $citaExistente = Cita::where('empleado_id', $request->empleado_id)
             ->where('fecha_hora', $request->fecha_hora)
             ->first();
 
@@ -189,7 +189,7 @@ class CitaController extends Controller
         // Actualizar datos de la cita
         $cita->update([
             'cliente_id' => $cliente->id,
-            'barbero_id' => $request->barbero_id,
+            'empleado_id' => $request->empleado_id,
             'fecha_hora' => $request->fecha_hora,
         ]);
 

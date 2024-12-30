@@ -14,7 +14,7 @@ class Cita extends Model
     // Definir los campos que se pueden asignar masivamente
     protected $fillable = [
         'cliente_id',
-        'barbero_id',
+        'empleado_id',
         'fecha_hora',
         'estado',
     ];
@@ -28,7 +28,7 @@ class Cita extends Model
     // Relación con Barbero
     public function barbero()
     {
-        return $this->belongsTo(Barbero::class);
+        return $this->belongsTo(Empleado::class);
     }
 
     // Relación con los Servicios (muchos a muchos)

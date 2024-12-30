@@ -224,18 +224,18 @@
 
                 <!-- Barberia -->
                 <div class="mt-3">
-                    <x-base.form-label for="barberia_id">Barberia</x-base.form-label>
+                    <x-base.form-label for="empresa_id">Barberia</x-base.form-label>
                     <x-base.tom-select
-                        class="w-full {{ $errors->has('barberia_id') ? 'border-red-500' : '' }}"
-                        id="barberia_id"
-                        name="barberia_id"
+                        class="w-full {{ $errors->has('empresa_id') ? 'border-red-500' : '' }}"
+                        id="empresa_id"
+                        name="empresa_id"
                     >
                         <option></option>
-                        @foreach ($barberias as $barberia)
-                            <option value="{{$barberia->id}}" {{ old('barberia_id') == $barberia->id ? 'selected' : '' }}>{{ $barberia->nombre }}</option>
+                        @foreach ($empresas as $barberia)
+                            <option value="{{$barberia->id}}" {{ old('empresa_id') == $barberia->id ? 'selected' : '' }}>{{ $barberia->nombre }}</option>
                         @endforeach
                     </x-base.tom-select>
-                    @error('barberia_id')
+                    @error('empresa_id')
                         <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
                     @enderror
                 </div>

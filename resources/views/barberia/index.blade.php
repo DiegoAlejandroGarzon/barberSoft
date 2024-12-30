@@ -87,7 +87,7 @@
                     </x-base.table.tr>
                 </x-base.table.thead>
                 <x-base.table.tbody>
-                    @foreach ($barberias as $barberia)
+                    @foreach ($empresas as $barberia)
                         <x-base.table.tr class="intro-x">
                             <x-base.table.td class="box rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600">
                                 {{ $barberia->id }}
@@ -112,7 +112,7 @@
                                 <div class="flex items-center justify-center">
 
                                     <x-base.tippy content="Formulario Citas publico" class="mr-2">
-                                        <a href="{{ route('event.register', $barberia->guid) }}" target="_blank">
+                                        <a href="{{ route('barberia.registerPublic', $barberia->guid) }}" target="_blank">
                                             <x-base.lucide
                                                 class="mx-auto block"
                                                 icon="ExternalLink"

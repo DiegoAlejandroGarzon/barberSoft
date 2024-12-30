@@ -45,9 +45,9 @@ class UserController extends Controller
     public function create(){
         $roles = Role::all();
         $departments = Departament::all(); // Obtener los departamentos
-        $barberias = Barberia::all();
+        $empresas = Empresa::all();
 
-        return view('users.create', compact(['roles', 'departments', 'barberias']));
+        return view('users.create', compact(['roles', 'departments', 'empresas']));
     }
 
     public function store(Request $request){
@@ -64,7 +64,7 @@ class UserController extends Controller
             'phone' => 'required|string|max:15',
             'type_document' => 'required|string|max:3',
             'document_number' => 'required|string|max:20|unique:users,document_number',
-            'barberia_id' => 'required|exists:barberias,id',
+            'empresa_id' => 'required|exists:empresas,id',
         ]);
 
         $user = new User();
@@ -78,7 +78,7 @@ class UserController extends Controller
         $user->phone = $request->phone;
         $user->type_document = $request->type_document;
         $user->document_number = $request->document_number;
-        $user->barberia_id = $request->barberia_id;
+        $user->empresa_id = $request->empresa_id;
         $user->save();
 
         //validar ciudades
@@ -96,8 +96,8 @@ class UserController extends Controller
         $user = User::find($id);
         $roles = Role::all();
         $departments = Departament::all();
-        $barberias = Barberia::all();
-        return view('users.update', compact(['user', 'roles', 'departments', 'barberias']));
+        $empresas = Empresa::all();
+        return view('users.update', compact(['user', 'roles', 'departments', 'empresas']));
     }
 
     public function update(Request $request){
@@ -124,7 +124,7 @@ class UserController extends Controller
             'department_id' => 'required|exists:departments,id',
             'city_id' => 'required|exists:cities,id',
             'birth_date' => 'nullable|date',
-            'barberia_id' => 'required|exists:barberias,id',
+            'empresa_id' => 'required|exists:empresas,id',
         ]);
 
         $user = User::findOrFail($userId);
@@ -137,7 +137,7 @@ class UserController extends Controller
         $user->status = $request->status;
         $user->city_id = $request->city_id;
         $user->birth_date = $request->birth_date;
-        $user->barberia_id = $request->barberia_id;
+        $user->empresa_id = $request->empresa_id;
         $user->save();
 
         // Asignar el rol

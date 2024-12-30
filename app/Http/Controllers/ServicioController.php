@@ -23,8 +23,8 @@ class ServicioController extends Controller
      */
     public function create()
     {
-        $barberias = Barberia::all();
-        return view('servicio.create', compact(['barberias']));
+        $empresas = Empresa::all();
+        return view('servicio.create', compact(['empresas']));
     }
 
     /**
@@ -36,14 +36,14 @@ class ServicioController extends Controller
             'nombre' => 'required|string|max:255',
             'precio' => 'required|integer|min:0',
             'descripcion' => 'required|string|max:255',
-            'barberia_id' => 'nullable|exists:barberias,id',
+            'empresa_id' => 'nullable|exists:empresas,id',
         ]);
 
         Servicio::create([
             'nombre' => $request->nombre,
             'precio' => $request->precio,
             'descripcion' => $request->descripcion,
-            'barberia_id' => $request->barberia_id ?? Auth::user()->barberia_id,
+            'empresa_id' => $request->empresa_id ?? Auth::user()->empresa_id,
         ]);
 
         return redirect()->route('servicio.index')->with('success', 'Servicio creado exitosamente.');
@@ -63,8 +63,8 @@ class ServicioController extends Controller
     public function edit(string $id)
     {
         $servicio = Servicio::findOrFail($id);
-        $barberias = Barberia::all();
-        return view('servicio.update', compact('servicio', 'barberias'));
+        $empresas = Empresa::all();
+        return view('servicio.update', compact('servicio', 'empresas'));
     }
 
     /**
@@ -77,7 +77,7 @@ class ServicioController extends Controller
             'nombre' => 'required|string|max:255',
             'precio' => 'required|numeric|min:0',
             'descripcion' => 'nullable|string|max:1000',
-            'barberia_id' => 'nullable|exists:barberias,id',
+            'empresa_id' => 'nullable|exists:empresas,id',
         ]);
 
         // Encontrar el servicio a actualizar
@@ -88,7 +88,7 @@ class ServicioController extends Controller
             'nombre' => $request->nombre,
             'precio' => $request->precio,
             'descripcion' => $request->descripcion,
-            'barberia_id' => $request->barberia_id ?? Auth::user()->barberia_id,
+            'empresa_id' => $request->empresa_id ?? Auth::user()->empresa_id,
         ]);
 
         // Redirigir con un mensaje de éxito

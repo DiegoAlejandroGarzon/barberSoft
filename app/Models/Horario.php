@@ -13,7 +13,7 @@ class Horario extends Model
 
     // Definir los campos que se pueden asignar masivamente
     protected $fillable = [
-        'barberia_id',
+        'empresa_id',
         'hora_inicio',
         'hora_fin',
         'dia_semana',
@@ -22,6 +22,6 @@ class Horario extends Model
     // Relación con la barbería
     public function barberia()
     {
-        return $this->belongsTo(Barberia::class);
+        return $this->belongsTo(Empresa::class);
     }
 }
