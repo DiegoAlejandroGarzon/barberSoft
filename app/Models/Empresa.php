@@ -34,19 +34,19 @@ class Empresa extends Model
         });
     }
 
-    // Relación con los horarios de la barbería
+    // Relación con los horarios de la empresa
     public function horarios()
     {
         return $this->hasMany(Horario::class);
     }
 
-    // Relación con las citas de la barbería
+    // Relación con las citas de la empresa
     public function citas()
     {
         return $this->hasManyThrough(Cita::class, Empleado::class);
     }
 
-    // Relación con los servicios de la barbería
+    // Relación con los servicios de la empresa
     public function servicios()
     {
         return $this->hasManyThrough(Servicio::class, Empleado::class);

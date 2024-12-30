@@ -7,12 +7,12 @@
 
 @section('subcontent')
     <div class="intro-y mt-8 flex items-center">
-        <h2 class="mr-auto text-lg font-medium">Crear Barbero</h2>
+        <h2 class="mr-auto text-lg font-medium">Crear empleado</h2>
     </div>
     <div class="mt-5 grid grid-cols-12 gap-6">
         <div class="intro-y col-span-12 lg:col-span-12">
             <div class="intro-y box p-5">
-            <form method="POST" action="{{ route('barbero.store') }}" enctype="multipart/form-data">
+            <form method="POST" action="{{ route('empleado.store') }}" enctype="multipart/form-data">
                 @csrf
 
                 <!-- Nombre Completo -->
@@ -148,17 +148,17 @@
                     </x-base.tom-select>
                 </div>
                 @if (Auth::user()->hasRole('super-admin'))
-                <!-- Barberia -->
+                <!-- empresa -->
                 <div class="mt-3">
-                    <x-base.form-label for="empresa_id">Barberia</x-base.form-label>
+                    <x-base.form-label for="empresa_id">empresa</x-base.form-label>
                     <x-base.tom-select
                         class="w-full {{ $errors->has('empresa_id') ? 'border-red-500' : '' }}"
                         id="empresa_id"
                         name="empresa_id"
                     >
                         <option></option>
-                        @foreach ($empresas as $barberia)
-                            <option value="{{$barberia->id}}" {{ old('empresa_id') == $barberia->id ? 'selected' : '' }}>{{ $barberia->nombre }}</option>
+                        @foreach ($empresas as $empresa)
+                            <option value="{{$empresa->id}}" {{ old('empresa_id') == $empresa->id ? 'selected' : '' }}>{{ $empresa->nombre }}</option>
                         @endforeach
                     </x-base.tom-select>
                     @error('empresa_id')
@@ -166,9 +166,9 @@
                     @enderror
                 </div>
                 @endif
-                <!-- foto de la Barbero -->
+                <!-- foto de la empleado -->
                 <div class="intro-y col-span-12 lg:col-span-6 mt-4">
-                    <x-base.form-label for="foto">Foto del Barbero</x-base.form-label>
+                    <x-base.form-label for="foto">Foto del empleado</x-base.form-label>
                     <x-base.form-input
                         class="w-full {{ $errors->has('foto') ? 'border-red-500' : '' }}"
                         id="foto"

@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-class BarberoServicioController extends Controller
+class empleadoServicioController extends Controller
 {
     /**
      * Display a listing of the resource.

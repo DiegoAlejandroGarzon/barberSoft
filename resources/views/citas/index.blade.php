@@ -65,7 +65,7 @@
                     <x-base.table.tr>
                         <x-base.table.th class="whitespace-nowrap border-b-0">ID</x-base.table.th>
                         <x-base.table.th class="whitespace-nowrap border-b-0 text-center">Cliente</x-base.table.th>
-                        <x-base.table.th class="whitespace-nowrap border-b-0 text-center">Barbero</x-base.table.th>
+                        <x-base.table.th class="whitespace-nowrap border-b-0 text-center">empleado</x-base.table.th>
                         <x-base.table.th class="whitespace-nowrap border-b-0 text-center">Fecha y Hora</x-base.table.th>
                         <x-base.table.th class="whitespace-nowrap border-b-0 text-center">Estado</x-base.table.th>
                         <x-base.table.th class="whitespace-nowrap border-b-0 text-center">Acciones</x-base.table.th>
@@ -76,7 +76,7 @@
                         <x-base.table.tr class="intro-x">
                             <x-base.table.td class="text-center">{{ $cita->id }}</x-base.table.td>
                             <x-base.table.td class="text-center">{{ $cita->cliente->nombres }}</x-base.table.td>
-                            <x-base.table.td class="text-center">{{ $cita->barbero->user->name }}</x-base.table.td>
+                            <x-base.table.td class="text-center">{{ $cita->empleado->user->name }}</x-base.table.td>
                             <x-base.table.td class="text-center">{{ $cita->fecha_hora }}</x-base.table.td>
                             <x-base.table.td class="text-center">{{ $cita->estado }}</x-base.table.td>
                             <x-base.table.td class="flex items-center justify-center">

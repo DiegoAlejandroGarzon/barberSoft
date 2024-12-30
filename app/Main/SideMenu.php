@@ -28,17 +28,17 @@ class SideMenu
             ],
             'empresas' => [
                 'icon' => 'file-text',
-                'title' => 'Barberías',
+                'title' => 'Empresas',
                 'sub_menu' => [
                     'event.create' => [
                         'icon' => 'file-text',
-                        'route_name' => 'barberia.create',
-                        'title' => 'Crear Barbería'
+                        'route_name' => 'empresa.create',
+                        'title' => 'Crear empresa'
                     ],
                     'event.index' => [
                         'icon' => 'file-text',
-                        'route_name' => 'barberia.index',
-                        'title' => 'Lista de Barberías'
+                        'route_name' => 'empresa.index',
+                        'title' => 'Lista de Empresas'
                     ]
                 ]
             ],
@@ -46,14 +46,14 @@ class SideMenu
                 'icon' => 'file-text',
                 'title' => 'empleados',
                 'sub_menu' => [
-                    'barbero.create' => [
+                    'empleado.create' => [
                         'icon' => 'file-text',
-                        'route_name' => 'barbero.create',
-                        'title' => 'Crear Barbero'
+                        'route_name' => 'empleado.create',
+                        'title' => 'Crear empleado'
                     ],
-                    'barbero.index' => [
+                    'empleado.index' => [
                         'icon' => 'file-text',
-                        'route_name' => 'barbero.index',
+                        'route_name' => 'empleado.index',
                         'title' => 'Lista de empleados'
                     ]
                 ]

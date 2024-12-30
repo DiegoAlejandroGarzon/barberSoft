@@ -25,8 +25,8 @@ class Cita extends Model
         return $this->belongsTo(Cliente::class);
     }
 
-    // Relación con Barbero
-    public function barbero()
+    // Relación con empleado
+    public function empleado()
     {
         return $this->belongsTo(Empleado::class);
     }

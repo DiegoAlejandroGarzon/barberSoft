@@ -18,8 +18,8 @@ class EmpleadoServicio extends Model
         'servicio_id',
     ];
 
-    // Relación con Barbero
-    public function barbero()
+    // Relación con empleado
+    public function empleado()
     {
         return $this->belongsTo(Empleado::class);
     }

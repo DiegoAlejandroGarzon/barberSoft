@@ -8,12 +8,12 @@
     <h2 class="intro-y mt-10 text-lg font-medium">Lista de empleados</h2>
     <div class="mt-5 grid grid-cols-12 gap-6">
         <div class="intro-y col-span-12 mt-2 flex flex-wrap items-center sm:flex-nowrap">
-            <a href="{{ route('barbero.create') }}">
+            <a href="{{ route('empleado.create') }}">
                 <x-base.button
                     class="mr-2 shadow-md"
                     variant="primary"
                 >
-                    Crear nuevo barbero
+                    Crear nuevo empleado
                 </x-base.button>
             </a>
             <x-base.menu>
@@ -77,22 +77,22 @@
                     </x-base.table.tr>
                 </x-base.table.thead>
                 <x-base.table.tbody>
-                    @foreach ($empleados as $barbero)
+                    @foreach ($empleados as $empleado)
                         <x-base.table.tr class="intro-x">
-                            <x-base.table.td>{{ $barbero->id }}</x-base.table.td>
+                            <x-base.table.td>{{ $empleado->id }}</x-base.table.td>
                             <x-base.table.td class="text-center">
-                                @if ($barbero->foto)
-                                    <img src="{{ asset('storage/' . $barbero->foto) }}" alt="Foto de {{ $barbero->user->name }}" class="w-12 h-12 object-cover">
+                                @if ($empleado->foto)
+                                    <img src="{{ asset('storage/' . $empleado->foto) }}" alt="Foto de {{ $empleado->user->name }}" class="w-12 h-12 object-cover">
                                 @else
                                     <span>No disponible</span>
                                 @endif
                             </x-base.table.td>
-                            <x-base.table.td class="text-center">{{ $barbero->user->name }}</x-base.table.td>
-                            <x-base.table.td class="text-center">{{ $barbero->user->email }}</x-base.table.td>
+                            <x-base.table.td class="text-center">{{ $empleado->user->name }}</x-base.table.td>
+                            <x-base.table.td class="text-center">{{ $empleado->user->email }}</x-base.table.td>
                             <x-base.table.td class="text-center">
                                 <div class="flex items-center justify-center">
                                     <x-base.tippy content="Editar">
-                                        <a href="{{ route('barbero.edit', ['id' => $barbero->id]) }}">
+                                        <a href="{{ route('empleado.edit', ['id' => $empleado->id]) }}">
                                             <x-base.lucide icon="CheckSquare" />
                                         </a>
                                     </x-base.tippy>
@@ -100,7 +100,7 @@
                                         <a class="text-danger"
                                            data-tw-toggle="modal"
                                            data-tw-target="#delete-confirmation-modal"
-                                           data-id="{{ $barbero->id }}"
+                                           data-id="{{ $empleado->id }}"
                                            onclick="setDeleteAction(this)">
                                             <x-base.lucide icon="Trash" />
                                         </a>
@@ -124,7 +124,7 @@
                     />
                     <div class="mt-5 text-3xl">¿Está seguro?</div>
                     <div class="mt-2 text-slate-500">
-                        ¿Realmente desea eliminar este barbero? <br />
+                        ¿Realmente desea eliminar este empleado? <br />
                         Este proceso no se puede deshacer.
                     </div>
                 </div>
@@ -156,7 +156,7 @@
         function setDeleteAction(element) {
             const id = element.getAttribute('data-id');
             const form = document.getElementById('delete-form');
-            form.action = `/barbero/delete/${id}`;
+            form.action = `/empleado/delete/${id}`;
         }
     </script>
 @endsection

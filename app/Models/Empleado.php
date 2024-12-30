@@ -21,13 +21,13 @@ class Empleado extends Model
         'foto',
     ];
 
-    // Relación con el usuario (barbero es un usuario)
+    // Relación con el usuario (empleado es un usuario)
     public function user()
     {
         return $this->belongsTo(User::class, 'usuario_id');
     }
 
-    // Si el barbero tiene muchos servicios, puedes agregar esa relación aquí
+    // Si el empleado tiene muchos servicios, puedes agregar esa relación aquí
     public function servicios()
     {
         return $this->belongsToMany(Servicio::class, 'empleado_servicios');

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Barberia;
+use App\Models\Empresa;
 use App\Models\Departament;
 use App\Models\City;
 use App\Models\User;

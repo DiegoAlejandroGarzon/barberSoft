@@ -1,19 +1,19 @@
 @extends('../themes/' . $activeTheme . '/' . $activeLayout)
 
 @section('subhead')
-    <title>Lista de Barberías</title>
+    <title>Lista de Empresas</title>
 @endsection
 
 @section('subcontent')
-    <h2 class="intro-y mt-10 text-lg font-medium">Lista de Barberías</h2>
+    <h2 class="intro-y mt-10 text-lg font-medium">Lista de Empresas</h2>
     <div class="mt-5 grid grid-cols-12 gap-6">
         <div class="intro-y col-span-12 mt-2 flex flex-wrap items-center sm:flex-nowrap">
-            <a href="{{ route('barberia.create') }}">
+            <a href="{{ route('empresa.create') }}">
                 <x-base.button
                     class="mr-2 shadow-md"
                     variant="primary"
                 >
-                    Crear nueva barbería
+                    Crear nueva empresa
                 </x-base.button>
             </a>
             <x-base.menu>
@@ -87,23 +87,23 @@
                     </x-base.table.tr>
                 </x-base.table.thead>
                 <x-base.table.tbody>
-                    @foreach ($empresas as $barberia)
+                    @foreach ($empresas as $empresa)
                         <x-base.table.tr class="intro-x">
                             <x-base.table.td class="box rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600">
-                                {{ $barberia->id }}
+                                {{ $empresa->id }}
                             </x-base.table.td>
                             <x-base.table.td class="box rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600 text-center">
-                                @if ($barberia->logo)
-                                    <img src="{{ asset('storage/' . $barberia->logo) }}" alt="Logo de {{ $barberia->nombre }}" class="w-12 h-12 object-cover">
+                                @if ($empresa->logo)
+                                    <img src="{{ asset('storage/' . $empresa->logo) }}" alt="Logo de {{ $empresa->nombre }}" class="w-12 h-12 object-cover">
                                 @else
                                     <span>No disponible</span>
                                 @endif
                             </x-base.table.td>
                             <x-base.table.td class="box rounded-l-none rounded-r-none border-x-0 text-center shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600">
-                                {{ $barberia->nombre }}
+                                {{ $empresa->nombre }}
                             </x-base.table.td>
                             <x-base.table.td class="box rounded-l-none rounded-r-none border-x-0 text-center shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600">
-                                {{ $barberia->ubicacion ?? 'No disponible' }}
+                                {{ $empresa->ubicacion ?? 'No disponible' }}
                             </x-base.table.td>
                             <x-base.table.td @class([
                                 'box w-56 rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600',
@@ -112,7 +112,7 @@
                                 <div class="flex items-center justify-center">
 
                                     <x-base.tippy content="Formulario Citas publico" class="mr-2">
-                                        <a href="{{ route('barberia.registerPublic', $barberia->guid) }}" target="_blank">
+                                        <a href="{{ route('empresa.registerPublic', $empresa->guid) }}" target="_blank">
                                             <x-base.lucide
                                                 class="mx-auto block"
                                                 icon="ExternalLink"
@@ -120,7 +120,7 @@
                                         </a>
                                     </x-base.tippy>
                                     <x-base.tippy content="Editar" class="mr-1">
-                                        <a class="" href="{{ route('barberia.edit', ['id' => $barberia->id]) }}">
+                                        <a class="" href="{{ route('empresa.edit', ['id' => $empresa->id]) }}">
                                             <x-base.lucide icon="CheckSquare" />
                                         </a>
                                     </x-base.tippy>
@@ -128,7 +128,7 @@
                                         <a class="text-danger"
                                         data-tw-toggle="modal"
                                         data-tw-target="#delete-confirmation-modal"
-                                        data-id="{{ $barberia->id }}"
+                                        data-id="{{ $empresa->id }}"
                                         onclick="setDeleteAction(this)">
                                         <x-base.lucide icon="Trash" />
                                         </a>
@@ -189,7 +189,7 @@
             const id = element.getAttribute('data-id');
             // Establecer la acción del formulario con la ruta dinámica
             const form = document.getElementById('delete-form');
-            form.action = `/barberia/delete/${id}`;
+            form.action = `/empresa/delete/${id}`;
         }
     </script>
 @endsection

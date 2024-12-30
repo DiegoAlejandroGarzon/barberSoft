@@ -20,7 +20,7 @@ return new class extends Migration
         Schema::create('empleado_empresa', function (Blueprint $table) {
             $table->id();
             $table->foreignId('empleado_id')->constrained('empleados')->onDelete('cascade');
-            $table->foreignId('empresa_id')->constrained('barberias')->onDelete('cascade');
+            $table->foreignId('empresa_id')->constrained('empresas')->onDelete('cascade');
             $table->boolean('estado')->default(true);
             $table->timestamps();
         });

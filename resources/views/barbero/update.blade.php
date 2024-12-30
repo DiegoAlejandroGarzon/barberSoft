@@ -7,12 +7,12 @@
 
 @section('subcontent')
     <div class="intro-y mt-8 flex items-center">
-        <h2 class="mr-auto text-lg font-medium">Editar Barbero</h2>
+        <h2 class="mr-auto text-lg font-medium">Editar empleado</h2>
     </div>
     <div class="mt-5 grid grid-cols-12 gap-6">
         <div class="intro-y col-span-12 lg:col-span-12">
             <div class="intro-y box p-5">
-            <form method="POST" action="{{ route('barbero.update', ['id' => $barbero->id]) }}" enctype="multipart/form-data">
+            <form method="POST" action="{{ route('empleado.update', ['id' => $empleado->id]) }}" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
 
@@ -26,7 +26,7 @@
                             name="name"
                             type="text"
                             placeholder="Nombres"
-                            value="{{ old('name', $barbero->user->name) }}"
+                            value="{{ old('name', $empleado->user->name) }}"
                         />
                         @error('name')
                             <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
@@ -38,7 +38,7 @@
                             name="lastname"
                             type="text"
                             placeholder="Apellidos"
-                            value="{{ old('lastname', $barbero->user->lastname) }}"
+                            value="{{ old('lastname', $empleado->user->lastname) }}"
                         />
                         @error('lastname')
                             <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
@@ -56,10 +56,10 @@
                             name="type_document"
                         >
                             <option value=""></option>
-                            <option value="CC" {{ old('type_document', $barbero->user->type_document) == 'CC' ? 'selected' : '' }}>Cédula de Ciudadanía</option>
-                            <option value="TI" {{ old('type_document', $barbero->user->type_document) == 'TI' ? 'selected' : '' }}>Tarjeta de Identidad</option>
-                            <option value="CE" {{ old('type_document', $barbero->user->type_document) == 'CE' ? 'selected' : '' }}>Cédula de Extranjería</option>
-                            <option value="PAS" {{ old('type_document', $barbero->user->type_document) == 'PAS' ? 'selected' : '' }}>Pasaporte</option>
+                            <option value="CC" {{ old('type_document', $empleado->user->type_document) == 'CC' ? 'selected' : '' }}>Cédula de Ciudadanía</option>
+                            <option value="TI" {{ old('type_document', $empleado->user->type_document) == 'TI' ? 'selected' : '' }}>Tarjeta de Identidad</option>
+                            <option value="CE" {{ old('type_document', $empleado->user->type_document) == 'CE' ? 'selected' : '' }}>Cédula de Extranjería</option>
+                            <option value="PAS" {{ old('type_document', $empleado->user->type_document) == 'PAS' ? 'selected' : '' }}>Pasaporte</option>
                         </x-base.tom-select>
                         @error('type_document')
                             <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
@@ -75,7 +75,7 @@
                             name="document_number"
                             type="text"
                             placeholder="Número de Documento"
-                            value="{{ old('document_number', $barbero->user->document_number) }}"
+                            value="{{ old('document_number', $empleado->user->document_number) }}"
                         />
                         @error('document_number')
                             <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
@@ -92,7 +92,7 @@
                             id="birth_date"
                             name="birth_date"
                             type="date"
-                            value="{{ old('birth_date', $barbero->user->birth_date) }}"
+                            value="{{ old('birth_date', $empleado->user->birth_date) }}"
                         />
                         @error('birth_date')
                             <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
@@ -107,7 +107,7 @@
                             name="phone"
                             type="text"
                             placeholder="Teléfono"
-                            value="{{ old('phone', $barbero->user->phone) }}"
+                            value="{{ old('phone', $empleado->user->phone) }}"
                         />
                         @error('phone')
                             <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
@@ -124,7 +124,7 @@
                         name="email"
                         type="email"
                         placeholder="Email"
-                        value="{{ old('email', $barbero->user->email) }}"
+                        value="{{ old('email', $empleado->user->email) }}"
                     />
                     @error('email')
                         <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
@@ -141,16 +141,16 @@
                         multiple
                     >
                         @foreach ($servicios as $servicio)
-                            <option value="{{ $servicio->id }}" {{ in_array($servicio->id, $barbero->servicios->pluck('id')->toArray()) ? 'selected' : '' }}>
+                            <option value="{{ $servicio->id }}" {{ in_array($servicio->id, $empleado->servicios->pluck('id')->toArray()) ? 'selected' : '' }}>
                                 {{ $servicio->nombre }}
                             </option>
                         @endforeach
                     </x-base.tom-select>
                 </div>
 
-                <!-- Foto del Barbero -->
+                <!-- Foto del empleado -->
                 <div class="intro-y col-span-12 lg:col-span-6 mt-4">
-                    <x-base.form-label for="foto">Foto del Barbero</x-base.form-label>
+                    <x-base.form-label for="foto">Foto del empleado</x-base.form-label>
                     <x-base.form-input
                         class="w-full {{ $errors->has('foto') ? 'border-red-500' : '' }}"
                         id="foto"

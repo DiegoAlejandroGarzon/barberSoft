@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Barberia;
+use App\Models\Empresa;
 use App\Models\Servicio;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -103,15 +103,15 @@ class ServicioController extends Controller
      */
     public function destroy(string $id)
     {
-        // Buscar la barbería por su ID
+        // Buscar la empresa por su ID
         $servicio = Servicio::find($id);
 
-        // Si no se encuentra la barbería, redirigir con un mensaje de error
+        // Si no se encuentra la empresa, redirigir con un mensaje de error
         if (!$servicio) {
             return redirect()->route('servicio.index')->with('error', 'El Servicio no fue encontrado.');
         }
 
-        // Eliminar la barbería
+        // Eliminar la empresa
         $servicio->delete();
 
         // Redirigir con un mensaje de éxito

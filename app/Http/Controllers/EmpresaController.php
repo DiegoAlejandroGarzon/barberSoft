@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Barberia;
-use App\Models\Barbero;
+use App\Models\Empresa;
+use App\Models\Empleado;
 use App\Models\Departament;
 use App\Models\Department;
 use Spatie\Permission\Models\Role;
@@ -19,11 +19,11 @@ class EmpresaController extends Controller
      */
     public function index()
     {
-        // Obtener todas las barberías
+        // Obtener todas las Empresas
         $empresas = Empresa::all(); // O puedes usar paginate() para paginar
 
         // Retornar la vista con los datos
-        return view('barberia.index', compact('empresas'));
+        return view('empresa.index', compact('empresas'));
     }
 
     /**
@@ -33,7 +33,7 @@ class EmpresaController extends Controller
         $roles = Role::all();
         $departments = Departament::all(); // Obtener los departamentos
 
-        return view('barberia.create', compact(['roles', 'departments']));
+        return view('empresa.create', compact(['roles', 'departments']));
     }
 
     /**
@@ -60,7 +60,7 @@ class EmpresaController extends Controller
             // Obtener el nombre original del archivo
             $extension = $logo->getClientOriginalExtension();
 
-            // Crear un nombre único para el archivo basado en el nombre de la barbería y la fecha
+            // Crear un nombre único para el archivo basado en el nombre de la empresa y la fecha
             $fileName = strtolower(str_replace(' ', '_', $request->input('name'))) . '-' . now()->format('Y-m-d_H-i-s') . '.' . $extension;
 
             // Guardar el archivo en la carpeta empresas/logos
@@ -69,7 +69,7 @@ class EmpresaController extends Controller
             $logoPath = null;
         }
 
-        // Crear la nueva barbería
+        // Crear la nueva empresa
         Empresa::create([
             'nombre' => $validated['nombre'],
             'ubicacion' => $validated['ubicacion'] ?? null,
@@ -82,7 +82,7 @@ class EmpresaController extends Controller
         ]);
 
         // Redirigir con éxito
-        return redirect()->route('barberia.index')->with('success', 'Barbería creada exitosamente');
+        return redirect()->route('empresa.index')->with('success', 'empresa creada exitosamente');
     }
 
     /**
@@ -98,9 +98,9 @@ class EmpresaController extends Controller
      */
     public function edit(string $id)
     {
-        $barberia = Empresa::find($id);
+        $empresa = Empresa::find($id);
 
-        return view('barberia.update', compact(['barberia']));
+        return view('empresa.update', compact(['empresa']));
     }
 
     /**
@@ -116,25 +116,25 @@ class EmpresaController extends Controller
             'color_two' => 'nullable|string|max:7', // HEX color format
         ]);
 
-        // Encontrar la barbería por su ID
-        $barberia = Empresa::findOrFail($id);
+        // Encontrar la empresa por su ID
+        $empresa = Empresa::findOrFail($id);
 
         // Si hay un nuevo logo, lo subimos
         if ($request->hasFile('logo')) {
             // Eliminar el logo anterior si existe
-            if ($barberia->logo) {
-                Storage::disk('public')->delete($barberia->logo);
+            if ($empresa->logo) {
+                Storage::disk('public')->delete($empresa->logo);
             }
 
-            // Reemplazar los espacios en el nombre de la barbería con guiones bajos
+            // Reemplazar los espacios en el nombre de la empresa con guiones bajos
             $fileName = strtolower(str_replace(' ', '_', $request->nombre)) . '-' . now()->format('Y-m-d_H-i-s') . '.' . $request->logo->extension();
             $logoPath = $request->file('logo')->storeAs('empresas/logos', $fileName, 'public');
         } else {
             // Si no se sube un nuevo logo, mantenemos el logo actual
-            $logoPath = $barberia->logo;
+            $logoPath = $empresa->logo;
         }
-        // Actualizar la barbería
-        $barberia->update([
+        // Actualizar la empresa
+        $empresa->update([
             'nombre' => $request->nombre,
             'logo' => $logoPath,
             'color_one' => $request->color_one,
@@ -142,7 +142,7 @@ class EmpresaController extends Controller
         ]);
 
         // Redirigir con mensaje de éxito
-        return redirect()->route('barberia.index')->with('success', 'Barbería actualizada correctamente.');
+        return redirect()->route('empresa.index')->with('success', 'empresa actualizada correctamente.');
     }
 
     /**
@@ -150,31 +150,31 @@ class EmpresaController extends Controller
      */
     public function destroy(string $id)
     {
-        // Buscar la barbería por su ID
-        $barberia = Empresa::find($id);
+        // Buscar la empresa por su ID
+        $empresa = Empresa::find($id);
 
-        // Si no se encuentra la barbería, redirigir con un mensaje de error
-        if (!$barberia) {
-            return redirect()->route('barberia.index')->with('error', 'La barbería no fue encontrada.');
+        // Si no se encuentra la empresa, redirigir con un mensaje de error
+        if (!$empresa) {
+            return redirect()->route('empresa.index')->with('error', 'La empresa no fue encontrada.');
         }
 
-        // Eliminar la barbería
-        $barberia->delete();
+        // Eliminar la empresa
+        $empresa->delete();
 
         // Redirigir con un mensaje de éxito
-        return redirect()->route('barberia.index')->with('success', 'La barbería ha sido eliminada con éxito.');
+        return redirect()->route('empresa.index')->with('success', 'La empresa ha sido eliminada con éxito.');
     }
 
     public function registerPublic($guid){
-        $barberia = Empresa::where('guid', $guid)->first();
-        if (!$barberia) {
-            return abort(404, 'Barbería no encontrada.');
+        $empresa = Empresa::where('guid', $guid)->first();
+        if (!$empresa) {
+            return abort(404, 'empresa no encontrada.');
         }
 
-        // Obtener los empleados relacionados con la barbería
-        $empleados = Empleado::whereHas('user', function ($query) use ($barberia) {
-            $query->where('empresa_id', $barberia->id);
+        // Obtener los empleados relacionados con la empresa
+        $empleados = Empleado::whereHas('user', function ($query) use ($empresa) {
+            $query->where('empresa_id', $empresa->id);
         })->get();
-        return view('barberia.registerPublic', compact('barberia', 'empleados'));
+        return view('empresa.registerPublic', compact('empresa', 'empleados'));
     }
 }

@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Barberia;
-use App\Models\Barbero;
-use App\Models\BarberoServicio;
+use App\Models\Empresa;
+use App\Models\Empleado;
+use App\Models\empleadoServicio;
 use App\Models\Departament;
+use App\Models\EmpleadoServicio;
 use App\Models\Servicio;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -15,7 +16,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
-class BarberoController extends Controller
+class EmpleadoController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -24,10 +25,10 @@ class BarberoController extends Controller
     {
         $empleados = Empleado::with('user')
             ->whereHas('user.roles', function ($query) {
-                $query->where('name', 'barbero');
+                $query->where('name', 'empleado');
             })
             ->get();
-        return view('barbero.index', compact('empleados'));
+        return view('empleado.index', compact('empleados'));
     }
 
     /**
@@ -35,12 +36,12 @@ class BarberoController extends Controller
      */
     public function create()
     {
-        // Obtener todas las barberías para llenar el select
+        // Obtener todas las Empresas para llenar el select
         $empresas = Empresa::all();
         $departments = Departament::all(); // Obtener los departamentos
         $servicios = Servicio::all();
 
-        return view('barbero.create', compact('empresas', 'departments', 'servicios'));
+        return view('empleado.create', compact('empresas', 'departments', 'servicios'));
     }
 
     /**
@@ -62,7 +63,7 @@ class BarberoController extends Controller
             'servicios' => 'nullable|array',
             'servicios.*' => 'exists:servicios,id', // Validar que los servicios existan
         ]);
-        // Si el usuario autenticado no envía empresa_id, asignar la barbería del usuario autenticado
+        // Si el usuario autenticado no envía empresa_id, asignar la empresa del usuario autenticado
         if (is_null($request->empresa_id)) {
             $validatedData['empresa_id'] = auth()->user()->empresa_id ?? null;
         }
@@ -86,7 +87,7 @@ class BarberoController extends Controller
         $user->save();
 
         // Asignar rol al usuario
-        $user->assignRole('barbero'); // Asegúrate de tener un rol por defecto si no se envía
+        $user->assignRole('empleado'); // Asegúrate de tener un rol por defecto si no se envía
 
         // Subir el logo si existe
         if ($request->hasFile('foto')) {
@@ -94,28 +95,28 @@ class BarberoController extends Controller
             $logo = $request->file('foto');
             // Obtener el nombre original del archivo
             $extension = $logo->getClientOriginalExtension();
-            // Crear un nombre único para el archivo basado en el nombre de la barbería y la fecha
+            // Crear un nombre único para el archivo basado en el nombre de la empresa y la fecha
             $fileName = $user->id. '-' . now()->format('Y-m-d_H-i-s') . '.' . $extension;
             // Guardar el archivo en la carpeta empresas/logos
             $fotoPath = $logo->storeAs('empleados/fotos', $fileName, 'public');
         } else {
             $fotoPath = null;
         }
-        $barbero = new Barbero();
-        $barbero->foto = $fotoPath;
-        $barbero->usuario_id = $user->id;
-        $barbero->save();
+        $empleado = new Empleado();
+        $empleado->foto = $fotoPath;
+        $empleado->usuario_id = $user->id;
+        $empleado->save();
 
         // Agregar nuevos servicios
         $servicios = $validatedData['servicios'] ?? [];
         foreach ($servicios as $servicioId) {
-            BarberoServicio::create([
-                'empleado_id' => $barbero->id,
+            EmpleadoServicio::create([
+                'empleado_id' => $empleado->id,
                 'servicio_id' => $servicioId,
             ]);
         }
 
-        return redirect()->route('barbero.index')->with('success', 'Usuario creado exitosamente.');
+        return redirect()->route('empleado.index')->with('success', 'Usuario creado exitosamente.');
     }
 
     /**
@@ -131,10 +132,10 @@ class BarberoController extends Controller
      */
     public function edit($id)
     {
-        $barbero = Empleado::findOrFail($id);
+        $empleado = Empleado::findOrFail($id);
         $empresas = Empresa::all();
         $servicios = Servicio::all();
-        return view('barbero.update', compact('barbero', 'empresas', 'servicios'));
+        return view('empleado.update', compact('empleado', 'empresas', 'servicios'));
     }
 
     /**
@@ -142,9 +143,9 @@ class BarberoController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $barbero = Empleado::find($id);
+        $empleado = Empleado::find($id);
         // Buscar el usuario existente
-        $user = User::findOrFail($barbero->usuario_id);
+        $user = User::findOrFail($empleado->usuario_id);
         // Validar los datos de entrada
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
@@ -169,7 +170,7 @@ class BarberoController extends Controller
             'servicios.*' => 'exists:servicios,id', // Validar que los servicios existan
         ]);
 
-        // Si el usuario autenticado no envía empresa_id, mantener la barbería actual
+        // Si el usuario autenticado no envía empresa_id, mantener la empresa actual
         if (is_null($request->empresa_id)) {
             $validatedData['empresa_id'] = $user->empresa_id;
         }
@@ -189,8 +190,8 @@ class BarberoController extends Controller
         // Manejar la actualización de la foto
         if ($request->hasFile('foto')) {
             // Eliminar la foto anterior si existe
-            if ($barbero && $barbero->foto) {
-                Storage::disk('public')->delete($barbero->foto);
+            if ($empleado && $empleado->foto) {
+                Storage::disk('public')->delete($empleado->foto);
             }
 
             // Subir la nueva foto
@@ -200,14 +201,14 @@ class BarberoController extends Controller
             $fotoPath = $logo->storeAs('empleados/fotos', $fileName, 'public');
 
             // Guardar la nueva foto
-            if ($barbero) {
-                $barbero->foto = $fotoPath;
-                $barbero->save();
+            if ($empleado) {
+                $empleado->foto = $fotoPath;
+                $empleado->save();
             }
         }
         // Sincronizar los servicios
         $servicios = $validatedData['servicios'] ?? [];
-        $existingServicios = $barbero->servicios->pluck('id')->toArray();
+        $existingServicios = $empleado->servicios->pluck('id')->toArray();
 
         // Identificar los servicios a agregar y eliminar
         $toAdd = array_diff($servicios, $existingServicios);
@@ -215,18 +216,18 @@ class BarberoController extends Controller
 
         // Agregar nuevos servicios
         foreach ($toAdd as $servicioId) {
-            BarberoServicio::create([
-                'empleado_id' => $barbero->id,
+            empleadoServicio::create([
+                'empleado_id' => $empleado->id,
                 'servicio_id' => $servicioId,
             ]);
         }
 
         // Eliminar servicios que ya no están en la lista
-        BarberoServicio::where('empleado_id', $barbero->id)
+        empleadoServicio::where('empleado_id', $empleado->id)
             ->whereIn('servicio_id', $toRemove)
             ->delete();
 
-        return redirect()->route('barbero.index')->with('success', 'Usuario actualizado exitosamente.');
+        return redirect()->route('empleado.index')->with('success', 'Usuario actualizado exitosamente.');
     }
 
 
@@ -235,30 +236,30 @@ class BarberoController extends Controller
      */
     public function destroy(string $id)
     {
-        // Buscar la barbería por su ID
-        $barbero = Empleado::find($id);
+        // Buscar la empresa por su ID
+        $empleado = Empleado::find($id);
 
-        // Si no se encuentra la barbería, redirigir con un mensaje de error
-        if (!$barbero) {
-            return redirect()->route('barberia.index')->with('error', 'La barbería no fue encontrada.');
+        // Si no se encuentra la empresa, redirigir con un mensaje de error
+        if (!$empleado) {
+            return redirect()->route('empresa.index')->with('error', 'La empresa no fue encontrada.');
         }
 
-        // Eliminar la barbería
-        $barbero->delete();
+        // Eliminar la empresa
+        $empleado->delete();
 
         // Redirigir con un mensaje de éxito
-        return redirect()->route('barberia.index')->with('success', 'La barbería ha sido eliminada con éxito.');
+        return redirect()->route('empresa.index')->with('success', 'La empresa ha sido eliminada con éxito.');
     }
 
     public function obtenerServicios($id)
     {
-        $barbero = Empleado::find($id);
+        $empleado = Empleado::find($id);
 
-        if (!$barbero) {
-            return response()->json(['success' => false, 'message' => 'Barbero no encontrado']);
+        if (!$empleado) {
+            return response()->json(['success' => false, 'message' => 'empleado no encontrado']);
         }
 
-        $servicios = $barbero->servicios; // Asumiendo relación "services" en el modelo Barber
+        $servicios = $empleado->servicios; // Asumiendo relación "services" en el modelo Barber
         return response()->json(['success' => true, 'servicios' => $servicios]);
     }
 }

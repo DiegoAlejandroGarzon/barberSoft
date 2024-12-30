@@ -27,7 +27,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\AjaxController;
 use App\Http\Controllers\EmpresaController;
-use App\Http\Controllers\BarberoController;
+use App\Http\Controllers\EmpleadoController;
 use App\Http\Controllers\CitaController;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\CouponController;
@@ -66,11 +66,11 @@ Route::get('/evento/{public_link}/download-pdf/{id}', [PDFController::class, 'ge
 Route::get('/check-courtesy-code/{eventId}/{code}', [CouponController::class, 'checkCourtesyCode'])->name('check.courtesy.code');
 Route::get('/get-seats-by-ticket-type/{ticketTypeId}', [SeatController::class, 'getSeatsByTicketType']);
 
-Route::get('/registroCitas/{guid}',[EmpresaController::class,'registerPublic'])->name('barberia.registerPublic');
+Route::get('/registroCitas/{guid}',[EmpresaController::class,'registerPublic'])->name('empresa.registerPublic');
 Route::post('/registroCitasSubmit/{guid}',[EmpresaController::class,'registerPublicSubmit'])->name('citas.registerPublic');
 
 Route::get('/clientes/buscar ',[ClienteController::class,'buscarCliente']);
-Route::get('/empleados/{id}/servicios ',[BarberoController::class,'obtenerServicios']);
+Route::get('/empleados/{id}/servicios ',[EmpleadoController::class,'obtenerServicios']);
 
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
@@ -109,20 +109,20 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/city/delete/{id}',[CityController::class,'delete'])->name('city.delete');
 
     //CRUS empresas
-    Route::get('/empresas',[EmpresaController::class,'index'])->name('barberia.index');
-    Route::get('/barberia/create',[EmpresaController::class,'create'])->name('barberia.create');
-    Route::post('/barberia/create',[EmpresaController::class,'store'])->name('barberia.store');
-    Route::get('/barberia/update/{id}',[EmpresaController::class,'edit'])->name('barberia.edit');
-    Route::put('/barberia/update/{id}',[EmpresaController::class,'update'])->name('barberia.update');
-    Route::delete('/barberia/delete/{id}',[EmpresaController::class,'destroy'])->name('barberia.delete');
+    Route::get('/empresas',[EmpresaController::class,'index'])->name('empresa.index');
+    Route::get('/empresa/create',[EmpresaController::class,'create'])->name('empresa.create');
+    Route::post('/empresa/create',[EmpresaController::class,'store'])->name('empresa.store');
+    Route::get('/empresa/update/{id}',[EmpresaController::class,'edit'])->name('empresa.edit');
+    Route::put('/empresa/update/{id}',[EmpresaController::class,'update'])->name('empresa.update');
+    Route::delete('/empresa/delete/{id}',[EmpresaController::class,'destroy'])->name('empresa.delete');
 
     //CRUS empleados
-    Route::get('/empleados',[BarberoController::class,'index'])->name('barbero.index');
-    Route::get('/empleados/create',[BarberoController::class,'create'])->name('barbero.create');
-    Route::post('/empleados/create',[BarberoController::class,'store'])->name('barbero.store');
-    Route::get('/barbero/update/{id}',[BarberoController::class,'edit'])->name('barbero.edit');
-    Route::put('/barbero/update/{id}',[BarberoController::class,'update'])->name('barbero.update');
-    Route::delete('/empleados/delete/{id}',[BarberoController::class,'destroy'])->name('barbero.delete');
+    Route::get('/empleados',[EmpleadoController::class,'index'])->name('empleado.index');
+    Route::get('/empleados/create',[EmpleadoController::class,'create'])->name('empleado.create');
+    Route::post('/empleados/create',[EmpleadoController::class,'store'])->name('empleado.store');
+    Route::get('/empleado/update/{id}',[EmpleadoController::class,'edit'])->name('empleado.edit');
+    Route::put('/empleado/update/{id}',[EmpleadoController::class,'update'])->name('empleado.update');
+    Route::delete('/empleados/delete/{id}',[EmpleadoController::class,'destroy'])->name('empleado.delete');
 
     //CRUS empleados
     Route::get('/citas',[CitaController::class,'index'])->name('citas.index');

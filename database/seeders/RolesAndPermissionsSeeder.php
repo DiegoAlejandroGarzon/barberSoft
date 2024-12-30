@@ -83,7 +83,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'show clientes',
         ]);
 
-        // Crear el rol admin y asignarle los permisos, sin los permisos sobre barberías y usuarios
+        // Crear el rol admin y asignarle los permisos, sin los permisos sobre Empresas y usuarios
         $adminRole = Role::create(['name' => 'admin']);
         $adminRole->givePermissionTo([
             'create empleados',
@@ -109,7 +109,7 @@ class RolesAndPermissionsSeeder extends Seeder
         ]);
 
 
-        $adminRole = Role::create(['name' => 'barbero']);
+        $adminRole = Role::create(['name' => 'empleado']);
         $adminRole->givePermissionTo([
             'create servicios',
             'edit servicios',

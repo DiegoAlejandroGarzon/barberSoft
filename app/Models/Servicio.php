@@ -28,7 +28,7 @@ class Servicio extends Model
         return $this->belongsToMany(Cita::class, 'cita_servicios');
     }
 
-    public function barberia()
+    public function empresa()
     {
         return $this->belongsTo(Empresa::class, 'empresa_id');
     }

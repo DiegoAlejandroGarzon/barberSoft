@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Barbero;
+use App\Models\Empleado;
 use App\Models\Cita;
 use App\Models\Cliente;
 use App\Models\Servicio;
@@ -17,9 +17,9 @@ class CitaController extends Controller
     public function index()
     {
         $user = auth()->user();
-        $query = Cita::with(['cliente', 'barbero.user']);
+        $query = Cita::with(['cliente', 'empleado.user']);
         if (!$user->hasRole('super-admin')) {
-            $query->whereHas('barbero.user', function ($query) use ($user) {
+            $query->whereHas('empleado.user', function ($query) use ($user) {
                 $query->where('empresa_id', $user->empresa_id);
             });
         }
@@ -64,7 +64,7 @@ class CitaController extends Controller
             'fecha_hora'        => 'required|date',
         ]);
 
-        // Verificar si ya existe una cita para el mismo barbero en la misma fecha y hora
+        // Verificar si ya existe una cita para el mismo empleado en la misma fecha y hora
         $citaExistente = Cita::where('empleado_id', $request->empleado_id)
             ->where('fecha_hora', $request->fecha_hora)
             ->first();
@@ -72,7 +72,7 @@ class CitaController extends Controller
         if ($citaExistente) {
             return redirect()
                 ->back()
-                ->withErrors(['error' => 'Ya existe una cita para este barbero en esta fecha y hora.'])
+                ->withErrors(['error' => 'Ya existe una cita para este empleado en esta fecha y hora.'])
                 ->withInput();
         }
 
@@ -146,7 +146,7 @@ class CitaController extends Controller
             'fecha_hora' => 'required|date',
         ]);
 
-        // Verificar si ya existe una cita para el mismo barbero en la misma fecha y hora
+        // Verificar si ya existe una cita para el mismo empleado en la misma fecha y hora
         $citaExistente = Cita::where('empleado_id', $request->empleado_id)
             ->where('fecha_hora', $request->fecha_hora)
             ->first();
@@ -154,7 +154,7 @@ class CitaController extends Controller
         if ($citaExistente) {
             return redirect()
                 ->back()
-                ->withErrors(['error' => 'Ya existe una cita para este barbero en esta fecha y hora.'])
+                ->withErrors(['error' => 'Ya existe una cita para este empleado en esta fecha y hora.'])
                 ->withInput();
         }
 
@@ -213,7 +213,7 @@ class CitaController extends Controller
         $fecha = $request->date;
 
         // Traer las citas de la fecha específica, ordenadas por horario
-        $citas = Cita::with(['cliente', 'barbero'])
+        $citas = Cita::with(['cliente', 'empleado'])
             ->whereDate('fecha_hora', $fecha)
             ->orderBy('fecha_hora')
             ->get();

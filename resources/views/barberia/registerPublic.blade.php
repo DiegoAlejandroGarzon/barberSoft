@@ -1,36 +1,36 @@
 @extends('../themes/base')
 
 @section('head')
-    <title>BarBerSoft</title>
+    <title>AgendaPlus</title>
 @endsection
 
 @section('content')
 
-@if($barberia->color_one !== null)
+@if($empresa->color_one !== null)
 <style>
     body {
         overflow-x: hidden; /* Evita el desbordamiento horizontal */
     }
     .bg-color-one {
         --tw-bg-opacity: 1;
-        background-color: {{$barberia->color_one}};
+        background-color: {{$empresa->color_one}};
     }
     .bg-color-two {
         --tw-bg-opacity: 1;
-        background-color: {{$barberia->color_two}};
+        background-color: {{$empresa->color_two}};
     }
     .before\:bg-color-two\/20::before{
         --tw-bg-opacity: 1;
-        background-color: {{$barberia->color_two}};
+        background-color: {{$empresa->color_two}};
     }
     .after\:bg-color-one::after {
         --tw-bg-opacity: 1;
-        background-color: {{$barberia->color_one}};
+        background-color: {{$empresa->color_one}};
     }
     @media (max-width: 1280px) {
         .lg\:overflow-hidden {
             overflow: hidden;
-            background-color: {{$barberia->color_one}}; /* Aplica bg-color-one a pantallas mayores de 640px */
+            background-color: {{$empresa->color_one}}; /* Aplica bg-color-one a pantallas mayores de 640px */
         }
     }
 </style>
@@ -52,13 +52,13 @@
                 <div class="hidden min-h-screen flex-col xl:flex">
                     {{-- <span class="ml-3 text-lg text-white"> tuBoleta </span> --}}
                     <div class="my-auto">
-                        @if ($barberia->logo)
-                        <img src="{{ asset('storage/' . $barberia->logo) }}" alt="Logo de {{ $barberia->nombre }}" class="object-cover" style="width: 50%; height: auto;" >
+                        @if ($empresa->logo)
+                        <img src="{{ asset('storage/' . $empresa->logo) }}" alt="Logo de {{ $empresa->nombre }}" class="object-cover" style="width: 50%; height: auto;" >
                         @else
                         <img class="-intro-x -mt-16 w-1/2" src="{{ Vite::asset('resources/images/illustration.svg') }}" alt="" />
                         @endif
                         <div class="-intro-x mt-10 text-4xl font-medium leading-tight text-white">
-                            BarberSoft
+                            AgendaPlus
                         </div>
                         <div class="-intro-x mt-5 text-lg text-white text-opacity-70 dark:text-slate-400">
                             Registrar Citas y llevar su gestión
@@ -71,17 +71,17 @@
                 <div class="my-10 flex h-screen py-5 xl:my-0 xl:h-auto xl:py-0">
                     <div class="mx-auto my-auto w-full rounded-md bg-white px-5 py-8 shadow-md dark:bg-darkmode-600 sm:w-3/4 sm:px-8 lg:w-2/4 xl:ml-20 xl:w-auto xl:bg-transparent xl:p-0 xl:shadow-none">
                         <h2 class="intro-x text-center text-2xl font-bold xl:text-left xl:text-3xl">
-                            Agenda tu cita de: {{ $barberia->nombre }}
+                            Agenda tu cita de: {{ $empresa->nombre }}
                         </h2>
                         <div class="block xl:hidden">
-                            @if ($barberia->logo)
-                            <img class="" src="{{ asset('storage/' . $barberia->logo) }}" alt="Imagen del evento" />
+                            @if ($empresa->logo)
+                            <img class="" src="{{ asset('storage/' . $empresa->logo) }}" alt="Imagen del evento" />
                             @else
                             <img class="-intro-x -mt-16 w-1/2" src="{{ Vite::asset('resources/images/illustration.svg') }}" alt="" />
                             @endif
                         </div>
                         <p class="intro-x mt-2 text-center text-slate-400 xl:hidden">
-                            {{ $barberia->description }}
+                            {{ $empresa->description }}
                         </p>
                         @if (session('success'))
                             <div class="intro-x mt-4 alert alert-success text-green-500">
@@ -134,9 +134,9 @@
                                     </div>
                                 </div>
 
-                                <!-- Barbero -->
+                                <!-- empleado -->
                                 <div class="mt-3">
-                                    <x-base.form-label for="empleado_id">Barbero</x-base.form-label>
+                                    <x-base.form-label for="empleado_id">empleado</x-base.form-label>
                                     <x-base.tom-select
                                         class="w-full"
                                         id="empleado_id"
@@ -144,8 +144,8 @@
                                         onchange="cargarServiciosRelacionados()"
                                     >
                                         <option></option>
-                                        @foreach ($empleados as $barbero)
-                                            <option value="{{ $barbero->id }}" {{ old('empleado_id') == $barbero->id ? 'selected' : '' }}>{{ $barbero->user->name }}</option>
+                                        @foreach ($empleados as $empleado)
+                                            <option value="{{ $empleado->id }}" {{ old('empleado_id') == $empleado->id ? 'selected' : '' }}>{{ $empleado->user->name }}</option>
                                         @endforeach
                                     </x-base.tom-select>
                                 </div>
@@ -239,10 +239,10 @@
         }
 
         function cargarServiciosRelacionados() {
-            const barberoId = document.getElementById('empleado_id').value;
+            const empleadoId = document.getElementById('empleado_id').value;
             const serviciosSelect = document.querySelector('#servicios').tomselect;
 
-            fetch(`/empleados/${barberoId}/servicios`)
+            fetch(`/empleados/${empleadoId}/servicios`)
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {

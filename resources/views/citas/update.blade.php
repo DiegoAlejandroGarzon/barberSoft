@@ -62,9 +62,9 @@
                         </div>
                     </div>
 
-                    <!-- Barbero -->
+                    <!-- empleado -->
                     <div class="mt-3">
-                        <x-base.form-label for="empleado_id">Barbero</x-base.form-label>
+                        <x-base.form-label for="empleado_id">empleado</x-base.form-label>
                         <x-base.tom-select
                             class="w-full"
                             id="empleado_id"
@@ -72,9 +72,9 @@
                             onchange="cargarServiciosRelacionados()"
                         >
                             <option></option>
-                            @foreach ($empleados as $barbero)
-                                <option value="{{ $barbero->id }}" {{ old('empleado_id', $cita->empleado_id) == $barbero->id ? 'selected' : '' }}>
-                                    {{ $barbero->user->name }}
+                            @foreach ($empleados as $empleado)
+                                <option value="{{ $empleado->id }}" {{ old('empleado_id', $cita->empleado_id) == $empleado->id ? 'selected' : '' }}>
+                                    {{ $empleado->user->name }}
                                 </option>
                             @endforeach
                         </x-base.tom-select>
@@ -162,10 +162,10 @@
         }
 
         function cargarServiciosRelacionados() {
-            const barberoId = document.getElementById('empleado_id').value;
+            const empleadoId = document.getElementById('empleado_id').value;
             const serviciosSelect = document.querySelector('#servicios').tomselect;
 
-            fetch(`/empleados/${barberoId}/servicios`)
+            fetch(`/empleados/${empleadoId}/servicios`)
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {

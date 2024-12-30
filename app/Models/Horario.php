@@ -19,8 +19,8 @@ class Horario extends Model
         'dia_semana',
     ];
 
-    // Relación con la barbería
-    public function barberia()
+    // Relación con la empresa
+    public function empresa()
     {
         return $this->belongsTo(Empresa::class);
     }

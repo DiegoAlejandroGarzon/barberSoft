@@ -1,28 +1,28 @@
 @extends('../themes/' . $activeTheme . '/' . $activeLayout)
 
 @section('subhead')
-    <title>Barbería - Crear</title>
+    <title>empresa - Crear</title>
 @endsection
 
 @section('subcontent')
     <div class="intro-y mt-8 flex items-center">
-        <h2 class="mr-auto text-lg font-medium">Crear Barbería</h2>
+        <h2 class="mr-auto text-lg font-medium">Crear empresa</h2>
     </div>
     <div class="mt-5 grid grid-cols-12 gap-6">
         <div class="intro-y col-span-12 lg:col-span-12">
             <div class="intro-y box p-5">
-                <form method="POST" action="{{ route('barberia.store') }}" enctype="multipart/form-data">
+                <form method="POST" action="{{ route('empresa.store') }}" enctype="multipart/form-data">
                     @csrf
 
-                    <!-- Nombre de la Barbería -->
+                    <!-- Nombre de la empresa -->
                     <div class="intro-y col-span-12 lg:col-span-6">
-                        <x-base.form-label for="nombre">Nombre de la Barbería</x-base.form-label>
+                        <x-base.form-label for="nombre">Nombre de la empresa</x-base.form-label>
                         <x-base.form-input
                             class="w-full {{ $errors->has('nombre') ? 'border-red-500' : '' }}"
                             id="nombre"
                             name="nombre"
                             type="text"
-                            placeholder="Nombre de la barbería"
+                            placeholder="Nombre de la empresa"
                             value="{{ old('nombre') }}"
                         />
                         @error('nombre')
@@ -30,7 +30,7 @@
                         @enderror
                     </div>
 
-                    <!-- Ubicación de la Barbería -->
+                    <!-- Ubicación de la empresa -->
                     <div class="intro-y col-span-12 lg:col-span-6 mt-4">
                         <x-base.form-label for="ubicacion">Ubicación</x-base.form-label>
                         <x-base.form-input
@@ -46,7 +46,7 @@
                         @enderror
                     </div>
 
-                    <!-- Contacto de la Barbería -->
+                    <!-- Contacto de la empresa -->
                     <div class="intro-y col-span-12 lg:col-span-6 mt-4">
                         <x-base.form-label for="contacto">Contacto</x-base.form-label>
                         <x-base.form-input
@@ -62,7 +62,7 @@
                         @enderror
                     </div>
 
-                    <!-- Estado de la Barbería -->
+                    <!-- Estado de la empresa -->
                     <div class="intro-y col-span-12 lg:col-span-6 mt-4">
                         <x-base.form-label for="status">Estado</x-base.form-label>
                         <select
@@ -78,9 +78,9 @@
                         @enderror
                     </div>
 
-                    <!-- Logo de la Barbería -->
+                    <!-- Logo de la empresa -->
                     <div class="intro-y col-span-12 lg:col-span-6 mt-4">
-                        <x-base.form-label for="logo">Logo de la Barbería</x-base.form-label>
+                        <x-base.form-label for="logo">Logo de la empresa</x-base.form-label>
                         <x-base.form-input
                             class="w-full {{ $errors->has('logo') ? 'border-red-500' : '' }}"
                             id="logo"
@@ -104,7 +104,7 @@
                                     name="color_one"
                                     type="color"
                                     placeholder="Color principal"
-                                    value="{{ old('color_one', $barberia->color_one ?? '#FFFFFF') }}"
+                                    value="{{ old('color_one', $empresa->color_one ?? '#FFFFFF') }}"
                                 />
                                 @error('color_one')
                                     <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
@@ -120,7 +120,7 @@
                                     name="color_two"
                                     type="color"
                                     placeholder="Color Secundario"
-                                    value="{{ old('color_one', $barberia->color_two ?? '#FFFFFF') }}"
+                                    value="{{ old('color_one', $empresa->color_two ?? '#FFFFFF') }}"
                                 />
                                 @error('color_two')
                                     <div class="text-red-500 text-sm mt-1">{{ $message }}</div>

@@ -53,7 +53,7 @@
                                         <div class="card-body m-1">
                                             <h5 class="card-title">{{ $cita->cliente->nombres }} {{ $cita->cliente->apellidos }}</h5>
                                             <p class="card-text">
-                                                <strong>Barbero:</strong> {{ $cita->barbero->user->name }}<br>
+                                                <strong>empleado:</strong> {{ $cita->empleado->user->name }}<br>
                                                 <strong>Servicio:</strong> {{ $cita->servicios->pluck('nombre')->join(', ') }}<br>
                                                 {{-- <strong>Hora:</strong> {{ \Carbon\Carbon::parse($cita->fecha_hora)->format('H:i') }} --}}
                                             </p>
