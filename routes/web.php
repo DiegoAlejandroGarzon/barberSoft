@@ -56,15 +56,6 @@ Route::post('password/email', [ForgotPasswordController::class, 'sendResetLinkEm
 Route::get('password/reset/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
 // Procesar el restablecimiento de contraseña
 Route::post('password/reset', [ResetPasswordController::class, 'reset'])->name('password.update');
-//inscripcion de asistente
-Route::get('/event/register/{public_link}', [EventController::class, 'showPublicRegistrationForm'])->name('event.register');
-Route::post('/event/register/{public_link}', [EventController::class, 'submitPublicRegistration'])->name('event.register.submit');
-Route::get('/event-assistant/infoQr/{id}/{guid}', [EventAssistantController::class, 'infoQr'])->name('eventAssistant.infoQr');
-Route::get('/event-assistant/infoQrCoupon/{id}/{guid}', [CouponController::class, 'infoQrCoupon'])->name('coupon.infoQr');
-Route::post('/cuopon/register/{public_link}', [CouponController::class, 'submitPublicRegistration'])->name('coupon.register.submit');
-Route::get('/evento/{public_link}/download-pdf/{id}', [PDFController::class, 'getPDFEvento'])->name('event.download.pdf');
-Route::get('/check-courtesy-code/{eventId}/{code}', [CouponController::class, 'checkCourtesyCode'])->name('check.courtesy.code');
-Route::get('/get-seats-by-ticket-type/{ticketTypeId}', [SeatController::class, 'getSeatsByTicketType']);
 
 Route::get('/registroCitas/{guid}',[EmpresaController::class,'registerPublic'])->name('empresa.registerPublic');
 Route::post('/registroCitasSubmit/{guid}',[EmpresaController::class,'registerPublicSubmit'])->name('citas.registerPublic');
@@ -133,23 +124,6 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::delete('/cita/delete/{id}',[CitaController::class,'destroy'])->name('citas.delete');
     Route::get('/citas/dashboard', [CitaController::class, 'citesDashBoard'])->name('cites.dashboard');
 
-
-    //CRUD  CONFIGURACION TICKETFREATURE
-    Route::get('/ticketFeatures',[TicketFeatureController::class,'index'])->name('ticketFeatures.index');
-    Route::get('/ticketFeaturess/create',[TicketFeatureController::class,'create'])->name('ticketFeatures.create');
-    Route::post('/ticketFeatures/create',[TicketFeatureController::class,'store'])->name('ticketFeatures.store');
-    Route::get('/ticketFeatures/update/{id}',[TicketFeatureController::class,'edit'])->name('ticketFeatures.edit');
-    Route::post('/ticketFeatures/update/',[TicketFeatureController::class,'update'])->name('ticketFeatures.update');
-    Route::get('/ticketFeatures/delete/{id}',[TicketFeatureController::class,'delete'])->name('ticketFeatures.delete');
-
-    //CRUD CLIENTES
-
-    //CRUD PDF
-    Route::get('/pdf/{id}',[PDFController::class,'buildPDF'])->name('pdf');
-    Route::get('/checkout/',[PaypalController::class,'Paypal'])->name('checkout.paypal');
-
-
-
     //CRUD AJAX
     Route::get('input-form', [AjaxController::class, 'index']);
     Route::get('search-Autocomplete', [AjaxController::class, 'searchAutocomplete']);
@@ -173,79 +147,6 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     //REESTABLECER CONTRASEÑA
     Route::get('/profile/changePassword', [UserController::class, 'changePassword'])->name('profile.changePassword');
     Route::patch('/profile/changePassword', [UserController::class, 'changePasswordUpdate'])->name('profile.changePasswordUpdate');
-    //CRUD EVENTOS
-    Route::get('/event', [EventController::class, 'index'])->name('event.index');
-    Route::get('/event/create', [EventController::class, 'create'])->name('event.create');
-    Route::post('/event/create', [EventController::class, 'store'])->name('event.store');
-    Route::get('/event/update/{id}', [EventController::class, 'edit'])->name('event.edit');
-    Route::post('/event/update', [EventController::class, 'update'])->name('event.update');
-    Route::post('/event/generatePublicLink/{id}', [EventController::class, 'generatePublicLink'])->name('event.generatePublicLink');
-    Route::get('/events/{id}/set-registration-parameters', [EventController::class, 'setRegistrationParameters'])->name('events.setRegistrationParameters');
-    Route::post('/events/{id}/store-registration-parameters', [EventController::class, 'storeRegistrationParameters'])->name('events.storeRegistrationParameters');
-
-    //ASISTENTS TO EVENT
-    Route::get('/assistants/{idEvent}', [EventAssistantController::class, 'index'])->name('eventAssistant.index');
-    Route::get('/assistants/{idEvent}/massAssign', [EventAssistantController::class, 'showMassAssign'])->name('eventAssistant.massAssign');
-    Route::post('/assistants/{idEvent}/massAssign', [EventAssistantController::class, 'uploadMassAssign'])->name('eventAssistant.massAssign.upload');
-    Route::get('/assistants/{idEvent}/singleAssignForm', [EventAssistantController::class, 'singleAssignForm'])->name('eventAssistant.singleAssignForm');
-    Route::post('/assistants/{idEvent}/singleAssignForm', [EventAssistantController::class, 'uploadSingleAssign'])->name('eventAssistant.singleAssign.upload');
-    Route::get('/assistants/{idEvent}/singleCreateForm', [EventAssistantController::class, 'singleCreateForm'])->name('eventAssistant.singleCreateForm');
-    Route::post('/assistants/{idEvent}/singleCreate', [EventAssistantController::class, 'singleCreateUpload'])->name('eventAssistant.singleCreate.upload');
-    Route::get('/assistants/update/{idEventAssistant}', [EventAssistantController::class, 'edit'])->name('eventAssistant.singleUpdateForm');
-    Route::put('/assistants/update/{idEventAssistant}', [EventAssistantController::class, 'singleUpdateUpload'])->name('eventAssistant.update');
-    Route::delete('/assistants/delete/{idEventAssistant}', [EventAssistantController::class, 'singleDelete'])->name('eventAssistant.singleDelete');
-    Route::get('/event-assistant/{id}/qr', [EventAssistantController::class, 'showQr'])->name('eventAssistant.qr');
-    Route::patch('/event-assistant/{id}/register-entry', [EventAssistantController::class, 'registerEntry'])->name('eventAssistant.registerEntry');
-    Route::patch('/event-assistant/{id}/reject-entry', [EventAssistantController::class, 'rejectEntry'])->name('eventAssistant.rejectEntry');
-    Route::get('/event-assistant/{id}/pdf', [EventAssistantController::class, 'generatePDF'])->name('eventAssistant.pdf');
-    Route::patch('event-assistants/{eventAssistant}/features/{feature}/consume', [EventAssistantController::class, 'consumeFeature'])->name('eventAssistant.consumeFeature');
-    Route::get('events/{id}/download-template', [EventAssistantController::class, 'downloadTemplate'])->name('eventAssistant.downloadTemplate');
-    Route::get('events/{idEvent}/specificSearch', [EventAssistantController::class, 'specificSearch'])->name('eventAssistant.specificSearch');
-    Route::get('events/{idEvent}/specificSearchUploead', [EventAssistantController::class, 'specificSearchUploead'])->name('eventAssistant.specificSearch.upload');
-    Route::get('/event-assistant/{idEvent}/export-excel', [EventAssistantController::class, 'exportExcel'])->name('eventAssistant.exportExcel');
-    Route::get('/event-assistant/{idEvent}/send-msg', [EventAssistantController::class, 'sendMsg'])->name('eventAssistant.sendMsg');
-    Route::get('/event-assistant/{id}/sendEmail', [EventAssistantController::class, 'sendEmail'])->name('eventAssistant.sendEmail');
-    Route::get('/event-assistant/{id}/payment', [EventAssistantController::class, 'payment'])->name('eventAssistant.payment');
-    Route::post('/event-assistant/payment', [EventAssistantController::class, 'paymentStore'])->name('eventAssistant.payment.store');
-    Route::get('/event-assistant/{id}/sendEmailInfoPago', [EventAssistantController::class, 'sendEmailInfoPago'])->name('eventAssistant.sendEmailInfoPago');
-    Route::get('/assistants/{idEvent}/massPayload', [EventAssistantController::class, 'showMassPayload'])->name('eventAssistant.massPayload');
-    Route::get('/assistants/{idEvent}/courtesyCode', [EventAssistantController::class, 'courtesyCode'])->name('eventAssistant.courtesyCode');
-    Route::get('/event-assistant/{id}/pdfTicket', [PDFController::class, 'getPDFEvento'])->name('eventAssistant.getPDFTicket');
-    Route::post('/generate-coupons', [CouponController::class, 'createCoupons'])->name('generateCoupons');
-    Route::get('/check-job-status/{eventId}', [CouponController::class, 'checkJobStatus']);
-    Route::get('/job-progress/{eventId}', [CouponController::class, 'getJobProgress'])->name('job-progress');
-    Route::get('/get-coupons/{eventId}', [EventAssistantController::class, 'getCoupons']);
-
-    //Payloads
-    Route::get('/paymentList/{idEvent}', [PaymentController::class, 'index'])->name('payments.index');
-    Route::get('/payment/{id}', [PaymentController::class, 'generatePDF'])->name('payments.generatePDF');
-    Route::get('/event-assistant/payment/{idEvent}/export-excel', [PaymentController::class, 'exportExcel'])->name('payment.exportExcel');
-    Route::get('/event-assistant/paymentStatus/{idEvent}/export-excel', [PaymentController::class, 'exportExcelPaymentStatus'])->name('paymentStatus.exportExcel');
-    Route::get('payment/{id}/download-template', [PaymentController::class, 'downloadTemplate'])->name('payments.downloadTemplate');
-    Route::post('/assistants/{idEvent}/massPayload', [PaymentController::class, 'uploadMassPayload'])->name('eventAssistant.massPayload.upload');
-
-    //COUPON
-    Route::get('/coupon/{idEvent}', [CouponController::class, 'index'])->name('coupons.index');
-    Route::get('/coupon/{id}/pdf', [CouponController::class, 'generatePDF'])->name('coupon.pdf');
-    Route::get('/api/coupons/count-available/{idEvent}', [CouponController::class, 'countAvailableCoupons']);
-    // Route::get('/coupons/{idEvent}/pdf', [CouponController::class, 'generatePDFMasivo'])->name('coupons.pdf');
-    Route::get('/generate-massive-pdf/{idEvent}', [CouponController::class, 'generatePDFMasivo'])->name('coupons.pdf');
-    Route::get('/generate-pdf-job/{idEvent}', [CouponController::class, 'generateZipsPdfs']);
-    Route::get('/generated-zips/{idEvent}', [CouponController::class, 'getGeneratedZips']);
-    Route::get('/api/check-job-status/{idEvent}', [CouponController::class, 'checkJobStatusjob']);
-    Route::get('/coupons/{idEvent}/xls', [CouponController::class, 'generateExcel'])->name('coupons.excel');
-    Route::delete('/coupons/{id}', [CouponController::class, 'destroy'])->name('coupon.delete');
-
-    //SELECTS
-    Route::get('/cities/{department}', [CityController::class, 'getCitiesByDepartment']);
-
-    //SEATS
-    Route::get('ticket-types/{idEvent}/seats', [SeatController::class, 'index'])->name('seats.index');
-    Route::post('seats/assign/{seat}', [SeatController::class, 'assignSeat'])->name('seats.assign');
-    Route::post('seats/unassign/{seat}', [SeatController::class, 'unassignSeat'])->name('seats.unassign');
-    Route::get('/seats/upload-form/{idEvent}', [SeatController::class, 'showUploadForm'])->name('seats.uploadForm');
-    Route::post('/seats/upload/{idEvent}', [SeatController::class, 'uploadExcel'])->name('seats.upload');
-    Route::get('/get-event-assistants/{ticketTypeId}', [SeatController::class, 'getEventAssistants']);
 });
 
 
