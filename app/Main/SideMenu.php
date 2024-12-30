@@ -30,12 +30,12 @@ class SideMenu
                 'icon' => 'file-text',
                 'title' => 'Empresas',
                 'sub_menu' => [
-                    'event.create' => [
+                    'empresas.create' => [
                         'icon' => 'file-text',
                         'route_name' => 'empresa.create',
                         'title' => 'Crear empresa'
                     ],
-                    'event.index' => [
+                    'empresas.index' => [
                         'icon' => 'file-text',
                         'route_name' => 'empresa.index',
                         'title' => 'Lista de Empresas'
@@ -62,12 +62,12 @@ class SideMenu
                 'icon' => 'file-text',
                 'title' => 'Citas',
                 'sub_menu' => [
-                    'event.create' => [
+                    'citas.create' => [
                         'icon' => 'file-text',
                         'route_name' => 'citas.create',
                         'title' => 'Crear Cita'
                     ],
-                    'event.index' => [
+                    'citas.index' => [
                         'icon' => 'file-text',
                         'route_name' => 'citas.index',
                         'title' => 'Lista de Citas'
@@ -93,34 +93,6 @@ class SideMenu
                         'route_name' => 'servicio.index',
                         'title' => 'Servicios'
                     ],
-                ]
-            ],
-            'divider',
-            'Eventos' => [
-                'icon' => 'file-text',
-                'title' => 'Eventos',
-                'sub_menu' => [
-                    'event.create' => [
-                        'icon' => 'file-text',
-                        'route_name' => 'event.create',
-                        'title' => 'Crear evento'
-                    ],
-                    'event.index' => [
-                        'icon' => 'file-text',
-                        'route_name' => 'event.index',
-                        'title' => 'Lista de Eventos'
-                    ]
-                ]
-            ],
-            'Pagos' => [
-                'icon' => 'file-text',
-                'title' => 'Pagos',
-                'sub_menu' => [
-                    'checkout.paypal' => [
-                        'icon' => 'file-text',
-                        'route_name' => 'checkout.paypal',
-                        'title' => 'Paypal'
-                    ]
                 ]
             ],
         ];

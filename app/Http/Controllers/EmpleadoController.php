@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Empresa;
 use App\Models\Empleado;
-use App\Models\empleadoServicio;
 use App\Models\Departament;
 use App\Models\EmpleadoServicio;
 use App\Models\Servicio;
