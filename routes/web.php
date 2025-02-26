@@ -17,12 +17,9 @@ use App\Http\Controllers\LayoutController;
 */
 
 use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\CityController;
-use App\Http\Controllers\EventAssistantController;
-use App\Http\Controllers\EventController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\AjaxController;
@@ -30,13 +27,6 @@ use App\Http\Controllers\EmpresaController;
 use App\Http\Controllers\EmpleadoController;
 use App\Http\Controllers\CitaController;
 use App\Http\Controllers\ClienteController;
-use App\Http\Controllers\CouponController;
-use App\Http\Controllers\PaymentController;
-use Illuminate\Support\Facades\Auth;
-use App\Http\Controllers\TicketFeatureController;
-use App\Http\Controllers\PDFController;
-use App\Http\Controllers\PaypalController;
-use App\Http\Controllers\SeatController;
 use App\Http\Controllers\ServicioController;
 
 Route::get('theme-switcher/{activeTheme}', [ThemeController::class, 'switch'])->name('theme-switcher');
