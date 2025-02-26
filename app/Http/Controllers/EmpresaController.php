@@ -44,6 +44,7 @@ class EmpresaController extends Controller
         // Validación de los datos recibidos
         $validated = $request->validate([
             'nombre' => 'required|string|max:255',
+            'etiqueta_empleado' => 'required|string|max:255',
             'ubicacion' => 'nullable|string|max:255',
             'contacto' => 'nullable|string|max:20',
             'status' => 'required|boolean',
@@ -72,6 +73,7 @@ class EmpresaController extends Controller
         // Crear la nueva empresa
         Empresa::create([
             'nombre' => $validated['nombre'],
+            'etiqueta_empleado' => $validated['etiqueta_empleado'],
             'ubicacion' => $validated['ubicacion'] ?? null,
             'contacto' => $validated['contacto'] ?? null,
             'status' => $validated['status'],

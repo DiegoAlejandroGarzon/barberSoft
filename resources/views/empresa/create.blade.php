@@ -30,6 +30,22 @@
                         @enderror
                     </div>
 
+                    <!-- Etiqueta de sus empleados -->
+                    <div class="intro-y col-span-12 lg:col-span-6 mt-4">
+                        <x-base.form-label for="nombre">Etiqueta de sus empleados</x-base.form-label>
+                        <x-base.form-input
+                            class="w-full {{ $errors->has('etiqueta_empleado') ? 'border-red-500' : '' }}"
+                            id="etiqueta_empleado"
+                            name="etiqueta_empleado"
+                            type="text"
+                            placeholder="Etiqueta de sus empleados"
+                            value="{{ old('etiqueta_empleado') }}"
+                        />
+                        @error('etiqueta_empleado')
+                            <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                        @enderror
+                    </div>
+
                     <!-- Ubicación de la empresa -->
                     <div class="intro-y col-span-12 lg:col-span-6 mt-4">
                         <x-base.form-label for="ubicacion">Ubicación</x-base.form-label>

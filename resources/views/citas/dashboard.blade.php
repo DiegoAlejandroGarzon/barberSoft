@@ -11,7 +11,7 @@
         background-color: #bfffc7; /* Amarillo tenue */
     }
 </style>
-<div class="container">
+<div class="container-fluid">
     <h1 class="text-center">Horario de Citas para el {{ \Carbon\Carbon::parse($fecha)->format('d/m/Y') }}</h1>
 
     <div class="row justify-content-center mt-4">
@@ -26,7 +26,7 @@
     <div class="row">
         <div class="col-12">
             <div class="table-responsive">
-                <table class="table table-bordered">
+                <x-base.table> class="table table-bordered w-100">
                     <thead>
                         <tr>
                             <th>Horario</th>
@@ -38,7 +38,6 @@
                     @endphp
                     <tbody>
                         @foreach($horarios as $hora => $citas)
-
                         @php
                             $horaSinMinutos = \Carbon\Carbon::parse($hora)->format('H');
                         @endphp
@@ -53,10 +52,12 @@
                                         <div class="card-body m-1">
                                             <h5 class="card-title">{{ $cita->cliente->nombres }} {{ $cita->cliente->apellidos }}</h5>
                                             <p class="card-text">
-                                                <strong>empleado:</strong> {{ $cita->empleado->user->name }}<br>
+                                                <strong>Empleado:</strong> {{ $cita->empleado->user->name }}<br>
                                                 <strong>Servicio:</strong> {{ $cita->servicios->pluck('nombre')->join(', ') }}<br>
-                                                {{-- <strong>Hora:</strong> {{ \Carbon\Carbon::parse($cita->fecha_hora)->format('H:i') }} --}}
                                             </p>
+                                            <button class="btn btn-sm btn-primary" onclick="changeStatus({{ $cita->id }})">
+                                                Cambiar Estado
+                                            </button>
                                         </div>
                                     </div>
                                     @endforeach
@@ -67,9 +68,33 @@
                         </tr>
                         @endforeach
                     </tbody>
-                </table>
+
+                </x-base.table>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+    function changeStatus(citaId) {
+        // Aquí puedes implementar el código para realizar la acción de cambiar estado
+        // Ejemplo: Usar una llamada AJAX para actualizar el estado en el servidor
+        fetch(`/citas/${citaId}/cambiar-estado`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Estado cambiado exitosamente');
+                location.reload();
+            } else {
+                alert('Error al cambiar el estado');
+            }
+        });
+    }
+</script>
 @endsection
