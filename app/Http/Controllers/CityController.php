@@ -28,16 +28,16 @@ class CityController extends Controller
             $query
                 ->where('name', 'like', '%' . request('search') . '%');
         }
-        
+
         // Obtener los departamentos
-        $cities=$query->paginate(30);
+        $cities=$query->paginate(15);
         return view('city.index', compact(['roles', 'cities']));
     }
 
-  
+
     public function create(){
         $roles = Role::all();
-        $departments = Department::all(); // Obtener los departamentos        
+        $departments = Department::all(); // Obtener los departamentos
         return view('city.create', compact(['roles', 'departments']));
     }
 
@@ -47,17 +47,17 @@ class CityController extends Controller
         $request->validate([
             'code_dane' => 'required|string|max:255',
             'name' => 'required|string|max:255',
-            'provincia' => 'required|string|max:255' 
-                       
+            // 'provincia' => 'required|string|max:255'
+
         ]);
 
         $city = new City();
         $city->code_dane = $request->code_dane;
         $city->name = $request->name;
         $city->provincia = $request->provincia;
-        $city->department_id = $request->department_id;            
+        $city->department_id = $request->department_id;
         $city->save();
-        
+
 
         // Redirigir con mensaje de éxito
         return redirect()->route('city.index')->with('success', 'ciudad creada con éxito.');
@@ -70,10 +70,10 @@ class CityController extends Controller
 
     public function edit($id){
         $city = City::find($id);
-        $departments = Department::all(); 
-        $roles = Role::all();        
+        $departments = Department::all();
+        $roles = Role::all();
         return view('city.update', compact(['roles', 'city','departments']));
-        
+
     }
 
     public function update(Request $request){
@@ -81,10 +81,10 @@ class CityController extends Controller
         $cityId = $request->id;
         $request->validate([
             'code_dane' => 'required|string|max:255',
-            'name' => 'required|string|max:255', 
-            'provincia' => 'required|string|max:255'          
+            'name' => 'required|string|max:255',
+            // 'provincia' => 'required|string|max:255'
         ]);
-        
+
         $city = City::findOrFail($cityId);
         $city->code_dane = $request->code_dane;
         $city->name = $request->name;
@@ -101,26 +101,26 @@ class CityController extends Controller
 
 
     public function delete($id){
-        
+
         $city=City::find($id);
         if (!$city)
         {   $data=[
                 'message'=>'Departamento no Encontrado',
                 'status'=>404
-                    
+
                ];
-            return redirect()->route('city.index')->with('404', 'Departamento no Encontrado');   
-            
+            return redirect()->route('city.index')->with('404', 'Departamento no Encontrado');
+
         };
 
         $city->delete();
 
-           
+
         $data=[
             'message'=>'Ciudad Eliminada',
             'status'=>201
         ];
-        return redirect()->route('city.index')->with('201', 'Ciudad Eliminada'); 
+        return redirect()->route('city.index')->with('201', 'Ciudad Eliminada');
         $roles = Role::all();
         $city = city::all(); // Obtener las ciudades
         return view('city.index', compact(['roles', 'city']));
