@@ -56,15 +56,18 @@
             </div> --}}
             <div class="mt-3 w-full sm:ml-auto sm:mt-0 sm:w-auto md:ml-0">
                 <div class="relative w-56 text-slate-500">
-                    <x-base.form-input
-                        class="!box w-56 pr-10"
-                        type="text"
-                        placeholder="Search..."
-                    />
-                    <x-base.lucide
-                        class="absolute inset-y-0 right-0 my-auto mr-3 h-4 w-4"
-                        icon="Search"
-                    />
+                    <form method="GET" action="{{ route('department.index') }}" class="relative w-56 text-slate-500">
+                        <input
+                            type="text"
+                            name="search"
+                            value="{{ request('search') }}"
+                            class="!box w-56 pr-10"
+                            placeholder="Buscar..."
+                        />
+                        <button type="submit" class="absolute inset-y-0 right-0 my-auto mr-3">
+                            <x-base.lucide class="h-4 w-4" icon="Search" />
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -90,49 +93,31 @@
                 <x-base.table.tbody>
                     @foreach ($departments as $index => $department)
                         <x-base.table.tr class="intro-x">
-
-                            <x-base.table.td
-                                class="box rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
-                            >
-                                    {{-- {{ $department->id }} --}}
-                                    {{ $loop->iteration }}
-
+                            <x-base.table.td>
+                                {{ $departments->firstItem() + $loop->index }} <!-- Ajustar numeración en paginación -->
                             </x-base.table.td>
-                            <x-base.table.td
-                                class="box rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
-                            >
-                                    {{ $department->code_dane}}
-
+                            <x-base.table.td>
+                                {{ $department->code_dane }}
                             </x-base.table.td>
-                            <x-base.table.td
-                                class="box rounded-l-none rounded-r-none border-x-0 text-center shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600"
-                            >
+                            <x-base.table.td>
                                 {{ $department->name }}
                             </x-base.table.td>
-                            <x-base.table.td @class([
-                                'box w-56 rounded-l-none rounded-r-none border-x-0 shadow-[5px_3px_5px_#00000005] first:rounded-l-[0.6rem] first:border-l last:rounded-r-[0.6rem] last:border-r dark:bg-darkmode-600',
-                                'before:absolute before:inset-y-0 before:left-0 before:my-auto before:block before:h-8 before:w-px before:bg-slate-200 before:dark:bg-darkmode-400',
-                            ])>
+                            <x-base.table.td>
                                 <div class="flex items-center justify-center">
-
                                     <a class="mr-3 flex items-center" href="{{ route('department.edit', ['id' => $department->id]) }}">
                                         Editar
                                     </a>
-                                    <a
-                                        class="flex items-center text-danger cursor-pointer"
-                                        data-tw-toggle="modal"
-                                        data-tw-target="#delete-confirmation-modal"
-                                        {{-- href="{{ route('department.delete', ['id' => $department->id]) }}" --}}
-                                    >
-                                        <x-base.lucide
-                                            class="mr-1 h-4 w-4"
-                                            icon="Trash"
-                                        /> Borrar
+                                    <a class="flex items-center text-danger cursor-pointer" data-tw-toggle="modal" data-tw-target="#delete-confirmation-modal">
+                                        <x-base.lucide class="mr-1 h-4 w-4" icon="Trash" /> Borrar
                                     </a>
                                 </div>
                             </x-base.table.td>
                         </x-base.table.tr>
                     @endforeach
+                    <!-- Agregar la paginación -->
+                    <div class="mt-4">
+                        {{ $departments->links() }}
+                    </div>
                 </x-base.table.tbody>
             </x-base.table>
         </div>

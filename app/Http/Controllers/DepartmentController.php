@@ -17,9 +17,16 @@ class DepartmentController extends Controller
         return response()->json(['cities' => $cities]);
     }
 
-    public function list(){
-        $departments = Department::all(); // Obtener los departamentos
-        return view('department.index', compact(['departments']));
+    public function list(Request $request)
+    {
+        $search = $request->input('search');
+
+        $departments = Department::when($search, function ($query, $search) {
+            return $query->where('name', 'like', "%{$search}%")
+                        ->orWhere('code_dane', 'like', "%{$search}%");
+        })->paginate(10); // Paginación de 10 elementos por página
+
+        return view('department.index', compact('departments', 'search'));
     }
 
 
