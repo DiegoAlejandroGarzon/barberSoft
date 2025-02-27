@@ -122,10 +122,6 @@
                             ])>
                                 <div class="flex items-center justify-center">
 
-                                    <a class="mr-3 flex items-center" href="{{ route('servicio.edit', ['id' => $servicio->id]) }}">
-                                        Editar
-                                    </a>
-
                                     <div class="flex items-center justify-center">
                                         <x-base.tippy content="Editar" class="mr-1">
                                             <a class="" href="{{ route('servicio.edit', ['id' => $servicio->id]) }}">
