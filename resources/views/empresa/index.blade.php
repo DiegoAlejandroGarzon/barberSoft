@@ -50,17 +50,20 @@
                 </x-base.menu.items>
             </x-base.menu>
             <div class="mt-3 w-full sm:ml-auto sm:mt-0 sm:w-auto md:ml-0">
-                <div class="relative w-56 text-slate-500">
-                    <x-base.form-input
-                        class="!box w-56 pr-10"
-                        type="text"
-                        placeholder="Buscar..."
-                    />
-                    <x-base.lucide
-                        class="absolute inset-y-0 right-0 my-auto mr-3 h-4 w-4"
-                        icon="Search"
-                    />
-                </div>
+                <form method="GET" action="{{ route('empresa.index') }}">
+                    <div class="relative w-56 text-slate-500">
+                        <x-base.form-input
+                            class="!box w-56 pr-10"
+                            type="text"
+                            name="search"
+                            value="{{ request('search') }}"
+                            placeholder="Buscar..."
+                        />
+                        <button type="submit" class="absolute inset-y-0 right-0 my-auto mr-3">
+                            <x-base.lucide class="h-4 w-4" icon="Search" />
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
 
@@ -140,6 +143,9 @@
                     @endforeach
                 </x-base.table.tbody>
             </x-base.table>
+            <div class="mt-5">
+                {{ $empresas->links() }}
+            </div>
         </div>
         <!-- END: Data List -->
 

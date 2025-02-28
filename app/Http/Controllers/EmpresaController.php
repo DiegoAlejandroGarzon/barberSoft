@@ -16,15 +16,21 @@ class EmpresaController extends Controller
 {
     /**
      * Display a listing of the resource.
-     */
-    public function index()
+     */public function index(Request $request)
     {
-        // Obtener todas las Empresas
-        $empresas = Empresa::all(); // O puedes usar paginate() para paginar
+        // Obtener el término de búsqueda
+        $search = $request->input('search');
+
+        // Obtener todas las Empresas con búsqueda y paginación
+        $empresas = Empresa::when($search, function ($query, $search) {
+                return $query->where('nombre', 'like', "%{$search}%");
+            })
+            ->paginate(10); // Cambia el número de elementos por página según lo necesites
 
         // Retornar la vista con los datos
-        return view('empresa.index', compact('empresas'));
+        return view('empresa.index', compact('empresas', 'search'));
     }
+
 
     /**
      * Show the form for creating a new resource.
