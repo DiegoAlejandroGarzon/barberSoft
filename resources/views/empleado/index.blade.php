@@ -73,6 +73,7 @@
                         <x-base.table.th class="whitespace-nowrap border-b-0 text-center">Foto</x-base.table.th>
                         <x-base.table.th class="whitespace-nowrap border-b-0 text-center">Nombre</x-base.table.th>
                         <x-base.table.th class="whitespace-nowrap border-b-0 text-center">Email</x-base.table.th>
+                        <x-base.table.th class="whitespace-nowrap border-b-0 text-center">Servicios</x-base.table.th>
                         <x-base.table.th class="whitespace-nowrap border-b-0 text-center">Acciones</x-base.table.th>
                     </x-base.table.tr>
                 </x-base.table.thead>
@@ -87,8 +88,9 @@
                                     <span>No disponible</span>
                                 @endif
                             </x-base.table.td>
-                            <x-base.table.td class="text-center">{{ $empleado->user->name }}</x-base.table.td>
+                            <x-base.table.td class="text-center">{{ $empleado->user->name }} {{ $empleado->user->lastname }}</x-base.table.td>
                             <x-base.table.td class="text-center">{{ $empleado->user->email }}</x-base.table.td>
+                            <x-base.table.td class="text-center">{{ $empleado->servicios->pluck('nombre')->implode(', ') }}</x-base.table.td>
                             <x-base.table.td class="text-center">
                                 <div class="flex items-center justify-center">
                                     <x-base.tippy content="Editar">

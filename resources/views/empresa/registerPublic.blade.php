@@ -136,7 +136,7 @@
 
                                 <!-- empleado -->
                                 <div class="mt-3">
-                                    <x-base.form-label for="empleado_id">empleado</x-base.form-label>
+                                    <x-base.form-label for="empleado_id">Empleado</x-base.form-label>
                                     <x-base.tom-select
                                         class="w-full"
                                         id="empleado_id"
@@ -242,14 +242,16 @@
             const empleadoId = document.getElementById('empleado_id').value;
             const serviciosSelect = document.querySelector('#servicios').tomselect;
 
+            // **Reiniciar completamente el select de servicios**
+            serviciosSelect.clear(); // Limpia la selección actual
+            serviciosSelect.clearOptions(); // Elimina todas las opciones disponibles
+
+            if (!empleadoId) return; // Si no hay empleado seleccionado, no hacer nada
+
             fetch(`/empleados/${empleadoId}/servicios`)
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        // Limpia todas las opciones actuales
-                        serviciosSelect.clearOptions();
-
-                        // Agrega nuevas opciones dinámicamente
                         data.servicios.forEach(servicio => {
                             serviciosSelect.addOption({
                                 value: servicio.id,
@@ -257,7 +259,7 @@
                             });
                         });
 
-                        // Refresca la lista de opciones para que se muestren correctamente en la interfaz
+                        // **Refrescar opciones y permitir selección**
                         serviciosSelect.refreshOptions(false);
                     } else {
                         alert('No se pudieron cargar los servicios relacionados');

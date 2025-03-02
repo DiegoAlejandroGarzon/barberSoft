@@ -140,6 +140,7 @@
                     <x-base.tom-select
                         class="w-full"
                         id="servicios"
+                        name="servicios[]"
                         multiple
                     >
                     @foreach ($servicios as $servicio)
@@ -150,7 +151,7 @@
                 @if (Auth::user()->hasRole('super-admin'))
                 <!-- empresa -->
                 <div class="mt-3">
-                    <x-base.form-label for="empresa_id">empresa</x-base.form-label>
+                    <x-base.form-label for="empresa_id">Empresa</x-base.form-label>
                     <x-base.tom-select
                         class="w-full {{ $errors->has('empresa_id') ? 'border-red-500' : '' }}"
                         id="empresa_id"

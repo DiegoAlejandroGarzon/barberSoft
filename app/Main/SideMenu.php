@@ -44,17 +44,17 @@ class SideMenu
             ],
             'empleados' => [
                 'icon' => 'file-text',
-                'title' => 'empleados',
+                'title' => 'Empleados',
                 'sub_menu' => [
                     'empleado.create' => [
                         'icon' => 'file-text',
                         'route_name' => 'empleado.create',
-                        'title' => 'Crear empleado'
+                        'title' => 'Crear Empleado'
                     ],
                     'empleado.index' => [
                         'icon' => 'file-text',
                         'route_name' => 'empleado.index',
-                        'title' => 'Lista de empleados'
+                        'title' => 'Lista de Empleados'
                     ]
                 ]
             ],

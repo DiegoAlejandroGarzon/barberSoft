@@ -35,10 +35,18 @@ class EmpleadoController extends Controller
      */
     public function create()
     {
-        // Obtener todas las Empresas para llenar el select
-        $empresas = Empresa::all();
-        $departments = Departament::all(); // Obtener los departamentos
-        $servicios = Servicio::all();
+        $user = auth()->user();
+        $role_id = $user->roles[0]->id;
+
+        if ($role_id == 1) {
+            $empresas = Empresa::all();
+            $servicios = Servicio::all();
+        } else {
+            $empresas = Empresa::where('id', $user->empresa_id)->get();
+            $servicios = Servicio::where('empresa_id', $user->empresa_id)->get();
+        }
+        // Obtener todos los departamentos
+        $departments = Departament::all();
 
         return view('empleado.create', compact('empresas', 'departments', 'servicios'));
     }
