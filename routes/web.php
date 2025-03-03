@@ -49,6 +49,7 @@ Route::post('password/reset', [ResetPasswordController::class, 'reset'])->name('
 
 Route::get('/registroCitas/{guid}',[EmpresaController::class,'registerPublic'])->name('empresa.registerPublic');
 Route::post('/registroCitasSubmit/{guid}',[EmpresaController::class,'registerPublicSubmit'])->name('citas.registerPublic');
+Route::get('/registradoCitas/{guid}',[CitaController::class,'publicRegistered'])->name('empresa.publicRegistered');
 
 Route::get('/clientes/buscar ',[ClienteController::class,'buscarCliente']);
 Route::get('/empleados/{id}/servicios ',[EmpleadoController::class,'obtenerServicios']);

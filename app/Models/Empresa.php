@@ -53,8 +53,8 @@ class Empresa extends Model
         return $this->hasManyThrough(Servicio::class, Empleado::class);
     }
 
-    public function empleados(): BelongsToMany
+    public function empleados()
     {
-        return $this->belongsToMany(Empleado::class, 'empleado_empresa');
+        return $this->belongsToMany(Empleado::class, 'empleado_empresa', 'empresa_id', 'empleado_id');
     }
 }

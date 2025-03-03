@@ -60,6 +60,11 @@ class User extends Authenticatable
         return $this->belongsTo(City::class);
     }
 
+    public function empresa()
+    {
+        return $this->belongsTo(Empresa::class);
+    }
+
     public function getAgeAttribute()
     {
         return Carbon::parse($this->birth_date)->age;

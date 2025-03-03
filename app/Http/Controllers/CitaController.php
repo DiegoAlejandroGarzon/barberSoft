@@ -8,6 +8,7 @@ use App\Models\Cliente;
 use App\Models\Servicio;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class CitaController extends Controller
 {
@@ -92,7 +93,7 @@ class CitaController extends Controller
 
         $cita = new Cita();
         $cita->cliente_id   = $cliente->id;
-        $cita->empleado_id   = $request->empleado_id;
+        $cita->empleado_empresa_id   = $request->empleado_empresa_id;
         $cita->fecha_hora   = $request->fecha_hora;
         $cita->save();
 
@@ -100,9 +101,21 @@ class CitaController extends Controller
         $cita->servicios()->attach($request->servicios);
 
         // Redirigir con mensaje de éxito
-        return redirect()
-            ->route('citas.index')
-            ->with('success', 'Cita creada exitosamente.');
+        return view('empresa.registeredPublic/'.$cita->guid, compact('cita'));
+    }
+
+    public function publicRegistered($guid)
+    {
+        $cita = Cita::where('guid', $guid)->firstOrFail();
+        $empresa = $cita->empleado->user->empresa;
+        $cliente = $cita->cliente;
+        $empleado = $cita->empleado;
+
+        // Generar la URL actual
+        $url = url()->current();
+        $qrCode = QrCode::size(200)->generate($url);
+
+        return view('empresa.registeredPublic', compact('cita', 'empresa', 'cliente', 'empleado', 'qrCode'));
     }
 
     /**

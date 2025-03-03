@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('citas', function (Blueprint $table) {
             $table->id();
+            $table->uuid('guid')->unique();
             $table->foreignId('cliente_id')->constrained()->onDelete('cascade');
             $table->foreignId('empleado_id')->constrained()->onDelete('cascade');
             $table->dateTime('fecha_hora');

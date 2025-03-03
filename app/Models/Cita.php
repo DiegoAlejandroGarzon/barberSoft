@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class Cita extends Model
 {
@@ -18,6 +19,17 @@ class Cita extends Model
         'fecha_hora',
         'estado',
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            if (empty($model->guid)) {
+                $model->guid = Str::uuid();
+            }
+        });
+    }
 
     // Relación con Cliente
     public function cliente()
