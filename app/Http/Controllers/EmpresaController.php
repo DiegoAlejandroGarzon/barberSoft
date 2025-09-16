@@ -117,8 +117,12 @@ class EmpresaController extends Controller
     public function update(Request $request, $id)
     {
         // Validar los datos recibidos
-        $request->validate([
+        $validated = $request->validate([
             'nombre' => 'required|string|max:255',
+            'etiqueta_empleado' => 'required|string|max:255',
+            'ubicacion' => 'nullable|string|max:255',
+            'contacto' => 'nullable|string|max:20',
+            'status' => 'required|boolean',
             'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'color_one' => 'nullable|string|max:7', // HEX color format
             'color_two' => 'nullable|string|max:7', // HEX color format
@@ -143,10 +147,14 @@ class EmpresaController extends Controller
         }
         // Actualizar la empresa
         $empresa->update([
-            'nombre' => $request->nombre,
+            'nombre' => $validated['nombre'],
+            'etiqueta_empleado' => $validated['etiqueta_empleado'],
+            'ubicacion' => $validated['ubicacion'] ?? null,
+            'contacto' => $validated['contacto'] ?? null,
+            'status' => $validated['status'],
             'logo' => $logoPath,
-            'color_one' => $request->color_one,
-            'color_two' => $request->color_two,
+            'color_one' => $validated['color_one'],
+            'color_two' => $validated['color_two'],
         ]);
 
         // Redirigir con mensaje de éxito

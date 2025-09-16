@@ -153,7 +153,8 @@ class UserController extends Controller
         $roles = Role::all();
         $departments = Departament::all(); // Obtener los departamentos
         $profileUpdate = true;
-        return view('users.update', compact(['user', 'roles', 'profileUpdate', 'departments']));
+        $empresas = Empresa::all();
+        return view('users.update', compact(['user', 'roles', 'profileUpdate', 'departments', 'empresas']));
     }
 
     public function profileUpdate(Request $request){
