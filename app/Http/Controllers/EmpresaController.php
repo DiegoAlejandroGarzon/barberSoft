@@ -6,6 +6,7 @@ use App\Models\Empresa;
 use App\Models\Empleado;
 use App\Models\Departament;
 use App\Models\Department;
+use App\Models\Servicio;
 use Spatie\Permission\Models\Role;
 
 use Illuminate\Http\Request;
@@ -191,6 +192,10 @@ class EmpresaController extends Controller
         $empleados = Empleado::whereHas('user', function ($query) use ($empresa) {
             $query->where('empresa_id', $empresa->id);
         })->get();
+
+        // Obtener los empleados relacionados con la empresa
+        $servicios = Servicio::where('empresa_id', $empresa->id)->get();
+        return view('empresa.registerCitaPublic', compact('empresa', 'empleados', 'servicios'));
         return view('empresa.registerPublic', compact('empresa', 'empleados'));
     }
 }

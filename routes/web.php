@@ -53,6 +53,7 @@ Route::get('/registradoCitas/{guid}',[CitaController::class,'publicRegistered'])
 
 Route::get('/clientes/buscar ',[ClienteController::class,'buscarCliente']);
 Route::get('/empleados/{id}/servicios ',[EmpleadoController::class,'obtenerServicios']);
+Route::get('/empleados/{empleado}/horarios', [CitaController::class, 'horariosDisponibles']);
 
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 

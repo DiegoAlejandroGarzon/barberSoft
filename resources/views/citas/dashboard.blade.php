@@ -26,7 +26,8 @@
     <div class="row">
         <div class="col-12">
             <div class="table-responsive">
-                <x-base.table> class="table table-bordered w-100">
+                <x-base.table>
+                    {{-- class="table table-bordered w-100"> --}}
                     <thead>
                         <tr>
                             <th>Horario</th>

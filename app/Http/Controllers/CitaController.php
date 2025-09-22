@@ -8,6 +8,7 @@ use App\Models\Cliente;
 use App\Models\Servicio;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class CitaController extends Controller
@@ -51,23 +52,25 @@ class CitaController extends Controller
      */
     public function store(Request $request)
     {
-        // Validar los datos del formulario
+        // Validar los datos de la request
         $validator = $request->validate([
-            'tipo_documento'    => 'required|string|in:CC,TI',
-            'numero_documento'  => 'required|string|max:20',
-            'nombres'           => 'required|string|max:255',
-            'apellidos'         => 'required|string|max:255',
-            'telefono'          => 'nullable|string|max:20',
-            'correo'            => 'nullable|email|max:255',
-            'empleado_id'        => 'required|exists:empleados,id',
-            'servicios'         => 'required|array',
-            'servicios.*'       => 'exists:servicios,id',
-            'fecha_hora'        => 'required|date',
+            'nombres'      => 'required|string|max:255',
+            'telefono'     => 'nullable|string|max:20',
+            'empleado_id'  => 'required|exists:empleados,id',
+            'servicios'    => 'required|string', // viene como "1,2"
+            'fecha'        => 'required|date',
+            'hora'         => 'required|date_format:H:i',
         ]);
 
-        // Verificar si ya existe una cita para el mismo empleado en la misma fecha y hora
+        // Convertir "1,2" en array
+        $servicios = array_map('intval', explode(',', $request->servicios));
+
+        // Crear fecha_hora combinando fecha + hora
+        $fechaHora = Carbon::parse($request->fecha . ' ' . $request->hora);
+
+        // Verificar disponibilidad
         $citaExistente = Cita::where('empleado_id', $request->empleado_id)
-            ->where('fecha_hora', $request->fecha_hora)
+            ->where('fecha_hora', $fechaHora)
             ->first();
 
         if ($citaExistente) {
@@ -77,32 +80,31 @@ class CitaController extends Controller
                 ->withInput();
         }
 
-        // Buscar o crear el cliente
+        // Buscar o crear cliente (simplificado: solo nombre + teléfono)
         $cliente = Cliente::firstOrCreate(
             [
-                'tipo_documento'   => $request->tipo_documento,
-                'numero_documento' => $request->numero_documento,
+                'telefono' => $request->telefono,
             ],
             [
-                'nombres'   => $request->nombres,
-                'apellidos' => $request->apellidos,
-                'telefono'  => $request->telefono,
-                'correo'    => $request->correo,
+                'nombres' => $request->nombres,
             ]
         );
 
+        // Crear la cita
         $cita = new Cita();
-        $cita->cliente_id   = $cliente->id;
-        $cita->empleado_empresa_id   = $request->empleado_empresa_id;
-        $cita->fecha_hora   = $request->fecha_hora;
+        $cita->cliente_id  = $cliente->id;
+        $cita->empleado_id = $request->empleado_id;
+        $cita->fecha_hora  = $fechaHora;
         $cita->save();
 
-        // Asignar servicios a la cita (relación muchos a muchos)
-        $cita->servicios()->attach($request->servicios);
+        // Relacionar servicios
+        $cita->servicios()->attach($servicios);
 
-        // Redirigir con mensaje de éxito
+        // Redirigir con mensaje de éxito o mostrar detalle
+        return route('empresa.registeredPublic/' . $cita->guid, compact('cita'));
         return view('empresa.registeredPublic/'.$cita->guid, compact('cita'));
     }
+
 
     public function publicRegistered($guid)
     {
@@ -252,4 +254,51 @@ class CitaController extends Controller
         // Retornar vista con la información de horarios y citas
         return view('citas.dashboard', compact('fecha', 'horarios'));
     }
+
+    public function horariosDisponibles($empleadoId, Request $request)
+    {
+        $fecha = $request->query('fecha');
+
+        $empleado = Empleado::with('user.empresa.horarios')->findOrFail($empleadoId);
+        $empresa = $empleado->user->empresa;
+
+        if (!$empresa) {
+            return response()->json(['error' => 'La empresa no tiene configurada'], 404);
+        }
+
+        $diaSemana = strtolower(Carbon::parse($fecha)->locale('es')->dayName);
+
+        $horario = $empresa->horarios()->where('dia_semana', $diaSemana)->first();
+
+        if (!$horario) {
+            $inicio = Carbon::parse('8:00');
+            $fin = Carbon::parse('18:00');
+        }else{
+            $inicio = Carbon::parse($horario->hora_inicio);
+            $fin = Carbon::parse($horario->hora_fin);
+        }
+
+
+        $horarios = [];
+        $current = $inicio->copy();
+        while ($current <= $fin) {
+            $horarios[] = $current->format('H:i');
+            $current->addMinutes(30);
+        }
+
+        // Citas ocupadas
+        $ocupadas = Cita::where('empleado_id', $empleadoId)
+            ->whereDate('fecha_hora', $fecha)
+            ->get()
+            ->map(function ($cita) {
+                return Carbon::parse($cita->fecha_hora)->format('H:i');
+            })
+            ->toArray();
+
+        // Filtrar disponibles
+        $disponibles = array_values(array_diff($horarios, $ocupadas));
+
+        return response()->json($disponibles);
+    }
+
 }
